@@ -1,0 +1,71 @@
+﻿@page "/register"
+@using System.ComponentModel.DataAnnotations
+@using DiplomaRealEstate.Models
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<User> UserManager
+@inject SignInManager<User> SignInManager
+@inject NavigationManager NavigationManager
+<EditForm Model="@registerModel" OnValidSubmit="HandleRegistration" FormName="register">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label>Имя пользователя:</label>
+        <InputText @bind-Value="registerModel.Username" required />
+    </div>
+    <div>
+        <label>Email:</label>
+        <InputText  @bind-Value="registerModel.Email" type="email" required />
+    </div>
+    <div>
+        <label>Пароль:</label>
+        <InputText type="password" @bind-Value="@registerModel.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+    </div>
+
+    <button type="submit">Зарегистрироваться</button>
+</EditForm>
+
+@if (registrationSuccess)
+{
+    <p>Регистрация прошла успешно!</p>
+}
+
+
+@code {
+    [SupplyParameterFromForm]
+    private RegisterModel registerModel { get; set; } = new();
+    private bool registrationSuccess = false;
+    private string errorMessage;
+
+    private async Task HandleRegistration()
+    {
+        var userAdd = new User { UserName = registerModel.Username, Email = registerModel.Email };
+
+        var result = await UserManager.CreateAsync(userAdd, registerModel.Password);
+
+        if (result.Succeeded)
+        {
+            await SignInManager.SignInAsync(userAdd, isPersistent: false);
+            registrationSuccess = true;
+            // Перенаправление на главную страницу или страницу профиля пользователя,
+            // В зависимости от логики вашего приложения
+            NavigationManager.NavigateTo("/counter");
+        }
+        else
+        {
+            // Обработка ошибок, возвращаемых Identity
+            foreach (var error in result.Errors)
+            {
+                errorMessage += error.Description + "\n";
+            }
+        }
+    }
+    public class RegisterModel
+    {
+        public string Username { get; set; }
+        public string Email { get; set; }
+        [Required(ErrorMessage = "Введите пароль.")]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+    }
+}

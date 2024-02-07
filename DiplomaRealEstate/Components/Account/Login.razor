@@ -1,0 +1,51 @@
+﻿@page "/login"
+@using DiplomaRealEstate.Models
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Mvc
+
+@inject SignInManager<User> SignInMnager
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@attribute [ValidateAntiForgeryToken]
+<EditForm Model="@loginModel" OnValidSubmit="HandleLogin" FormName="login" t>
+<DataAnnotationsValidator />
+<ValidationSummary />
+    <div>
+        <label>Имя пользователя:</label>
+        <InputText @bind-Value="@loginModel.Username" required />
+    </div>
+    <div>
+        <label>Пароль:</label>
+        <InputText type="password" @bind-Value="@loginModel.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+    </div>
+    <button type="submit">вОЙТИ</button>
+</EditForm>
+@code {
+    [SupplyParameterFromForm]
+    private LoginModel loginModel { get; set; } = new();
+    private async Task HandleLogin()
+    {
+        var result = await SignInMnager.PasswordSignInAsync(
+            loginModel.Username,
+            loginModel.Password,
+            isPersistent: false, lockoutOnFailure: false);
+        if (result.Succeeded)
+        {
+                NavigationManager.NavigateTo("/loginTrue");
+            // var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            // var user = authState.User;
+            // if (user.Identity.IsAuthenticated)
+            // {
+            // }
+        }
+    }
+    private class LoginModel
+    {
+        public string Username { get; set; }
+        [Required(ErrorMessage = "Введите пароль.")]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+    }
+}

@@ -1,0 +1,25 @@
+﻿@page "/loginTrue"
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+<h3>Статус входа: Успешно</h3>
+
+@if (curentUser != null)
+{
+    <p>Имя пользователя: @curentUser.Identity.Name</p>
+    // Тут вы можете добавить дополнительные данные пользователя для отображения
+}
+else
+{
+    <p>Загрузка данных пользователя...</p>
+}
+
+@code {
+    private ClaimsPrincipal curentUser;
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        curentUser = authState.User;
+    }
+}
