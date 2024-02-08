@@ -17,4 +17,14 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\RealEstateServices\" />
+    <Folder Include="Services\CategoryServices\" />
+    <Folder Include="Services\TypeTransactionServices\" />
+    <Folder Include="Services\StatusServices\" />
+    <Folder Include="Services\TypeRealEstateServices\" />
+    <Folder Include="Services\TransaactionServices\" />
+    <Folder Include="Services\ReviewServices\" />
+  </ItemGroup>
+
 </Project>

@@ -9,20 +9,19 @@
     <DataAnnotationsValidator />
     <ValidationSummary />
 
-    <div>
-        <label>Имя пользователя:</label>
-        <InputText @bind-Value="registerModel.Username" required />
-    </div>
-    <div>
-        <label>Email:</label>
-        <InputText  @bind-Value="registerModel.Email" type="email" required />
-    </div>
-    <div>
-        <label>Пароль:</label>
-        <InputText type="password" @bind-Value="@registerModel.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-    </div>
+    <div class="w-25 align-content-center">
 
-    <button type="submit">Зарегистрироваться</button>
+        <div class="">
+            <label>Имя пользователя:</label>
+            <InputText @bind-Value="registerModel.Username" class="form-control" />
+        </div>
+        <div>
+            <label>Пароль:</label>
+            <InputText type="password" @bind-Value="@registerModel.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+        </div>
+
+        <button type="submit" class="btn w-100 btn-outline-success">зарегистрироваться</button>
+    </div>
 </EditForm>
 
 @if (registrationSuccess)
