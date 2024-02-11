@@ -1,0 +1,13 @@
+﻿@page "/logout"
+@using DiplomaRealEstate.Models
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SingOutManager
+@inject NavigationManager NavigationManager
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await SingOutManager.SignOutAsync();
+        NavigationManager.NavigateTo("/", true);
+    }
+}

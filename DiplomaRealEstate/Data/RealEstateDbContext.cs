@@ -12,6 +12,10 @@ namespace BlazorApp10.Data
         {
         }
 
+        public RealEstateDbContext()
+        {
+        }
+
         public DbSet<User> User { get; set; }
         public DbSet<RealEstate> RealEstates { get; set; }
         public DbSet<Status> Statuses { get; set; }
