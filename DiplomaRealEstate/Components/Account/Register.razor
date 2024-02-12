@@ -29,9 +29,8 @@
 @if (registrationSuccess)
 {
     <p>Регистрация прошла успешно!</p>
-    <a href="#"> кликните чтобы перейти в профиль</a>
+    <a href=""> кликните чтобы перейти в профиль</a>
 }
-
 
 @code {
     [SupplyParameterFromForm]
@@ -58,6 +57,7 @@
         {
             registrationSuccess = true;
             await UserManager.AddToRoleAsync(userAdd, roleName);
+            await SignInManager.SignInAsync(userAdd, true);
         }
     }
     public class RegisterModel

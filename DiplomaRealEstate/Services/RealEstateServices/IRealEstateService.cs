@@ -9,5 +9,6 @@ namespace DiplomaRealEstate.Services.RealEstateServices
         Task AddRealEstateAsync(RealEstate realEstate);
         Task RemoveRealEstateAsync(Guid realEstateId);
         Task UpdateRealEstate(RealEstate realEstate);
+        Task<List<Category>> GetAllCategoryAsync();
     }
 }

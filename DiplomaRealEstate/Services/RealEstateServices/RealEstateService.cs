@@ -15,6 +15,14 @@ namespace DiplomaRealEstate.Services.RealEstateServices
             }
         }
 
+        public async Task<List<Category>> GetAllCategoryAsync()
+        {
+            using (var dbContext = new RealEstateDbContext())
+            {
+                return await dbContext.Categories.ToListAsync();
+            }
+        }
+
         public async Task<List<RealEstate>> GetAllRealEstateAsync()
         {
             using (var dbContext = new RealEstateDbContext())

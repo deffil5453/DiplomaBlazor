@@ -1,0 +1,77 @@
+﻿@page "/createRealEstate"
+@using DiplomaRealEstate.Services.RealEstateServices
+@using DiplomaRealEstate.Models
+@inject IRealEstateService RealEstateServices
+<EditForm Model="@realEstate" OnValidSubmit="CreateRealEstateValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label for="Areas">Площадь</label>
+        <InputText id="Areas" class="form-control" @bind-Value="realEstate.Area" />
+    </div>
+    <div class="form-floating">
+        <label for="Prices">Площадь</label>
+        <InputNumber id="Prices" class="form-control" @bind-Value="realEstate.Price" />
+    </div>
+    <div class="form-floating">
+        <label for="Room">Площадь</label>
+        <InputNumber id="Room" class="form-control" @bind-Value="realEstate.Rooms" />
+    </div>
+    <div class="form-floating">
+        <label for="Countrys">Площадь</label>
+        <InputText id="Countrys" class="form-control" @bind-Value="realEstate.Country" />
+    </div>
+    <div class="form-floating">
+        <label for="Regions">Площадь</label>
+        <InputText id="Regions" class="form-control" @bind-Value="realEstate.Region" />
+    </div>
+    <div class="form-floating">
+        <label for="Areas">Площадь</label>
+        <InputText id="Cities" class="form-control" @bind-Value="realEstate.City" />
+    </div>
+    <div class="form-floating">
+        <label for="Streets">Площадь</label>
+        <InputText id="Streets" class="form-control" @bind-Value="realEstate.Street" />
+    </div>
+    <div class="form-floating">
+        <label for="Houses">Площадь</label>
+        <InputText id="Houses" class="form-control" @bind-Value="realEstate.House" />
+    </div>
+    <div class="form-floating">
+        <label for="Latitudes">Площадь</label>
+        <InputNumber id="Latitudes" class="form-control" @bind-Value="realEstate.Latitude" />
+    </div>
+    <div class="form-floating">
+        <label for="Longitudes">Площадь</label>
+        <InputNumber id="Longitudes" class="form-control" @bind-Value="realEstate.Longitude" />
+    </div>
+    @if (categories != null)
+    {
+        <div class="form-floating">
+            <InputSelect id="Categories" class="form-control" @bind-Value="realEstate.Category">
+                @foreach (var category in categories)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            </InputSelect>
+        </div>
+    }
+    else
+    {
+        <p>Категории загружаются...</p>
+    }
+    
+    <button type="submit" class="btn btn-outline-primary">Добавить</button>
+</EditForm>
+@code {
+    private RealEstate realEstate = new RealEstate();
+    private List<Category> categories;
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await RealEstateServices.GetAllCategoryAsync();
+    }
+    private async Task CreateRealEstateValidSubmit()
+    {
+
+    }
+}
