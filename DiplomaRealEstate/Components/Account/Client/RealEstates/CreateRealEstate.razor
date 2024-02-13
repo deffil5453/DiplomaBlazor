@@ -5,49 +5,50 @@
 <EditForm Model="@realEstate" OnValidSubmit="CreateRealEstateValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
-    <div class="form-group">
+    <div class="form-floating">
         <label for="Areas">Площадь</label>
         <InputText id="Areas" class="form-control" @bind-Value="realEstate.Area" />
     </div>
     <div class="form-floating">
-        <label for="Prices">Площадь</label>
+        <label for="Prices">Цена</label>
         <InputNumber id="Prices" class="form-control" @bind-Value="realEstate.Price" />
     </div>
     <div class="form-floating">
-        <label for="Room">Площадь</label>
+        <label for="Room">Число комнат</label>
         <InputNumber id="Room" class="form-control" @bind-Value="realEstate.Rooms" />
     </div>
     <div class="form-floating">
-        <label for="Countrys">Площадь</label>
+        <label for="Countrys">Страна</label>
         <InputText id="Countrys" class="form-control" @bind-Value="realEstate.Country" />
     </div>
     <div class="form-floating">
-        <label for="Regions">Площадь</label>
+        <label for="Regions">Область</label>
         <InputText id="Regions" class="form-control" @bind-Value="realEstate.Region" />
     </div>
     <div class="form-floating">
-        <label for="Areas">Площадь</label>
+        <label for="Cities">Город</label>
         <InputText id="Cities" class="form-control" @bind-Value="realEstate.City" />
     </div>
     <div class="form-floating">
-        <label for="Streets">Площадь</label>
+        <label for="Streets">Улица</label>
         <InputText id="Streets" class="form-control" @bind-Value="realEstate.Street" />
     </div>
     <div class="form-floating">
-        <label for="Houses">Площадь</label>
+        <label for="Houses">Дом</label>
         <InputText id="Houses" class="form-control" @bind-Value="realEstate.House" />
     </div>
     <div class="form-floating">
-        <label for="Latitudes">Площадь</label>
+        <label for="Latitudes">Широта</label>
         <InputNumber id="Latitudes" class="form-control" @bind-Value="realEstate.Latitude" />
     </div>
     <div class="form-floating">
-        <label for="Longitudes">Площадь</label>
+        <label for="Longitudes">Долгота</label>
         <InputNumber id="Longitudes" class="form-control" @bind-Value="realEstate.Longitude" />
     </div>
     @if (categories != null)
     {
         <div class="form-floating">
+        <label for="Categories">Категория</label>
             <InputSelect id="Categories" class="form-control" @bind-Value="realEstate.Category">
                 @foreach (var category in categories)
                 {
