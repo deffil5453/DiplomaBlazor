@@ -2,6 +2,7 @@ using BlazorApp10.Data;
 using DiplomaRealEstate.Components;
 using DiplomaRealEstate.Models;
 using DiplomaRealEstate.Services.RealEstateServices;
+using DiplomaRealEstate.Services.UserServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +16,7 @@ builder.Services.AddRazorComponents()
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<IRealEstateService, RealEstateService>();
+builder.Services.AddScoped<IUserInterface, UserServices>();
 builder.Services.AddDefaultIdentity<User>(options =>
 {
     options.Password.RequireDigit = false;

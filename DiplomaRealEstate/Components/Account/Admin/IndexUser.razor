@@ -1,0 +1,33 @@
+﻿@page "/indexUser"
+@using DiplomaRealEstate.Models
+@using DiplomaRealEstate.Services.UserServices
+@inject IUserInterface UserServices
+<h3>пользователи</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Id
+            </th>
+            <th>
+                Логин
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in userAll)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.UserName</td>
+            </tr>
+        }
+    </tbody>
+</table>
+@code {
+    private List<User> userAll = new List<User>();
+    protected override async Task OnInitializedAsync()
+    {
+        userAll = await UserServices.GetAllUserAsync();
+    }
+}
