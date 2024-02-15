@@ -7,6 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\CategoryServices\**" />
+    <Compile Remove="Services\TypeRealEstateServices\**" />
+    <Content Remove="Services\CategoryServices\**" />
+    <Content Remove="Services\TypeRealEstateServices\**" />
+    <EmbeddedResource Remove="Services\CategoryServices\**" />
+    <EmbeddedResource Remove="Services\TypeRealEstateServices\**" />
+    <None Remove="Services\CategoryServices\**" />
+    <None Remove="Services\TypeRealEstateServices\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="bootstrap" Version="5.3.2" />
     <PackageReference Include="BootstrapBlazor" Version="8.2.3-beta04" />
     <PackageReference Include="IdentityServer4.Storage" Version="4.1.2" />
@@ -22,8 +33,6 @@
   <ItemGroup>
     <Folder Include="Components\Account\Profile\" />
     <Folder Include="Components\Account\Admin\" />
-    <Folder Include="Services\CategoryServices\" />
-    <Folder Include="Services\TypeRealEstateServices\" />
     <Folder Include="Services\TypeTransactionServices\" />
   </ItemGroup>
 

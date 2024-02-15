@@ -1,4 +1,5 @@
-﻿using DiplomaRealEstate.Models;
+﻿using DiplomaRealEstate.InputModel;
+using DiplomaRealEstate.Models;
 
 namespace DiplomaRealEstate.Services.RealEstateServices
 {
@@ -6,9 +7,10 @@ namespace DiplomaRealEstate.Services.RealEstateServices
     {
         Task <List<RealEstate>> GetAllRealEstateAsync();
         Task<RealEstate> GetRealEstateAsync(Guid realEstateId);
-        Task AddRealEstateAsync(RealEstate realEstate);
+        Task AddRealEstateAsync(RealEstateInputModel realEstateinput);
         Task RemoveRealEstateAsync(Guid realEstateId);
         Task UpdateRealEstate(RealEstate realEstate);
         Task<List<Category>> GetAllCategoryAsync();
+        Task<List<TypeRealEstate>> GetAllTypeAsync();
     }
 }

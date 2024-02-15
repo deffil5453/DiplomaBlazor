@@ -1,55 +1,59 @@
 ﻿@page "/createRealEstate"
+@using DiplomaRealEstate.InputModel
 @using DiplomaRealEstate.Services.RealEstateServices
 @using DiplomaRealEstate.Models
 @inject IRealEstateService RealEstateServices
-<EditForm Model="@realEstate" OnValidSubmit="CreateRealEstateValidSubmit">
+<EditForm Model="@realEstateInputModel" OnValidSubmit="CreateRealEstateValidSubmit" FormName="create">
     <DataAnnotationsValidator />
     <ValidationSummary />
     <div class="form-floating">
         <label for="Areas">Площадь</label>
-        <InputText id="Areas" class="form-control" @bind-Value="realEstate.Area" />
+        <InputText id="Areas" class="form-control" @bind-Value="realEstateInputModel.Area" />
     </div>
     <div class="form-floating">
         <label for="Prices">Цена</label>
-        <InputNumber id="Prices" class="form-control" @bind-Value="realEstate.Price" />
+        <InputNumber id="Prices" class="form-control" @bind-Value="realEstateInputModel.Price" />
     </div>
     <div class="form-floating">
         <label for="Room">Число комнат</label>
-        <InputNumber id="Room" class="form-control" @bind-Value="realEstate.Rooms" />
+        <InputNumber id="Room" class="form-control" @bind-Value="realEstateInputModel.Rooms" />
     </div>
     <div class="form-floating">
         <label for="Countrys">Страна</label>
-        <InputText id="Countrys" class="form-control" @bind-Value="realEstate.Country" />
+        <InputText id="Countrys" class="form-control" @bind-Value="realEstateInputModel.Country" />
     </div>
     <div class="form-floating">
         <label for="Regions">Область</label>
-        <InputText id="Regions" class="form-control" @bind-Value="realEstate.Region" />
+        <InputText id="Regions" class="form-control" @bind-Value="realEstateInputModel.Region" />
     </div>
     <div class="form-floating">
         <label for="Cities">Город</label>
-        <InputText id="Cities" class="form-control" @bind-Value="realEstate.City" />
+        <InputText id="Cities" class="form-control" @bind-Value="realEstateInputModel.City" />
     </div>
     <div class="form-floating">
         <label for="Streets">Улица</label>
-        <InputText id="Streets" class="form-control" @bind-Value="realEstate.Street" />
+        <InputText id="Streets" class="form-control" @bind-Value="realEstateInputModel.Street" />
     </div>
     <div class="form-floating">
         <label for="Houses">Дом</label>
-        <InputText id="Houses" class="form-control" @bind-Value="realEstate.House" />
+        <InputText id="Houses" class="form-control" @bind-Value="realEstateInputModel.House" />
     </div>
     <div class="form-floating">
         <label for="Latitudes">Широта</label>
-        <InputNumber id="Latitudes" class="form-control" @bind-Value="realEstate.Latitude" />
+        <InputNumber id="Latitudes" class="form-control" @bind-Value="realEstateInputModel.Latitude" />
     </div>
     <div class="form-floating">
         <label for="Longitudes">Долгота</label>
-        <InputNumber id="Longitudes" class="form-control" @bind-Value="realEstate.Longitude" />
+        <InputNumber id="Longitudes" class="form-control" @bind-Value="realEstateInputModel.Longitude" />
+    </div>
+    <div class="form-floating">
+        <InputFile id="photos" class="form-floating" OnChange="HandleFileSelected"></InputFile>
     </div>
     @if (categories != null)
     {
         <div class="form-floating">
-        <label for="Categories">Категория</label>
-            <InputSelect id="Categories" class="form-control" @bind-Value="realEstate.Category">
+            <label for="categories">Категория</label>
+            <InputSelect id="categories" class="form-control" @bind-Value="realEstateInputModel.CategoryId">
                 @foreach (var category in categories)
                 {
                     <option value="@category.Id">@category.Name</option>
@@ -57,22 +61,39 @@
             </InputSelect>
         </div>
     }
-    else
+    @if (types != null)
     {
-        <p>Категории загружаются...</p>
+        <div class="form-floating">
+            <label for="types">Категория</label>
+            <InputSelect id="types" class="form-control" @bind-Value="realEstateInputModel.TypeRealEstateId">
+                @foreach (var category in types)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            </InputSelect>
+        </div>
     }
-    
     <button type="submit" class="btn btn-outline-primary">Добавить</button>
 </EditForm>
 @code {
-    private RealEstate realEstate = new RealEstate();
-    private List<Category> categories;
+    private RealEstateInputModel realEstateInputModel=new();
+    private List<Category> categories = new List<Category>();
+    private List<TypeRealEstate> types = new List<TypeRealEstate>();
     protected override async Task OnInitializedAsync()
     {
         categories = await RealEstateServices.GetAllCategoryAsync();
+        types = await RealEstateServices.GetAllTypeAsync();
     }
     private async Task CreateRealEstateValidSubmit()
     {
-
+        await RealEstateServices.AddRealEstateAsync(realEstateInputModel);
+    }
+    private void HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file != null)
+        {
+            realEstateInputModel.Photos = file.Name;
+        }
     }
 }

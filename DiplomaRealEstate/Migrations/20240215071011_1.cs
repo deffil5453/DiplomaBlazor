@@ -325,8 +325,8 @@ namespace DiplomaRealEstate.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("4564e2cd-f520-4adf-bf7f-aae8d63aef4c"), "Жилая собственность" },
-                    { new Guid("63a1a0b4-4be4-4a86-906c-d0375e11d811"), "Земельные участок" }
+                    { new Guid("0394e95e-192f-4820-9022-42d8d27cf4b5"), "Жилая собственность" },
+                    { new Guid("bf5ff914-c2fc-487a-a2a3-2a3201c532af"), "Земельные участок" }
                 });
 
             migrationBuilder.InsertData(
@@ -334,9 +334,9 @@ namespace DiplomaRealEstate.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("7f4191c5-221c-4ad5-90fb-b6a10bb6f82d"), "Арендована" },
-                    { new Guid("8bb71302-d35e-4b72-b4d3-c216dd7adde1"), "Активная" },
-                    { new Guid("f08733c8-c589-45dd-82e5-8a2045fb0f65"), "Продано" }
+                    { new Guid("4ea04cf6-964f-4113-a811-26758e3df5ca"), "Арендована" },
+                    { new Guid("ebdbaf0b-40cd-451c-be7b-8d4f02128ee0"), "Продано" },
+                    { new Guid("f6ec3fa0-1f22-4842-b497-238c1f7397a6"), "Активная" }
                 });
 
             migrationBuilder.InsertData(
@@ -344,8 +344,8 @@ namespace DiplomaRealEstate.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("2bbbe85a-5a98-437c-b9d4-a4cb10c87472"), "Земельный участок" },
-                    { new Guid("ad497bea-5601-4f23-a26a-fe946cb7733e"), "Дом " }
+                    { new Guid("4e904317-1325-49ef-8aa7-abd177427d1c"), "Земельный участок" },
+                    { new Guid("eefd6f87-4eec-4aba-9da1-a88796cdfe2d"), "Дом " }
                 });
 
             migrationBuilder.CreateIndex(
