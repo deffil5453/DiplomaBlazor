@@ -15,18 +15,21 @@ namespace DiplomaRealEstate.Services.RealEstateServices
                 {
                     Id = Guid.NewGuid(),
                     Area = realEstateinput.Area,
-                    CategoryId = realEstateinput.CategoryId,
+                    Price = realEstateinput.Price,
+                    Rooms = realEstateinput.Rooms,
+                    Desctiption = "тута текст прост так",
+                    Country = realEstateinput.Country,
+                    Region = realEstateinput.Region,
+                    City =  realEstateinput.City,
+                    Street = realEstateinput.Street,
+                    House = realEstateinput.House,
                     Latitude = realEstateinput.Latitude,
                     Longitude = realEstateinput.Longitude,
-                    Country = realEstateinput.Country,
                     Photos = realEstateinput.Photos,
-                    Price = realEstateinput.Price,
-                    House = realEstateinput.House,
-                    Street = realEstateinput.Street,
-                    Rooms = realEstateinput.Rooms,
-                    TypeRealEstateId = realEstateinput.TypeRealEstateId,
                     UserId = realEstateinput.UserId,
-                    StatusId = dbContext.Statuses.First().Id
+                    TypeRealEstateId = realEstateinput.TypeRealEstateId,
+                    StatusId = dbContext.Statuses.First().Id,
+                    CategoryId = realEstateinput.CategoryId,
                 };
                 await dbContext.RealEstates.AddAsync(realEstate);
                 await dbContext.SaveChangesAsync();

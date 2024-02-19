@@ -2,98 +2,106 @@
 @using DiplomaRealEstate.InputModel
 @using DiplomaRealEstate.Services.RealEstateServices
 @using DiplomaRealEstate.Models
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
 @inject IRealEstateService RealEstateServices
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
 <EditForm Model="@realEstateInputModel" OnValidSubmit="CreateRealEstateValidSubmit" FormName="create">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <div class="form-floating">
-        <label for="Areas">Площадь</label>
-        <InputText id="Areas" class="form-control" @bind-Value="realEstateInputModel.Area" />
-    </div>
-    <div class="form-floating">
-        <label for="Prices">Цена</label>
-        <InputNumber id="Prices" class="form-control" @bind-Value="realEstateInputModel.Price" />
-    </div>
-    <div class="form-floating">
-        <label for="Room">Число комнат</label>
-        <InputNumber id="Room" class="form-control" @bind-Value="realEstateInputModel.Rooms" />
-    </div>
-    <div class="form-floating">
-        <label for="Countrys">Страна</label>
-        <InputText id="Countrys" class="form-control" @bind-Value="realEstateInputModel.Country" />
-    </div>
-    <div class="form-floating">
-        <label for="Regions">Область</label>
-        <InputText id="Regions" class="form-control" @bind-Value="realEstateInputModel.Region" />
-    </div>
-    <div class="form-floating">
-        <label for="Cities">Город</label>
-        <InputText id="Cities" class="form-control" @bind-Value="realEstateInputModel.City" />
-    </div>
-    <div class="form-floating">
-        <label for="Streets">Улица</label>
-        <InputText id="Streets" class="form-control" @bind-Value="realEstateInputModel.Street" />
-    </div>
-    <div class="form-floating">
-        <label for="Houses">Дом</label>
-        <InputText id="Houses" class="form-control" @bind-Value="realEstateInputModel.House" />
-    </div>
-    <div class="form-floating">
-        <label for="Latitudes">Широта</label>
-        <InputNumber id="Latitudes" class="form-control" @bind-Value="realEstateInputModel.Latitude" />
-    </div>
-    <div class="form-floating">
-        <label for="Longitudes">Долгота</label>
-        <InputNumber id="Longitudes" class="form-control" @bind-Value="realEstateInputModel.Longitude" />
-    </div>
-    <div class="form-floating">
-        <InputFile id="photos" class="form-floating" OnChange="HandleFileSelected"></InputFile>
-    </div>
-    @if (categories != null)
-    {
-        <div class="form-floating">
-            <label for="categories">Категория</label>
-            <InputSelect id="categories" class="form-control" @bind-Value="realEstateInputModel.CategoryId">
-                @foreach (var category in categories)
-                {
-                    <option value="@category.Id">@category.Name</option>
-                }
-            </InputSelect>
-        </div>
-    }
-    @if (types != null)
-    {
-        <div class="form-floating">
-            <label for="types">Категория</label>
-            <InputSelect id="types" class="form-control" @bind-Value="realEstateInputModel.TypeRealEstateId">
-                @foreach (var category in types)
-                {
-                    <option value="@category.Id">@category.Name</option>
-                }
-            </InputSelect>
-        </div>
-    }
-    <button type="submit" class="btn btn-outline-primary">Добавить</button>
+	<DataAnnotationsValidator />
+	<ValidationSummary />
+	<div class="form-floating mb-3">
+		<InputText id="Areas" class="form-control" @bind-Value="realEstateInputModel.Area" placeholder="212314" />
+		<label for="Areas">Площадь</label>
+	</div>
+	<div class="form-floating mb-3">
+		<InputNumber id="Prices" class="form-control" @bind-Value="realEstateInputModel.Price" placeholder="212314" />
+		<label for="Prices">Цена ₽</label>
+	</div>
+	<div class="form-floating mb-3">
+		<InputNumber id="Room" class="form-control" @bind-Value="realEstateInputModel.Rooms" placeholder="212314" />
+		<label for="Room">Число комнат</label>
+	</div>
+	<div class="form-floating mb-3">
+		<InputText id="Countrys" class="form-control" @bind-Value="realEstateInputModel.Country" placeholder="212314" />
+		<label for="Countrys">Страна</label>
+	</div>
+	<div class="form-floating mb-3">
+		<InputText id="Regions" class="form-control" @bind-Value="realEstateInputModel.Region" placeholder="212314" />
+		<label for="Regions">Область</label>
+	</div>
+	<div class="form-floating mb-3">
+		<InputText id="Cities" class="form-control" @bind-Value="realEstateInputModel.City" placeholder="212314" />
+		<label for="Cities">Город</label>
+	</div>
+	<div class="form-floating mb-3">
+		<InputText id="Streets" class="form-control" @bind-Value="realEstateInputModel.Street" placeholder="212314" />
+		<label for="Streets">Улица</label>
+	</div>
+	<div class="form-floating mb-3">
+		<InputText id="Houses" class="form-control" @bind-Value="realEstateInputModel.House" placeholder="212314" />
+		<label for="Houses">Дом</label>
+	</div>
+	<div class="input-group mb-3">
+		<span class="input-group-text">Широта и Долгота</span>
+		<InputNumber id="Latitudes" class="form-control" @bind-Value="realEstateInputModel.Latitude" placeholder="212314" />
+		<InputNumber id="Longitudes" class="form-control" @bind-Value="realEstateInputModel.Longitude" placeholder="212314"/>
+	</div>
+	<div class="form-floating mb-3">
+		<InputFile id="photos" class="form-floating" OnChange="HandleFileSelected"></InputFile>
+	</div>
+	@if (categories != null)
+	{
+		<div class="form-floating mb-3">
+			<label for="categories">Категория</label>
+			<InputSelect id="categories" class="form-control" @bind-Value="realEstateInputModel.CategoryId" placeholder="Категория">
+				@foreach (var category in categories)
+				{
+					<option value="@category.Id">@category.Name</option>
+				}
+			</InputSelect>
+		</div>
+	}
+	@if (types != null)
+	{
+		<div class="form-floating mb-3">
+			<label for="types">Тип недвижимости</label>
+			<InputSelect id="types" class="form-control" @bind-Value="realEstateInputModel.TypeRealEstateId" placeholder="Тип недвижимости">
+				@foreach (var category in types)
+				{
+					<option value="@category.Id">@category.Name</option>
+				}
+			</InputSelect>
+		</div>
+	}
+	<button type="submit" class="btn btn-outline-primary">Добавить</button>
 </EditForm>
 @code {
-    private RealEstateInputModel realEstateInputModel=new();
-    private List<Category> categories = new List<Category>();
-    private List<TypeRealEstate> types = new List<TypeRealEstate>();
-    protected override async Task OnInitializedAsync()
-    {
-        categories = await RealEstateServices.GetAllCategoryAsync();
-        types = await RealEstateServices.GetAllTypeAsync();
-    }
-    private async Task CreateRealEstateValidSubmit()
-    {
-        await RealEstateServices.AddRealEstateAsync(realEstateInputModel);
-    }
-    private void HandleFileSelected(InputFileChangeEventArgs e)
-    {
-        var file = e.File;
-        if (file != null)
-        {
-            realEstateInputModel.Photos = file.Name;
-        }
-    }
+	[SupplyParameterFromForm]
+	private RealEstateInputModel realEstateInputModel { get; set; } = new();
+	private List<Category> categories = new List<Category>();
+	private List<TypeRealEstate> types = new List<TypeRealEstate>();
+	protected override async Task OnInitializedAsync()
+	{
+		categories = await RealEstateServices.GetAllCategoryAsync();
+		types = await RealEstateServices.GetAllTypeAsync();
+	}
+	private async Task CreateRealEstateValidSubmit()
+	{
+		var authUser = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		var user = authUser.User;
+		if (user.Identity.IsAuthenticated)
+		{
+			realEstateInputModel.UserId = user.FindFirst(u => u.Type == ClaimTypes.NameIdentifier).Value;
+			await RealEstateServices.AddRealEstateAsync(realEstateInputModel);
+		}
+	}
+	private void HandleFileSelected(InputFileChangeEventArgs e)
+	{
+		var file = e.File;
+		if (file != null)
+		{
+			realEstateInputModel.Photos = file.Name;
+		}
+	}
 }
