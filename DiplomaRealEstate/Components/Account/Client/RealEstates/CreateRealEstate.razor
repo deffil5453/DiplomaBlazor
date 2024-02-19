@@ -6,7 +6,7 @@
 @using System.Security.Claims
 @inject IRealEstateService RealEstateServices
 @inject AuthenticationStateProvider AuthenticationStateProvider
-
+@rendermode InteractiveServer
 <EditForm Model="@realEstateInputModel" OnValidSubmit="CreateRealEstateValidSubmit" FormName="create">
 	<DataAnnotationsValidator />
 	<ValidationSummary />
@@ -48,7 +48,7 @@
 		<InputNumber id="Longitudes" class="form-control" @bind-Value="realEstateInputModel.Longitude" placeholder="212314"/>
 	</div>
 	<div class="form-floating mb-3">
-		<InputFile id="photos" class="form-floating" OnChange="HandleFileSelected"></InputFile>
+		<InputFile id="photos" class="form-floating" OnChange="HandleFileSelected"/>
 	</div>
 	@if (categories != null)
 	{
@@ -78,13 +78,21 @@
 </EditForm>
 @code {
 	[SupplyParameterFromForm]
-	private RealEstateInputModel realEstateInputModel { get; set; } = new();
+	private RealEstateInputModel realEstateInputModel { get; set; } = new RealEstateInputModel();
 	private List<Category> categories = new List<Category>();
 	private List<TypeRealEstate> types = new List<TypeRealEstate>();
 	protected override async Task OnInitializedAsync()
 	{
 		categories = await RealEstateServices.GetAllCategoryAsync();
 		types = await RealEstateServices.GetAllTypeAsync();
+	}
+	private async Task HandleFileSelected(InputFileChangeEventArgs e)
+	{
+		var file = e.File;
+		if (file != null)
+		{
+			realEstateInputModel.Photos = file.Name;
+		}
 	}
 	private async Task CreateRealEstateValidSubmit()
 	{
@@ -94,14 +102,6 @@
 		{
 			realEstateInputModel.UserId = user.FindFirst(u => u.Type == ClaimTypes.NameIdentifier).Value;
 			await RealEstateServices.AddRealEstateAsync(realEstateInputModel);
-		}
-	}
-	private void HandleFileSelected(InputFileChangeEventArgs e)
-	{
-		var file = e.File;
-		if (file != null)
-		{
-			realEstateInputModel.Photos = file.Name;
 		}
 	}
 }
