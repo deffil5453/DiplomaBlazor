@@ -7,28 +7,9 @@
 main {
     flex: 1;
 }
-.sidebar-toggler {
-    display: none;
-}
-.sidebar-toggle-btn {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    padding: 1rem;
-    font-size: 1.5rem;
-    height:10px;
-}
-.sidebar-toggler:checked ~ .sidebar {
-    width: 50px;
-}
+
 .sidebar {
-    transition: width 0.5s ease; /* Добавляем анимацию изменения ширины */
     background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
-    width: 310px;
-    height: 100%;
-    position: sticky;
-    top: 0;
 }
 
 .top-row {
@@ -46,36 +27,36 @@ main {
         text-decoration: none;
     }
 
-    .top-row ::deep a:hover, .top-row ::deep .btn-link:hover {
-        text-decoration: underline;
-    }
+        .top-row ::deep a:hover, .top-row ::deep .btn-link:hover {
+            text-decoration: underline;
+        }
 
-    .top-row ::deep a:first-child {
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+        .top-row ::deep a:first-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
 @media (max-width: 640.98px) {
     .top-row {
         justify-content: space-between;
     }
 
-    .top-row ::deep a, .top-row ::deep .btn-link {
-        margin-left: 0;
-    }
+        .top-row ::deep a, .top-row ::deep .btn-link {
+            margin-left: 0;
+        }
 }
 
-@media (min-width: 641px) {
+@media (max-width: 1920px) {
     .page {
         flex-direction: row;
     }
 
-    /*.sidebar {
-        width: 310px;
+    .sidebar {
+        width: 250px;
         height: 100vh;
         position: sticky;
         top: 0;
-    }*/
+    }
 
     .top-row {
         position: sticky;
@@ -83,11 +64,11 @@ main {
         z-index: 1;
     }
 
-    .top-row.auth ::deep a:first-child {
-        flex: 1;
-        text-align: right;
-        width: 0;
-    }
+        .top-row.auth ::deep a:first-child {
+            flex: 1;
+            text-align: right;
+            width: 0;
+        }
 
     .top-row, article {
         padding-left: 2rem !important;
