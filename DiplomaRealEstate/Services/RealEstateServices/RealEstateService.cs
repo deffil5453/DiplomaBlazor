@@ -49,14 +49,14 @@ namespace DiplomaRealEstate.Services.RealEstateServices
                 return await dbContext.RealEstates.ToListAsync();
             }
         }
-		public async Task<List<RealEstate>> GetAllRealEstateIUserAsync(string userId)
-		{
+        public async Task<List<RealEstate>> GetAllRealEstateIUserAsync(string userId)
+        {
             using (var dbContext = new RealEstateDbContext())
             {
                 return await dbContext.RealEstates.Where(re => re.UserId == userId).ToListAsync();
             }
-		}
-		public async Task<List<TypeRealEstate>> GetAllTypeAsync()
+        }
+        public async Task<List<TypeRealEstate>> GetAllTypeAsync()
         {
             using (var dbContext = new RealEstateDbContext())
             {
