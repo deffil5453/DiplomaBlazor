@@ -35,7 +35,6 @@ namespace DiplomaRealEstate.Services.RealEstateServices
                 await dbContext.SaveChangesAsync();
             }
         }
-
         public async Task<List<Category>> GetAllCategoryAsync()
         {
             using (var dbContext = new RealEstateDbContext())
@@ -43,7 +42,6 @@ namespace DiplomaRealEstate.Services.RealEstateServices
                 return await dbContext.Categories.ToListAsync();
             }
         }
-
         public async Task<List<RealEstate>> GetAllRealEstateAsync()
         {
             using (var dbContext = new RealEstateDbContext())
@@ -51,15 +49,20 @@ namespace DiplomaRealEstate.Services.RealEstateServices
                 return await dbContext.RealEstates.ToListAsync();
             }
         }
-
-        public async Task<List<TypeRealEstate>> GetAllTypeAsync()
+		public async Task<List<RealEstate>> GetAllRealEstateIUserAsync(string userId)
+		{
+            using (var dbContext = new RealEstateDbContext())
+            {
+                return await dbContext.RealEstates.Where(re => re.UserId == userId).ToListAsync();
+            }
+		}
+		public async Task<List<TypeRealEstate>> GetAllTypeAsync()
         {
             using (var dbContext = new RealEstateDbContext())
             {
                 return await dbContext.TypeRealEstates.ToListAsync();
             }
         }
-
         public async Task<RealEstate> GetRealEstateAsync(Guid realEstateId)
         {
             using (var dbContext = new RealEstateDbContext())
@@ -67,7 +70,6 @@ namespace DiplomaRealEstate.Services.RealEstateServices
                 return await dbContext.RealEstates.FindAsync(realEstateId);
             }
         }
-
         public async Task RemoveRealEstateAsync(Guid realEstateId)
         {
             using (var dbContext = new RealEstateDbContext())
@@ -80,7 +82,6 @@ namespace DiplomaRealEstate.Services.RealEstateServices
                 }
             }
         }
-
         public async Task UpdateRealEstate(RealEstate realEstate)
         {
             using (var dbContext = new RealEstateDbContext())

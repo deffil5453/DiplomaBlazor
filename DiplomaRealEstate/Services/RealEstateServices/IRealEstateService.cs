@@ -6,7 +6,8 @@ namespace DiplomaRealEstate.Services.RealEstateServices
     public interface IRealEstateService
     {
         Task <List<RealEstate>> GetAllRealEstateAsync();
-        Task<RealEstate> GetRealEstateAsync(Guid realEstateId);
+		Task<List<RealEstate>> GetAllRealEstateIUserAsync(string userId);
+		Task<RealEstate> GetRealEstateAsync(Guid realEstateId);
         Task AddRealEstateAsync(RealEstateInputModel realEstateinput);
         Task RemoveRealEstateAsync(Guid realEstateId);
         Task UpdateRealEstate(RealEstate realEstate);

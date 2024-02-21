@@ -1,5 +1,29 @@
 ﻿@page "/indexRealEstate"
+@using DiplomaRealEstate.Models
+@using DiplomaRealEstate.Services.RealEstateServices
+@inject IRealEstateService RealEstateService
 <p>список недвижимости уэээээ</p>
+<table class="table">
+	<thead>
+		<tr>
+			<th>Идентификатор</th>
+			<th>Логин</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in realEstates)
+		{
+			<tr>
+				<td>@item.Id</td>
+				<td>@item.Desctiption</td>
+			</tr>
+		}
+	</tbody>
+</table>
 @code {
-
+	private List<RealEstate> realEstates = new List<RealEstate>();
+	protected override async Task OnInitializedAsync()
+	{
+		realEstates = await 
+	}
 }

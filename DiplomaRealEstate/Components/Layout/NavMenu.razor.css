@@ -1,8 +1,8 @@
 .navbar-toggler {
     appearance: none;
     cursor: pointer;
-    width: 3.5rem;
-    height: 2.5rem;
+    width: 3.0rem;
+    height: 2.0rem;
     color: white;
     position: absolute;
     top: 0.5rem;
@@ -98,7 +98,7 @@
         /* Never collapse the sidebar for wide screens */
         display: block;
         /* Allow sidebar to scroll for tall menus */
-        height: calc(100vh - 3.5rem);
+        height: calc(100vh+0);
         overflow-y: auto;
     }
 }

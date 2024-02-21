@@ -26,7 +26,7 @@ namespace BlazorApp10.Data
         public DbSet<TypeTransaction> TypeTransactions { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=localhost\\MSSQLSERVERR; database=Diploma;Trusted_Connection=true;Integrated Security=true;TrustServerCertificate=true");
+            optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS; database=Diploma;Trusted_Connection=true;Integrated Security=true;TrustServerCertificate=true");
             base.OnConfiguring(optionsBuilder);
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
