@@ -22,8 +22,13 @@
 </table>
 @code {
 	private List<RealEstate> realEstates = new List<RealEstate>();
+	private 
 	protected override async Task OnInitializedAsync()
 	{
-		realEstates = await 
+		realEstates = await RealEstateService.GetAllRealEstateAsync();
+	}
+	private void AddToCart()
+	{
+		
 	}
 }
