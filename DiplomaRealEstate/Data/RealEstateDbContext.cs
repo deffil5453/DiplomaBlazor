@@ -24,6 +24,7 @@ namespace BlazorApp10.Data
         public DbSet<TypeRealEstate> TypeRealEstates { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<TypeTransaction> TypeTransactions { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS; database=Diploma;Trusted_Connection=true;Integrated Security=true;TrustServerCertificate=true");

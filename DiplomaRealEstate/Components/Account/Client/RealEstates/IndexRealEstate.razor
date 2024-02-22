@@ -1,34 +1,38 @@
 ﻿@page "/indexRealEstate"
 @using DiplomaRealEstate.Models
 @using DiplomaRealEstate.Services.RealEstateServices
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
 @inject IRealEstateService RealEstateService
+@inject AuthenticationStateProvider AutenticationStateProvider
 <p>список недвижимости уэээээ</p>
-<table class="table">
-	<thead>
-		<tr>
-			<th>Идентификатор</th>
-			<th>Логин</th>
-		</tr>
-	</thead>
-	<tbody>
-		@foreach (var item in realEstates)
-		{
-			<tr>
-				<td>@item.Id</td>
-				<td>@item.Desctiption</td>
-			</tr>
-		}
-	</tbody>
-</table>
+
+@foreach (var item in realEstates)
+{
+	<div class="card mb-3" style="max-width: 540px">
+		<div class="row g-0">
+			<div class="col-md-4">
+				<button type="submit" class="btn btn-outline-primary" style="">
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+						<path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
+					</svg>
+				</button>
+			</div>
+		</div>
+	</div>
+}
 @code {
 	private List<RealEstate> realEstates = new List<RealEstate>();
-	private 
+
 	protected override async Task OnInitializedAsync()
 	{
 		realEstates = await RealEstateService.GetAllRealEstateAsync();
 	}
-	private void AddToCart()
+	private async Task AddToCart()
 	{
-		
+		var authUser = await AutenticationStateProvider.GetAuthenticationStateAsync();
+		var user = authUser.User;
+		string userId = user.FindFirst(u => u.Type == ClaimTypes.NameIdentifier).Value;
+		int Cart;
 	}
 }
