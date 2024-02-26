@@ -10,8 +10,11 @@ using Microsoft.Extensions.Configuration;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDbContext<RealEstateDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Connection")));
-builder.Services.AddRazorComponents()
+builder.Services
+    .AddDbContext<RealEstateDbContext>(options => options
+    .UseSqlServer(builder.Configuration.GetConnectionString("Connection")));
+builder.Services
+    .AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddServerSideBlazor();
