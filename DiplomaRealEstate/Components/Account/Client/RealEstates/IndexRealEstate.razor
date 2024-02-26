@@ -5,34 +5,46 @@
 @using System.Security.Claims
 @inject IRealEstateService RealEstateService
 @inject AuthenticationStateProvider AutenticationStateProvider
+@inject NavigationManager NavigationManager
 <p>список недвижимости уэээээ</p>
 
 @foreach (var item in realEstates)
 {
-	<div class="card mb-3" style="max-width: 540px">
-		<div class="row g-0">
-			<div class="col-md-4">
-				<button type="submit" class="btn btn-outline-primary" style="">
-					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
-						<path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
-					</svg>
-				</button>
-			</div>
+	<div class="card mb-3" style="max-width: 500px">
+		<img src="/images/@item.Photos" />
+		<div class="col-md-6">
+			<p1>@item.Region, город @item.City</p1>
+			<p1>Улица @item.Street, дом @item.House</p1>
+
+			<a href="https://yandex.ru/maps" target="_blank">
+				<img width="46px" height="46px" src="/images/world-map-with-a-placeholder.svg" />
+			</a>
+			<p>Описание: @item.Desctiption</p>
+			<p>Цена: @item.Price ₽</p>
+			<button type="submit" class="btn btn-outline-primary" style="">
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+					<path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
+				</svg> в избранное
+			</button>
+			<button type="button" class="btn btn-outline-primary">
+				<img width="46px" height="46px" src="/images/world-map-with-a-placeholder.svg" />
+				<a href="https://yandex.ru/maps/?ll=@item.Latitude,@item.Longitude&mode=poi&poi%5Bpoint%5D=@item.Latitude,@item.Longitude&poi%5Buri%5D=ymapsbm1%3A%2F%2Forg%3Foid%3D1236305364&z=19">на карте</a>
+			</button>
 		</div>
 	</div>
 }
 @code {
 	private List<RealEstate> realEstates = new List<RealEstate>();
-
 	protected override async Task OnInitializedAsync()
 	{
 		realEstates = await RealEstateService.GetAllRealEstateAsync();
 	}
 	private async Task AddToCart()
 	{
+		// {@item.Latitude}%{@item.Longitude}&z=12;
 		var authUser = await AutenticationStateProvider.GetAuthenticationStateAsync();
 		var user = authUser.User;
 		string userId = user.FindFirst(u => u.Type == ClaimTypes.NameIdentifier).Value;
-		int Cart;
+		
 	}
 }

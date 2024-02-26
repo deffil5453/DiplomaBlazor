@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DiplomaRealEstate.Migrations
 {
     /// <inheritdoc />
-    public partial class _2 : Migration
+    public partial class _5 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -244,8 +244,8 @@ namespace DiplomaRealEstate.Migrations
                     City = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Street = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     House = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Latitude = table.Column<double>(type: "float", nullable: false),
-                    Longitude = table.Column<double>(type: "float", nullable: false),
+                    Latitude = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Longitude = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Photos = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     TypeRealEstateId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -288,6 +288,30 @@ namespace DiplomaRealEstate.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CartItems",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RealEstateId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CartItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CartItems_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CartItems_RealEstates_RealEstateId",
+                        column: x => x.RealEstateId,
+                        principalTable: "RealEstates",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Transactions",
                 columns: table => new
                 {
@@ -325,8 +349,8 @@ namespace DiplomaRealEstate.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("0857594b-a5ae-4a11-9f85-c6bc06c9784f"), "Жилая собственность" },
-                    { new Guid("b7411f8b-ff4c-47ad-8394-f4aed5ef7690"), "Земельные участок" }
+                    { new Guid("619fa738-65dc-4f3b-8411-95d80ff6bdb9"), "Земельные участок" },
+                    { new Guid("854564ce-d10d-45ab-bb2d-9ef41770dd06"), "Жилая собственность" }
                 });
 
             migrationBuilder.InsertData(
@@ -334,9 +358,9 @@ namespace DiplomaRealEstate.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("ae81eff6-1873-4583-9e0b-6e47274773b0"), "Продано" },
-                    { new Guid("fddd8db4-5dfd-4aad-956c-bb00196910b2"), "Активная" },
-                    { new Guid("ff4de5d2-e1db-47c3-87cb-aaf88143f39d"), "Арендована" }
+                    { new Guid("4432a792-e50b-4f21-b0e7-fcf31dad2d2f"), "Продано" },
+                    { new Guid("62d15688-db0c-4f6f-84ff-40e936de38b5"), "Активная" },
+                    { new Guid("844334cf-3dfd-4bd6-94a0-f3d92570b0d3"), "Арендована" }
                 });
 
             migrationBuilder.InsertData(
@@ -344,8 +368,8 @@ namespace DiplomaRealEstate.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("82a7177e-d8d7-426f-bc66-a16bdc741388"), "Земельный участок" },
-                    { new Guid("af9f2a29-0151-4a83-ac4a-1d8c3d696fc0"), "Дом " }
+                    { new Guid("4d39293f-d126-472c-beec-7a582d4d4a85"), "Дом " },
+                    { new Guid("a2b1c9d5-11d0-44f4-9b33-777c1743f33e"), "Земельный участок" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -386,6 +410,16 @@ namespace DiplomaRealEstate.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CartItems_RealEstateId",
+                table: "CartItems",
+                column: "RealEstateId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CartItems_UserId",
+                table: "CartItems",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RealEstates_CategoryId",
@@ -450,6 +484,9 @@ namespace DiplomaRealEstate.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "CartItems");
 
             migrationBuilder.DropTable(
                 name: "Transactions");

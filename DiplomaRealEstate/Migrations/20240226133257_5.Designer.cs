@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DiplomaRealEstate.Migrations
 {
     [DbContext(typeof(RealEstateDbContext))]
-    [Migration("20240222095316_4")]
-    partial class _4
+    [Migration("20240226133257_5")]
+    partial class _5
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,7 +33,7 @@ namespace DiplomaRealEstate.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<Guid>("RealEstateId")
+                    b.Property<Guid?>("RealEstateId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UserId")
@@ -66,12 +66,12 @@ namespace DiplomaRealEstate.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("0c23eb8d-c031-4bb0-854a-2d5db8e3d1f4"),
+                            Id = new Guid("854564ce-d10d-45ab-bb2d-9ef41770dd06"),
                             Name = "Жилая собственность"
                         },
                         new
                         {
-                            Id = new Guid("89667dcf-1147-4a97-bd3d-4223232f69ac"),
+                            Id = new Guid("619fa738-65dc-4f3b-8411-95d80ff6bdb9"),
                             Name = "Земельные участок"
                         });
                 });
@@ -102,11 +102,13 @@ namespace DiplomaRealEstate.Migrations
                     b.Property<string>("House")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Latitude")
-                        .HasColumnType("float");
+                    b.Property<string>("Latitude")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Longitude")
-                        .HasColumnType("float");
+                    b.Property<string>("Longitude")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Photos")
                         .IsRequired()
@@ -198,17 +200,17 @@ namespace DiplomaRealEstate.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("9f3a8e95-1af8-4958-a88f-d18381cc4682"),
+                            Id = new Guid("4432a792-e50b-4f21-b0e7-fcf31dad2d2f"),
                             Name = "Продано"
                         },
                         new
                         {
-                            Id = new Guid("83fc6fd9-dfe6-429e-946b-0796cd475ec6"),
+                            Id = new Guid("844334cf-3dfd-4bd6-94a0-f3d92570b0d3"),
                             Name = "Арендована"
                         },
                         new
                         {
-                            Id = new Guid("a40dfecc-5be1-4f84-9b58-0a3db1d8dabf"),
+                            Id = new Guid("62d15688-db0c-4f6f-84ff-40e936de38b5"),
                             Name = "Активная"
                         });
                 });
@@ -264,12 +266,12 @@ namespace DiplomaRealEstate.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("c6f7f568-e062-44d1-b343-223d3c87beb8"),
+                            Id = new Guid("4d39293f-d126-472c-beec-7a582d4d4a85"),
                             Name = "Дом "
                         },
                         new
                         {
-                            Id = new Guid("b91213af-4547-4e0d-b832-47927fb91fe2"),
+                            Id = new Guid("a2b1c9d5-11d0-44f4-9b33-777c1743f33e"),
                             Name = "Земельный участок"
                         });
                 });
@@ -503,15 +505,12 @@ namespace DiplomaRealEstate.Migrations
             modelBuilder.Entity("DiplomaRealEstate.Models.CartItem", b =>
                 {
                     b.HasOne("DiplomaRealEstate.Models.RealEstate", "RealEstate")
-                        .WithMany()
-                        .HasForeignKey("RealEstateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("CartItems")
+                        .HasForeignKey("RealEstateId");
 
                     b.HasOne("DiplomaRealEstate.Models.User", "User")
-                        .WithMany()
+                        .WithMany("CartItems")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("RealEstate");
@@ -654,6 +653,8 @@ namespace DiplomaRealEstate.Migrations
 
             modelBuilder.Entity("DiplomaRealEstate.Models.RealEstate", b =>
                 {
+                    b.Navigation("CartItems");
+
                     b.Navigation("TransactionProperties");
                 });
 
@@ -679,6 +680,8 @@ namespace DiplomaRealEstate.Migrations
 
             modelBuilder.Entity("DiplomaRealEstate.Models.User", b =>
                 {
+                    b.Navigation("CartItems");
+
                     b.Navigation("RealEstates");
 
                     b.Navigation("Reviews");

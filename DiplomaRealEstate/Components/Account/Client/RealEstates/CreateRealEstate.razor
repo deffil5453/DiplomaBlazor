@@ -42,15 +42,16 @@
 		<InputText id="Houses" class="form-control" @bind-Value="realEstateInputModel.House" placeholder="212314" />
 		<label for="Houses">Дом</label>
 	</div>
+	
 	<div class="input-group mb-3">
 		<span class="input-group-text">Широта и Долгота</span>
-		<InputNumber id="Latitudes" class="form-control" @bind-Value="realEstateInputModel.Latitude" placeholder="212314" />
-		<InputNumber id="Longitudes" class="form-control" @bind-Value="realEstateInputModel.Longitude" placeholder="212314"/>
+		<InputText id="Latitudes" class="form-control" @bind-Value="realEstateInputModel.Latitude" placeholder="212314" />
+		<InputText id="Longitudes" class="form-control" @bind-Value="realEstateInputModel.Longitude" placeholder="212314"  />
 	</div>
 	<div class="form-floating mb-3">
 		<InputFile id="photos" class="form-floating" OnChange="HandleFileSelected"/>
 	</div>
-	@if (categories != null)
+	@if (categories != null)	
 	{
 		<div class="form-floating mb-3">
 			<label for="categories">Категория</label>

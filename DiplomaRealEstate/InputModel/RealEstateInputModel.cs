@@ -13,8 +13,8 @@ namespace DiplomaRealEstate.InputModel
         public string? City { get; set; }
         public string? Street { get; set; }
         public string? House { get; set; }
-        public double Latitude { get; set; }
-        public double Longitude { get; set; }
+        public string Latitude { get; set; }
+        public string Longitude { get; set; }
         public string Photos { get; set; }
         public string UserId { get; set; }
         public Guid TypeRealEstateId { get; set; }

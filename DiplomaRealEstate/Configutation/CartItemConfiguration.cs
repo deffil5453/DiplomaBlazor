@@ -8,7 +8,17 @@ namespace DiplomaRealEstate.Configutation
 	{
 		public void Configure(EntityTypeBuilder<CartItem> builder)
 		{
-			
+			builder
+				.HasOne(cart => cart.RealEstate)
+				.WithMany(realEstate => realEstate.CartItems)
+				.HasForeignKey(ci => ci.RealEstateId)
+				.OnDelete(DeleteBehavior.ClientSetNull);
+
+			builder
+				.HasOne(cart => cart.User)
+				.WithMany(user => user.CartItems)
+				.HasForeignKey(ci => ci.UserId)
+				.OnDelete(DeleteBehavior.ClientSetNull);
 		}
 	}
 }

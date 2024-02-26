@@ -7,12 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Components\Account\Profile\**" />
     <Compile Remove="Services\CategoryServices\**" />
     <Compile Remove="Services\TypeRealEstateServices\**" />
+    <Content Remove="Components\Account\Profile\**" />
     <Content Remove="Services\CategoryServices\**" />
     <Content Remove="Services\TypeRealEstateServices\**" />
+    <EmbeddedResource Remove="Components\Account\Profile\**" />
     <EmbeddedResource Remove="Services\CategoryServices\**" />
     <EmbeddedResource Remove="Services\TypeRealEstateServices\**" />
+    <None Remove="Components\Account\Profile\**" />
     <None Remove="Services\CategoryServices\**" />
     <None Remove="Services\TypeRealEstateServices\**" />
   </ItemGroup>
@@ -32,7 +36,6 @@
 
   <ItemGroup>
     <Folder Include="Components\Account\Admin\TypesRealEstates\" />
-    <Folder Include="Components\Account\Profile\" />
     <Folder Include="Services\TypeTransactionServices\" />
   </ItemGroup>
 
