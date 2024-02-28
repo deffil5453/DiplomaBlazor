@@ -1,0 +1,109 @@
+﻿@page "/editRealEstate/{RealEstateId:guid}"
+@using DiplomaRealEstate.InputModel
+@using DiplomaRealEstate.Models
+@using DiplomaRealEstate.Services.RealEstateServices
+@inject IRealEstateService RealEstateService
+@rendermode InteractiveServer
+<EditForm Model="@_realEstateModel" OnValidSubmit="UpdateRealEstateValidSubmit" FormName="update">
+	<DataAnnotationsValidator />
+	<ValidationSummary />
+	<h1>@a</h1>
+	<div class="form-floating mb-3">
+		<InputText id="Areas" class="form-control" @bind-Value="_realEstateModel.Area" placeholder="212314" />
+		<label for="Areas">Площадь</label>
+	</div>
+	<div class="form-floating mb-3">
+		<InputNumber id="Prices" class="form-control" @bind-Value="_realEstateModel.Price" placeholder="212314" />
+		<label for="Prices">Цена ₽</label>
+	</div>
+	<div class="form-floating mb-3">
+		<InputNumber id="Room" class="form-control" @bind-Value="_realEstateModel.Rooms" placeholder="212314" />
+		<label for="Room">Число комнат</label>
+	</div>
+	<div class="form-floating mb-3">
+		<InputTextArea id="Description" class="form-control" @bind-Value="_realEstateModel.Desctiption" placeholder="212314" />
+		<label for="Countrys">Сись</label>
+	</div>
+	<div class="form-floating mb-3">
+		<InputText id="Countrys" class="form-control" @bind-Value="_realEstateModel.Country" placeholder="212314" />
+		<label for="Countrys">Страна</label>
+	</div>
+	<div class="form-floating mb-3">
+		<InputText id="Regions" class="form-control" @bind-Value="_realEstateModel.Region" placeholder="212314" />
+		<label for="Regions">Область</label>
+	</div>
+	<div class="form-floating mb-3">
+		<InputText id="Cities" class="form-control" @bind-Value="_realEstateModel.City" placeholder="212314" />
+		<label for="Cities">Город</label>
+	</div>
+	<div class="form-floating mb-3">
+		<InputText id="Streets" class="form-control" @bind-Value="_realEstateModel.Street" placeholder="212314" />
+		<label for="Streets">Улица</label>
+	</div>
+	<div class="form-floating mb-3">
+		<InputText id="Houses" class="form-control" @bind-Value="_realEstateModel.House" placeholder="212314" />
+		<label for="Houses">Дом</label>
+	</div>
+
+	<div class="input-group mb-3">
+		<span class="input-group-text">Широта и Долгота</span>
+		<InputText id="Latitudes" class="form-control" @bind-Value="_realEstateModel.Latitude" placeholder="212314" />
+		<InputText id="Longitudes" class="form-control" @bind-Value="_realEstateModel.Longitude" placeholder="212314" />
+	</div>
+	<div class="form-floating mb-3">
+		<InputFile id="photos" class="form-floating" OnChange="HandleFileSelected" />
+	</div>
+	@if (_categories != null)
+	{
+		<div class="form-floating mb-3">
+			<label for="categories">Категория</label>
+			<InputSelect id="categories" class="form-control" @bind-Value="_realEstateModel.CategoryId" placeholder="Категория">
+				@foreach (var category in _categories)
+				{
+					<option value="@category.Id">@category.Name</option>
+				}
+			</InputSelect>
+		</div>
+	}
+	@if (_types != null)
+	{
+		<div class="form-floating mb-3">
+			<label for="types">Тип недвижимости</label>
+			<InputSelect id="types" class="form-control" @bind-Value="_realEstateModel.TypeRealEstateId" placeholder="Тип недвижимости">
+				@foreach (var category in _types)
+				{
+					<option value="@category.Id">@category.Name</option>
+				}
+			</InputSelect>
+		</div>
+	}
+	<button type="submit" class="btn btn-outline-success">Сохранить</button>
+</EditForm>
+@code {
+	[SupplyParameterFromForm]
+	private RealEstateEditModel _realEstateModel { get; set; } = new RealEstateEditModel();
+	[Parameter]
+	public Guid RealEstateId { get; set; }
+	private List<Category> _categories { get; set; }
+	private List<TypeRealEstate> _types { get; set; }
+	private int a = 1;
+
+	protected override async Task OnInitializedAsync()
+	{
+		_categories = await RealEstateService.GetAllCategoryAsync();
+		_types = await RealEstateService.GetAllTypeAsync();
+		_realEstateModel = await RealEstateService.GetRealEstateAsync(RealEstateId);
+	}
+	private void HandleFileSelected(InputFileChangeEventArgs e)
+	{
+		var file = e.File;
+		if (file != null)
+		{
+			_realEstateModel.Photos = file.Name;
+		}
+	}
+	private async Task UpdateRealEstateValidSubmit()
+	{
+		await RealEstateService.UpdateRealEstate(_realEstateModel.Id, _realEstateModel);
+	}
+}

@@ -7,15 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Components\Account\Admin\TypesRealEstates\**" />
     <Compile Remove="Components\Account\Profile\**" />
     <Compile Remove="Services\CategoryServices\**" />
     <Compile Remove="Services\TypeRealEstateServices\**" />
+    <Content Remove="Components\Account\Admin\TypesRealEstates\**" />
     <Content Remove="Components\Account\Profile\**" />
     <Content Remove="Services\CategoryServices\**" />
     <Content Remove="Services\TypeRealEstateServices\**" />
+    <EmbeddedResource Remove="Components\Account\Admin\TypesRealEstates\**" />
     <EmbeddedResource Remove="Components\Account\Profile\**" />
     <EmbeddedResource Remove="Services\CategoryServices\**" />
     <EmbeddedResource Remove="Services\TypeRealEstateServices\**" />
+    <None Remove="Components\Account\Admin\TypesRealEstates\**" />
     <None Remove="Components\Account\Profile\**" />
     <None Remove="Services\CategoryServices\**" />
     <None Remove="Services\TypeRealEstateServices\**" />
@@ -23,7 +27,6 @@
 
   <ItemGroup>
     <PackageReference Include="bootstrap" Version="5.3.3" />
-    <PackageReference Include="BootstrapBlazor" Version="8.2.4" />
     <PackageReference Include="IdentityServer4.Storage" Version="4.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.2" />
@@ -35,7 +38,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Components\Account\Admin\TypesRealEstates\" />
     <Folder Include="Services\TypeTransactionServices\" />
   </ItemGroup>
 
