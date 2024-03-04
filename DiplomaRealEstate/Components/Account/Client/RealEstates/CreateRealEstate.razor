@@ -110,32 +110,3 @@
 		}
 	}
 }
-<script>
-	ymaps.ready(init);
-	var myMap;
-
-	function init() {
-		var mapElement = document.getElementById('map');
-		if (mapElement) {
-			myMap = new ymaps.Map("map", {
-				center: [80, 80], // Координаты центра карты по умолчанию
-				zoom: 20
-			});
-
-			// Обработчик клика по карте
-			myMap.events.add('click', function (e) {
-				var coords = e.get('coords');
-
-				// Удаляем все предыдущие метки
-				myMap.geoObjects.removeAll();
-
-				// Добавляем метку места клика
-				myMap.geoObjects.add(new ymaps.Placemark(coords));
-
-				// Сохраняем координаты в скрытых инпутах
-				document.getElementById('Latitude').value = coords[0];
-				document.getElementById('Longitude').value = coords[1];
-			});
-		}
-	}
-</script>
