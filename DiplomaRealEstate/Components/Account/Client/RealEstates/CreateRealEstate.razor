@@ -42,12 +42,14 @@
 		<InputText id="Houses" class="form-control" @bind-Value="realEstateInputModel.House" placeholder="212314" />
 		<label for="Houses">Дом</label>
 	</div>
-	
-	<div class="input-group mb-3">
+	<div style="width: 800; height: 600;" class="yandex-map">
+		<iframe src="https://yandex.ru/map-widget/v1/?um=constructor:<d167fb69-24e0-41c1-9f8e-ed3d27a16093>&amp;source=constructor" width="800" height="600" frameborder="2"></iframe>
+	</div>
+	@* <div class="input-group mb-3">
 		<span class="input-group-text">Широта и Долгота</span>
 		<InputText id="Latitudes" class="form-control" @bind-Value="realEstateInputModel.Latitude" placeholder="212314" />
 		<InputText id="Longitudes" class="form-control" @bind-Value="realEstateInputModel.Longitude" placeholder="212314"  />
-	</div>
+	</div> *@
 	<div class="form-floating mb-3">
 		<InputFile id="photos" class="form-floating" OnChange="HandleFileSelected"/>
 	</div>
@@ -77,6 +79,7 @@
 	}
 	<button type="submit" class="btn btn-outline-primary">Добавить</button>
 </EditForm>
+
 @code {
 	
 	[SupplyParameterFromForm]
@@ -107,3 +110,32 @@
 		}
 	}
 }
+<script>
+	ymaps.ready(init);
+	var myMap;
+
+	function init() {
+		var mapElement = document.getElementById('map');
+		if (mapElement) {
+			myMap = new ymaps.Map("map", {
+				center: [80, 80], // Координаты центра карты по умолчанию
+				zoom: 20
+			});
+
+			// Обработчик клика по карте
+			myMap.events.add('click', function (e) {
+				var coords = e.get('coords');
+
+				// Удаляем все предыдущие метки
+				myMap.geoObjects.removeAll();
+
+				// Добавляем метку места клика
+				myMap.geoObjects.add(new ymaps.Placemark(coords));
+
+				// Сохраняем координаты в скрытых инпутах
+				document.getElementById('Latitude').value = coords[0];
+				document.getElementById('Longitude').value = coords[1];
+			});
+		}
+	}
+</script>

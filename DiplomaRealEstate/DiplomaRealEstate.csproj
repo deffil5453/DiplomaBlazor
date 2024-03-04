@@ -39,6 +39,7 @@
 
   <ItemGroup>
     <Folder Include="Services\TypeTransactionServices\" />
+    <Folder Include="wwwroot\jsNavigation\" />
   </ItemGroup>
 
 </Project>
