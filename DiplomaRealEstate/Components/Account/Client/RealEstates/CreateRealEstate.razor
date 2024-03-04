@@ -4,58 +4,36 @@
 @using DiplomaRealEstate.Models
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
 @inject IRealEstateService RealEstateServices
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @rendermode InteractiveServer
+<script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU"></script>
+<script src="/js/JandexMap.js"></script>
 <EditForm Model="@realEstateInputModel" OnValidSubmit="CreateRealEstateValidSubmit" FormName="create">
 	<DataAnnotationsValidator />
 	<ValidationSummary />
-	<div class="form-floating mb-3">
+	<div class="form-floating mb-4">
 		<InputText id="Areas" class="form-control" @bind-Value="realEstateInputModel.Area" placeholder="212314" />
 		<label for="Areas">Площадь</label>
 	</div>
-	<div class="form-floating mb-3">
+	<div class="form-floating mb-4">
 		<InputNumber id="Prices" class="form-control" @bind-Value="realEstateInputModel.Price" placeholder="212314" />
 		<label for="Prices">Цена ₽</label>
 	</div>
-	<div class="form-floating mb-3">
+	<div class="form-floating mb-4">
 		<InputNumber id="Room" class="form-control" @bind-Value="realEstateInputModel.Rooms" placeholder="212314" />
 		<label for="Room">Число комнат</label>
 	</div>
-	<div class="form-floating mb-3">
-		<InputText id="Countrys" class="form-control" @bind-Value="realEstateInputModel.Country" placeholder="212314" />
-		<label for="Countrys">Страна</label>
+
+	<div id="map" style="width: 800px; height: 600px;"></div>>
+	<div class="form-floating mb-4">
+		<InputFile id="photos" class="form-floating" OnChange="HandleFileSelected" />
 	</div>
-	<div class="form-floating mb-3">
-		<InputText id="Regions" class="form-control" @bind-Value="realEstateInputModel.Region" placeholder="212314" />
-		<label for="Regions">Область</label>
-	</div>
-	<div class="form-floating mb-3">
-		<InputText id="Cities" class="form-control" @bind-Value="realEstateInputModel.City" placeholder="212314" />
-		<label for="Cities">Город</label>
-	</div>
-	<div class="form-floating mb-3">
-		<InputText id="Streets" class="form-control" @bind-Value="realEstateInputModel.Street" placeholder="212314" />
-		<label for="Streets">Улица</label>
-	</div>
-	<div class="form-floating mb-3">
-		<InputText id="Houses" class="form-control" @bind-Value="realEstateInputModel.House" placeholder="212314" />
-		<label for="Houses">Дом</label>
-	</div>
-	<div style="width: 800; height: 600;" class="yandex-map">
-		<iframe src="https://yandex.ru/map-widget/v1/?um=constructor:<d167fb69-24e0-41c1-9f8e-ed3d27a16093>&amp;source=constructor" width="800" height="600" frameborder="2"></iframe>
-	</div>
-	@* <div class="input-group mb-3">
-		<span class="input-group-text">Широта и Долгота</span>
-		<InputText id="Latitudes" class="form-control" @bind-Value="realEstateInputModel.Latitude" placeholder="212314" />
-		<InputText id="Longitudes" class="form-control" @bind-Value="realEstateInputModel.Longitude" placeholder="212314"  />
-	</div> *@
-	<div class="form-floating mb-3">
-		<InputFile id="photos" class="form-floating" OnChange="HandleFileSelected"/>
-	</div>
-	@if (categories != null)	
+	@if (categories != null)
 	{
-		<div class="form-floating mb-3">
+		<div class="form-floating mb-4">
 			<label for="categories">Категория</label>
 			<InputSelect id="categories" class="form-control" @bind-Value="realEstateInputModel.CategoryId" placeholder="Категория">
 				@foreach (var category in categories)
@@ -67,9 +45,9 @@
 	}
 	@if (types != null)
 	{
-		<div class="form-floating mb-3">
+		<div class="form-floating mb-4">
 			<label for="types">Тип недвижимости</label>
-			<InputSelect id="types" class="form-control" @bind-Value="realEstateInputModel.TypeRealEstateId" placeholder="Тип недвижимости">
+			<InputSelect id="types" class="form-control h-100" @bind-Value="realEstateInputModel.TypeRealEstateId" placeholder="Тип недвижимости">
 				@foreach (var category in types)
 				{
 					<option value="@category.Id">@category.Name</option>
@@ -81,7 +59,7 @@
 </EditForm>
 
 @code {
-	
+
 	[SupplyParameterFromForm]
 	private RealEstateInputModel realEstateInputModel { get; set; } = new RealEstateInputModel();
 	private List<Category> categories = new List<Category>();
@@ -98,6 +76,27 @@
 		{
 			realEstateInputModel.Photos = file.Name;
 		}
+	}
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			await JSRuntime.InvokeVoidAsync("initMap");
+		}
+	}
+	[JSInvokable]
+	public async Task ReceiveMapData(string latitude, string longitude)
+	{
+		// Метод для обработки данных. Можно обновить поля модели.
+		// ОБРАТИТЕ ВНИМАНИЕ: этот метод статический, в реальном приложении
+		// скорее всего потребуется обновить его под нестатическую схему,
+		// используя например EventCallback или CascadingParameter.
+
+		// Предположим, что у RealEstateInputModel есть свойства Latitude и Longitude
+		realEstateInputModel.Latitude = latitude;
+		realEstateInputModel.Longitude = longitude;
+
+		// Дальнейшая логика, например сохранение данных в базу
 	}
 	private async Task CreateRealEstateValidSubmit()
 	{

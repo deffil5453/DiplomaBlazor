@@ -1,0 +1,20 @@
+@* <div class="form-floating mb-4">
+	<InputText id="Countrys" class="form-control" @bind-Value="realEstateInputModel.Country" placeholder="212314" />
+	<label for="Countrys">Страна</label>
+</div>
+<div class="form-floating mb-4">
+	<InputText id="Regions" class="form-control" @bind-Value="realEstateInputModel.Region" placeholder="212314" />
+	<label for="Regions">Область</label>
+</div>
+<div class="form-floating mb-4">
+	<InputText id="Cities" class="form-control" @bind-Value="realEstateInputModel.City" placeholder="212314" />
+	<label for="Cities">Город</label>
+</div>
+<div class="form-floating mb-4">
+	<InputText id="Streets" class="form-control" @bind-Value="realEstateInputModel.Street" placeholder="212314" />
+	<label for="Streets">Улица</label>
+</div>
+<div class="form-floating mb-4">
+	<InputText id="Houses" class="form-control" @bind-Value="realEstateInputModel.House" placeholder="212314" />
+	<label for="Houses">Дом</label>
+</div> *@

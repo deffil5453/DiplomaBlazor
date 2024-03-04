@@ -6,6 +6,7 @@ using DiplomaRealEstate.Services.UserServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.JSInterop;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,7 +35,6 @@ builder.Services.AddDefaultIdentity<User>(options =>
     .AddEntityFrameworkStores<RealEstateDbContext>()
     .AddDefaultTokenProviders()
     .AddSignInManager();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
