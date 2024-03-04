@@ -1,25 +1,42 @@
-﻿// ~/wwwroot/js/YandexMap.js
-// В файле `wwwroot/js/mapInteraction.js`
-
-function initMap() {
+﻿function initMap() {
     ymaps.ready(function () {
         var myMap = new ymaps.Map("map", {
-            center: [55.76, 37.64], // замените на желаемые координаты
-            zoom: 10
+            center: [47.516905, 42.209749],
+            zoom: 5
         });
 
-        // Обработчик клика по карте
         myMap.events.add('click', function (e) {
             var coords = e.get('coords');
 
-            // Здесь может быть логика для получения информации о здании по координатам
-            // Используйте методы JavaScript API Яндекс.Карт для определения адреса или других данных объекта, если доступны
+            if (window.myPlacemark) {
+                myMap.geoObjects.remove(window.myPlacemark);
+            }
 
-            // Передача данных в Blazor компонент
-            DotNet.invokeMethodAsync('DiplomaRealEstate', 'ReceiveMapData', coords[0], coords[1]);
+            window.myPlacemark = new ymaps.Placemark(coords);
+            myMap.geoObjects.add(window.myPlacemark);
+            
+            ymaps.geocode(coords).then(function (res) {
+                var firstGeoObject = res.geoObjects.get(0);
+                
+                var addressComponents = firstGeoObject.properties.get('metaDataProperty.GeocoderMetaData.Address.Components');
+                var region = '';
+                var city = '';
+                
+                addressComponents.forEach(function (component) {
+                    if (component.kind === 'province') {
+                        region = component.name;
+                    }
+                    if (component.kind === 'locality') {
+                        city = component.name;
+                    }
+                });
+
+                var address = firstGeoObject.getAddressLine();
+
+                // Передача данных в Blazor
+                DotNet.invokeMethodAsync('DiplomaRealEstate', 'ReceiveMapData', coords[0].toString(), coords[1].toString(), region, city);
+            });
         });
     });
 }
-
-// Используем явный экспорт, чтобы обеспечить доступ глобально
 window.startMap = startMap;

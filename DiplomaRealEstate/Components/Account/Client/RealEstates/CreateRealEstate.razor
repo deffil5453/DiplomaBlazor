@@ -5,12 +5,16 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
 @using Microsoft.JSInterop
+
 @inject IJSRuntime JSRuntime
 @inject IRealEstateService RealEstateServices
 @inject AuthenticationStateProvider AuthenticationStateProvider
+
 @rendermode InteractiveServer
+
 <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU"></script>
 <script src="/js/JandexMap.js"></script>
+
 <EditForm Model="@realEstateInputModel" OnValidSubmit="CreateRealEstateValidSubmit" FormName="create">
 	<DataAnnotationsValidator />
 	<ValidationSummary />
@@ -27,7 +31,7 @@
 		<label for="Room">Число комнат</label>
 	</div>
 
-	<div id="map" style="width: 800px; height: 600px;"></div>>
+	<div id="map" style="width: 800px; height: 600px;"></div>
 	<div class="form-floating mb-4">
 		<InputFile id="photos" class="form-floating" OnChange="HandleFileSelected" />
 	</div>
@@ -85,18 +89,13 @@
 		}
 	}
 	[JSInvokable]
-	public async Task ReceiveMapData(string latitude, string longitude)
+	public async Task ReceiveMapData(string latitude, string longitude, string region, string city)
 	{
-		// Метод для обработки данных. Можно обновить поля модели.
-		// ОБРАТИТЕ ВНИМАНИЕ: этот метод статический, в реальном приложении
-		// скорее всего потребуется обновить его под нестатическую схему,
-		// используя например EventCallback или CascadingParameter.
-
-		// Предположим, что у RealEstateInputModel есть свойства Latitude и Longitude
+		Console.WriteLine("уээээээ");
 		realEstateInputModel.Latitude = latitude;
 		realEstateInputModel.Longitude = longitude;
-
-		// Дальнейшая логика, например сохранение данных в базу
+		realEstateInputModel.Region = region;
+		realEstateInputModel.City = city;
 	}
 	private async Task CreateRealEstateValidSubmit()
 	{
