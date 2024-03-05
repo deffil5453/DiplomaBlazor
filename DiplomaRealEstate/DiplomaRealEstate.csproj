@@ -9,20 +9,20 @@
   <ItemGroup>
     <Compile Remove="Components\Account\Admin\TypesRealEstates\**" />
     <Compile Remove="Components\Account\Profile\**" />
-    <Compile Remove="Services\CategoryServices\**" />
     <Compile Remove="Services\TypeRealEstateServices\**" />
+    <Compile Remove="Services\TypeTransactionServices\**" />
     <Content Remove="Components\Account\Admin\TypesRealEstates\**" />
     <Content Remove="Components\Account\Profile\**" />
-    <Content Remove="Services\CategoryServices\**" />
     <Content Remove="Services\TypeRealEstateServices\**" />
+    <Content Remove="Services\TypeTransactionServices\**" />
     <EmbeddedResource Remove="Components\Account\Admin\TypesRealEstates\**" />
     <EmbeddedResource Remove="Components\Account\Profile\**" />
-    <EmbeddedResource Remove="Services\CategoryServices\**" />
     <EmbeddedResource Remove="Services\TypeRealEstateServices\**" />
+    <EmbeddedResource Remove="Services\TypeTransactionServices\**" />
     <None Remove="Components\Account\Admin\TypesRealEstates\**" />
     <None Remove="Components\Account\Profile\**" />
-    <None Remove="Services\CategoryServices\**" />
     <None Remove="Services\TypeRealEstateServices\**" />
+    <None Remove="Services\TypeTransactionServices\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -50,6 +50,7 @@
     <Content Remove="C:\Users\ISP\.nuget\packages\bootstrap\5.3.3\contentFiles\any\any\wwwroot\js\bootstrap.js.map" />
     <Content Remove="C:\Users\ISP\.nuget\packages\bootstrap\5.3.3\contentFiles\any\any\wwwroot\js\bootstrap.min.js" />
     <Content Remove="C:\Users\ISP\.nuget\packages\bootstrap\5.3.3\contentFiles\any\any\wwwroot\js\bootstrap.min.js.map" />
+    <Content Remove="Components\Account\Admin\CategoryRealEstates\CreateCategory.razor" />
   </ItemGroup>
 
   <ItemGroup>
@@ -65,7 +66,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\TypeTransactionServices\" />
+    <UpToDateCheckInput Remove="Components\Account\Admin\CategoryRealEstates\CreateCategory.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Components\Account\Admin\CategoryRealEstates\CreateCategory.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Components\Account\Admin\CategoryRealEstates\CreateCategory.razor" />
   </ItemGroup>
 
 </Project>

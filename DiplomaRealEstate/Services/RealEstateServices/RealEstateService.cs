@@ -2,8 +2,6 @@
 using DiplomaRealEstate.InputModel;
 using DiplomaRealEstate.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
-using System.IO;
 
 namespace DiplomaRealEstate.Services.RealEstateServices
 {

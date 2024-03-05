@@ -88,15 +88,15 @@
 			await JSRuntime.InvokeVoidAsync("initMap");
 		}
 	}
-	[JSInvokable]
-	public async Task ReceiveMapData(string latitude, string longitude, string region, string city)
-	{
-		Console.WriteLine("уээээээ");
-		realEstateInputModel.Latitude = latitude;
-		realEstateInputModel.Longitude = longitude;
-		realEstateInputModel.Region = region;
-		realEstateInputModel.City = city;
-	}
+	// [JSInvokable]
+	// public async Task ReceiveMapData(string latitude, string longitude, string region, string city)
+	// {
+	// 	Console.WriteLine("уээээээ");
+	// 	realEstateInputModel.Latitude = latitude;
+	// 	realEstateInputModel.Longitude = longitude;
+	// 	realEstateInputModel.Region = region;
+	// 	realEstateInputModel.City = city;
+	// }
 	private async Task CreateRealEstateValidSubmit()
 	{
 		var authUser = await AuthenticationStateProvider.GetAuthenticationStateAsync();
