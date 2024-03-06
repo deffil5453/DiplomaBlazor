@@ -50,10 +50,8 @@
 	}
 	private async Task AddToCart()
 	{
-		// {@item.Latitude}%{@item.Longitude}&z=12;
 		var authUser = await AutenticationStateProvider.GetAuthenticationStateAsync();
 		var user = authUser.User;
-		string userId = user.FindFirst(u => u.Type == ClaimTypes.NameIdentifier).Value;
-		
+		string userId = user.FindFirst(u => u.Type == ClaimTypes.NameIdentifier).Value;		
 	}
 }

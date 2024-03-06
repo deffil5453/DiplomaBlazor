@@ -1,6 +1,24 @@
 ﻿@page "/indexCategory"
+@using DiplomaRealEstate.Services.RealEstateServices
+@using DiplomaRealEstate.Models
+@inject IRealEstateService CategoryService
 
+<h1>Список категории уээээээ</h1>
 
+@foreach (var item in _categoriesList)
+{
+		<div class="card mb-3" style="max-width: 500px">
+			<div class="col-md-6">
+				<p1>@item.Name</p1>
+
+				<a href="editRealEstate/@item.Id" class="btn btn-outline-info">Редактировать</a>
+			</div>
+		</div>
+}
 @code {
-
+    private List<Category> _categoriesList = new List<Category>();
+    protected override async Task OnInitializedAsync()
+    {
+		_categoriesList = await CategoryService.GetAllCategoryAsync();
+	}
 }

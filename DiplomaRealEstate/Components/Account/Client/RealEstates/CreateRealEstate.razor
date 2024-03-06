@@ -15,6 +15,7 @@
 <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU"></script>
 <script src="/js/JandexMap.js"></script>
 
+	<div id="map" style="width: 800px; height: 600px;"></div>
 <EditForm Model="@realEstateInputModel" OnValidSubmit="CreateRealEstateValidSubmit" FormName="create">
 	<DataAnnotationsValidator />
 	<ValidationSummary />
@@ -30,11 +31,11 @@
 		<InputNumber id="Room" class="form-control" @bind-Value="realEstateInputModel.Rooms" placeholder="212314" />
 		<label for="Room">Число комнат</label>
 	</div>
-
-	<div id="map" style="width: 800px; height: 600px;"></div>
+	<InputText id="Latitude" @bind-Value="realEstateInputModel.Latitude" />
+	<InputText id="Longitude" @bind-Value="realEstateInputModel.Longitude" />
 	<div class="form-floating mb-4">
 		<InputFile id="photos" class="form-floating" OnChange="HandleFileSelected" />
-	</div>
+	</div>\	
 	@if (categories != null)
 	{
 		<div class="form-floating mb-4">
@@ -61,7 +62,6 @@
 	}
 	<button type="submit" class="btn btn-outline-primary">Добавить</button>
 </EditForm>
-
 @code {
 
 	[SupplyParameterFromForm]
@@ -88,15 +88,16 @@
 			await JSRuntime.InvokeVoidAsync("initMap");
 		}
 	}
-	// [JSInvokable]
-	// public async Task ReceiveMapData(string latitude, string longitude, string region, string city)
-	// {
-	// 	Console.WriteLine("уээээээ");
-	// 	realEstateInputModel.Latitude = latitude;
-	// 	realEstateInputModel.Longitude = longitude;
-	// 	realEstateInputModel.Region = region;
-	// 	realEstateInputModel.City = city;
-	// }
+	[JSInvokable]
+	public Task ReceiveMapData(string latitude, string longitude, string region, string city)
+	{		
+		Console.WriteLine($"Coordinates received: Lat={latitude}, Lon={longitude}");
+		realEstateInputModel.Latitude = latitude;
+		realEstateInputModel.Longitude = longitude;
+		realEstateInputModel.Region = region;
+		realEstateInputModel.City = city;
+		return Task.CompletedTask;
+	}
 	private async Task CreateRealEstateValidSubmit()
 	{
 		var authUser = await AuthenticationStateProvider.GetAuthenticationStateAsync();
