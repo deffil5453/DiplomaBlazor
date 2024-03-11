@@ -1,9 +1,11 @@
 ﻿@page "/indexRealEstate"
 @using DiplomaRealEstate.Models
+@using DiplomaRealEstate.Services.FavoriteServices
 @using DiplomaRealEstate.Services.RealEstateServices
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
 @inject IRealEstateService RealEstateService
+@inject IFavoriteService FavoriteService
 @inject AuthenticationStateProvider AutenticationStateProvider
 @inject NavigationManager NavigationManager
 <p>список недвижимости уэээээ</p>
@@ -13,19 +15,16 @@
 	<div class="card mb-3" style="max-width: 500px">
 		<img src="/images/@item.Photos" />
 		<div class="col-md-6">
-			<p1>@item.Region, город @item.City</p1>
-			<p1>Улица @item.Street, дом @item.House</p1>
-
-			<a href="https://yandex.ru/maps" target="_blank">
-				<img width="46px" height="46px" src="/images/world-map-with-a-placeholder.svg" />
-			</a>
-			<p>Описание: @item.Desctiption</p>
+			<p1>@item.Region,</p1>
+			<p1>город @item.City,</p1>
+			<p1>Улица @item.Street,</p1>
+			<p1>Дом @item.House,</p1>
 			<p>Цена: @item.Price ₽</p>
 			@if (IsAdmin)
 			{
 				<a href="editRealEstate/{@item.Id}" class="btn btn-outline-info">Редактировать</a>
 			}
-			<button type="submit" class="btn btn-outline-primary" style="">
+			<button type="submit" class="btn btn-outline-primary" style="" @onclick="()=>AddToCart(item.Id)">
 				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
 					<path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
 				</svg> в избранное
@@ -35,7 +34,7 @@
 				<a href="https://yandex.ru/maps/?ll=@item.Latitude,@item.Longitude&mode=poi&poi%5Bpoint%5D=@item.Latitude,@item.Longitude&poi%5Buri%5D=ymapsbm1%3A%2F%2Forg%3Foid%3D1236305364&z=19">на карте</a>
 			</button>
 		</div>
-	</div>
+	</div>			
 }
 @code {
 	private List<RealEstate> realEstates = new List<RealEstate>();
@@ -48,10 +47,11 @@
 		IsAdmin = IsAuthenticated && authState.User.IsInRole("Admin");
 		realEstates = await RealEstateService.GetAllRealEstateAsync();
 	}
-	private async Task AddToCart()
+	private async Task AddToCart(Guid id)
 	{
 		var authUser = await AutenticationStateProvider.GetAuthenticationStateAsync();
 		var user = authUser.User;
 		string userId = user.FindFirst(u => u.Type == ClaimTypes.NameIdentifier).Value;		
+		await FavoriteService.AddFavoriteAsync(userId, id);
 	}
 }

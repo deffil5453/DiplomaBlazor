@@ -35,6 +35,7 @@ builder.Services.AddDefaultIdentity<User>(options =>
     .AddEntityFrameworkStores<RealEstateDbContext>()
     .AddDefaultTokenProviders()
     .AddSignInManager();
+builder.Services.AddBootstrapBlazor();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

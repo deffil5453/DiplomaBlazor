@@ -4,108 +4,116 @@
 @using DiplomaRealEstate.Models
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
-@using Microsoft.JSInterop
 
-@inject IJSRuntime JSRuntime
 @inject IRealEstateService RealEstateServices
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 @rendermode InteractiveServer
 
-<script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU"></script>
-<script src="/js/JandexMap.js"></script>
-
-	<div id="map" style="width: 800px; height: 600px;"></div>
 <EditForm Model="@realEstateInputModel" OnValidSubmit="CreateRealEstateValidSubmit" FormName="create">
-	<DataAnnotationsValidator />
-	<ValidationSummary />
-	<div class="form-floating mb-4">
-		<InputText id="Areas" class="form-control" @bind-Value="realEstateInputModel.Area" placeholder="212314" />
-		<label for="Areas">Площадь</label>
-	</div>
-	<div class="form-floating mb-4">
-		<InputNumber id="Prices" class="form-control" @bind-Value="realEstateInputModel.Price" placeholder="212314" />
-		<label for="Prices">Цена ₽</label>
-	</div>
-	<div class="form-floating mb-4">
-		<InputNumber id="Room" class="form-control" @bind-Value="realEstateInputModel.Rooms" placeholder="212314" />
-		<label for="Room">Число комнат</label>
-	</div>
-	<InputText id="Latitude" @bind-Value="realEstateInputModel.Latitude" />
-	<InputText id="Longitude" @bind-Value="realEstateInputModel.Longitude" />
-	<div class="form-floating mb-4">
-		<InputFile id="photos" class="form-floating" OnChange="HandleFileSelected" />
-	</div>\	
-	@if (categories != null)
-	{
-		<div class="form-floating mb-4">
-			<label for="categories">Категория</label>
-			<InputSelect id="categories" class="form-control" @bind-Value="realEstateInputModel.CategoryId" placeholder="Категория">
-				@foreach (var category in categories)
-				{
-					<option value="@category.Id">@category.Name</option>
-				}
-			</InputSelect>
-		</div>
-	}
-	@if (types != null)
-	{
-		<div class="form-floating mb-4">
-			<label for="types">Тип недвижимости</label>
-			<InputSelect id="types" class="form-control h-100" @bind-Value="realEstateInputModel.TypeRealEstateId" placeholder="Тип недвижимости">
-				@foreach (var category in types)
-				{
-					<option value="@category.Id">@category.Name</option>
-				}
-			</InputSelect>
-		</div>
-	}
-	<button type="submit" class="btn btn-outline-primary">Добавить</button>
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-floating mb-4">
+        <InputText id="Areas" class="form-control" @bind-Value="realEstateInputModel.Area" placeholder="212314" />
+        <label for="Areas">Площадь м²</label>
+    </div>
+    <div class="form-floating mb-4">
+        <InputNumber id="Prices" class="form-control" @bind-Value="realEstateInputModel.Price" placeholder="212314" />
+        <label for="Prices">Цена ₽</label>
+    </div>
+    <div class="form-floating mb-4">
+        <InputNumber id="Room" class="form-control" @bind-Value="realEstateInputModel.Rooms" placeholder="212314" />
+        <label for="Room">Число комнат</label>
+    </div>
+    <div class="form-floating mb-4">
+        <InputText id="Country" class="form-control" @bind-Value="realEstateInputModel.Country" placeholder="212314" />
+        <label for="Room">Страна</label>
+    </div>
+    <div class="form-floating mb-4">
+        <InputText id="Region" class="form-control" @bind-Value="realEstateInputModel.Region" placeholder="212314" />
+        <label for="Room">Регион</label>
+    </div>
+    <div class="form-floating mb-4">
+        <InputText id="City" class="form-control" @bind-Value="realEstateInputModel.City" placeholder="212314" />
+        <label for="Room">Город</label>
+    </div>
+    <div class="form-floating mb-4">
+        <InputText id="Street" class="form-control" @bind-Value="realEstateInputModel.Street" placeholder="212314" />
+        <label for="Room">Улица</label>
+    </div>
+    <div class="form-floating mb-4">
+        <InputText id="House" class="form-control" @bind-Value="realEstateInputModel.House" placeholder="212314" />
+        <label for="Room">Номер дома</label>
+    </div>
+
+    <InputText id="Latitude" @bind-Value="realEstateInputModel.Latitude" />
+    <InputText id="Longitude" @bind-Value="realEstateInputModel.Longitude" />
+    <div class="form-floating input-group mb-4">
+        <InputFile id="photos" class="form-floating" OnChange="HandleFileSelected" />
+    </div>
+    @if (categories != null)
+    {
+        <div class="form-floating mb-4">
+            <label for="categories">Категория</label>
+            <InputSelect id="categories" class="form-control" @bind-Value="realEstateInputModel.CategoryId" placeholder="Категория">
+                <option selected>Уэээээээ...</option>
+                @foreach (var category in categories)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            </InputSelect>
+        </div>
+    }
+    @if (types != null)
+    {
+        <div class="form-floating mb-4">
+            <label for="types">Тип недвижимости</label>
+            <InputSelect id="types" class="form-control h-100" @bind-Value="realEstateInputModel.TypeRealEstateId" placeholder="Тип недвижимости">
+                <option selected>Уэээээээ...</option>
+                @foreach (var category in types)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            </InputSelect>
+        </div>
+    }
+    <button type="submit" class="btn btn-outline-primary">Добавить</button>
 </EditForm>
 @code {
 
-	[SupplyParameterFromForm]
-	private RealEstateInputModel realEstateInputModel { get; set; } = new RealEstateInputModel();
-	private List<Category> categories = new List<Category>();
-	private List<TypeRealEstate> types = new List<TypeRealEstate>();
-	protected override async Task OnInitializedAsync()
-	{
-		categories = await RealEstateServices.GetAllCategoryAsync();
-		types = await RealEstateServices.GetAllTypeAsync();
-	}
-	private async Task HandleFileSelected(InputFileChangeEventArgs e)
-	{
-		var file = e.File;
-		if (file != null)
-		{
-			realEstateInputModel.Photos = file.Name;
-		}
-	}
-	protected override async Task OnAfterRenderAsync(bool firstRender)
-	{
-		if (firstRender)
-		{
-			await JSRuntime.InvokeVoidAsync("initMap");
-		}
-	}
-	[JSInvokable]
-	public Task ReceiveMapData(string latitude, string longitude, string region, string city)
-	{		
-		Console.WriteLine($"Coordinates received: Lat={latitude}, Lon={longitude}");
-		realEstateInputModel.Latitude = latitude;
-		realEstateInputModel.Longitude = longitude;
-		realEstateInputModel.Region = region;
-		realEstateInputModel.City = city;
-		return Task.CompletedTask;
-	}
-	private async Task CreateRealEstateValidSubmit()
-	{
-		var authUser = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-		var user = authUser.User;
-		if (user.Identity.IsAuthenticated)
-		{
-			realEstateInputModel.UserId = user.FindFirst(u => u.Type == ClaimTypes.NameIdentifier).Value;
-			await RealEstateServices.AddRealEstateAsync(realEstateInputModel);
-		}
-	}
+
+    [SupplyParameterFromForm]
+    private RealEstateInputModel realEstateInputModel { get; set; } = new RealEstateInputModel();
+    private List<Category> categories = new List<Category>();
+    private List<TypeRealEstate> types = new List<TypeRealEstate>();
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await RealEstateServices.GetAllCategoryAsync();
+        types = await RealEstateServices.GetAllTypeAsync();
+    }
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file != null)
+        {
+            var newFileName = $"{Guid.NewGuid()}{Path.GetExtension(file.Name)}";
+            var path = Path.Combine("wwwroot/images/", newFileName);
+            using (var stream = new FileStream(path, FileMode.Create))
+            {
+                realEstateInputModel.Photos = newFileName;
+                await file.OpenReadStream(1024 * 1024 * 15).CopyToAsync(stream);
+            }
+        }
+    }
+
+    private async Task CreateRealEstateValidSubmit()
+    {
+        var authUser = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authUser.User;
+        if (user.Identity.IsAuthenticated)
+        {
+            realEstateInputModel.UserId = user.FindFirst(u => u.Type == ClaimTypes.NameIdentifier).Value;
+            await RealEstateServices.AddRealEstateAsync(realEstateInputModel);
+        }
+    }
 }

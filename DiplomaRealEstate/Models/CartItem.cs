@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace DiplomaRealEstate.Models
+﻿namespace DiplomaRealEstate.Models
 {
 	public class CartItem
 	{

@@ -18,3 +18,24 @@
 	<InputText id="Houses" class="form-control" @bind-Value="realEstateInputModel.House" placeholder="212314" />
 	<label for="Houses">Дом</label>
 </div> *@
+protected override async Task OnAfterRenderAsync(bool firstRender)
+{
+	if (firstRender)
+	{
+		await JSRuntime.InvokeVoidAsync("initMap");
+	}
+}
+[JSInvokable]
+public Task ReceiveMapData(string latitude, string longitude, string region, string city)
+{		
+	Console.WriteLine($"Coordinates received: Lat={latitude}, Lon={longitude}");
+	realEstateInputModel.Latitude = latitude;
+	realEstateInputModel.Longitude = longitude;
+	realEstateInputModel.Region = region;
+	realEstateInputModel.City = city;
+	return Task.CompletedTask;
+}
+<script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU"></script>
+<script src="/js/JandexMap.js"></script>
+@inject IJSRuntime JSRuntime
+	<div id="map" style="width: 800px; height: 600px;"></div>
