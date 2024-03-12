@@ -8,6 +8,7 @@
 @inject IFavoriteService FavoriteService
 @inject AuthenticationStateProvider AutenticationStateProvider
 @inject NavigationManager NavigationManager
+@rendermode InteractiveServer
 <p>список недвижимости уэээээ</p>
 
 @foreach (var item in realEstates)
@@ -25,9 +26,7 @@
 				<a href="editRealEstate/{@item.Id}" class="btn btn-outline-info">Редактировать</a>
 			}
 			<button type="submit" class="btn btn-outline-primary" style="" @onclick="()=>AddToCart(item.Id)">
-				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
-					<path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
-				</svg> в избранное
+				 в избранное
 			</button>
 			<button type="button" class="btn btn-outline-primary">
 				<img width="46px" height="46px" src="/images/world-map-with-a-placeholder.svg" />

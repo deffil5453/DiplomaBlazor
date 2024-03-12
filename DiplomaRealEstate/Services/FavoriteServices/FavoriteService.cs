@@ -9,9 +9,11 @@ namespace DiplomaRealEstate.Services.FavoriteServices
 		{
 			using (var dbContex = new RealEstateDbContext())
 			{
-				var cartItem = new CartItem()
+				Random rnd = new Random();
+				int CartId = rnd.Next(1000000);
+				var cartItem = new CartItem
 				{
-					Id=1,
+					Id=CartId,
 					UserId = userid,
 					RealEstateId  = realEstateId
 				};
