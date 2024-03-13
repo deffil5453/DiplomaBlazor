@@ -24,13 +24,11 @@ namespace DiplomaRealEstate.Migrations
 
             modelBuilder.Entity("DiplomaRealEstate.Models.CartItem", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<Guid?>("RealEstateId")
+                    b.Property<Guid>("RealEstateId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UserId")
@@ -63,12 +61,12 @@ namespace DiplomaRealEstate.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("880fa8f0-f618-4be5-9f58-51b421d7b9c4"),
+                            Id = new Guid("9352a6d0-43bd-432d-a5be-9cd1ee4b7856"),
                             Name = "Жилая собственность"
                         },
                         new
                         {
-                            Id = new Guid("3391d001-b5b0-4ae1-8935-bbfb4ec4ef67"),
+                            Id = new Guid("0d81ce4a-ba55-4a53-aa58-7b0b2fb87084"),
                             Name = "Земельные участок"
                         });
                 });
@@ -197,17 +195,17 @@ namespace DiplomaRealEstate.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("c0e29728-a066-4dbe-95a3-426090ed2b1c"),
+                            Id = new Guid("e69644ab-8ae6-41de-b143-c8c39b136a44"),
                             Name = "Продано"
                         },
                         new
                         {
-                            Id = new Guid("d9c93bdb-c02e-4135-aa31-254be31669f8"),
+                            Id = new Guid("d4b44ca8-e49a-4319-ad10-77da405a1e69"),
                             Name = "Арендована"
                         },
                         new
                         {
-                            Id = new Guid("f8e4bd18-7b65-428e-a308-02d468d065f7"),
+                            Id = new Guid("4d5cbcdc-4750-4f37-b636-e8d58af3623e"),
                             Name = "Активная"
                         });
                 });
@@ -263,12 +261,12 @@ namespace DiplomaRealEstate.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("e960f461-e511-4fb5-a4d0-6159f46c4295"),
+                            Id = new Guid("5c5ca246-eeb4-4222-8533-194efa2dd60c"),
                             Name = "Дом "
                         },
                         new
                         {
-                            Id = new Guid("32f086f3-ef3d-4692-95c2-85c471983a2e"),
+                            Id = new Guid("03d6f4a6-be4a-4f5e-bc25-1f43bf40541b"),
                             Name = "Земельный участок"
                         });
                 });
@@ -503,7 +501,8 @@ namespace DiplomaRealEstate.Migrations
                 {
                     b.HasOne("DiplomaRealEstate.Models.RealEstate", "RealEstate")
                         .WithMany("CartItems")
-                        .HasForeignKey("RealEstateId");
+                        .HasForeignKey("RealEstateId")
+                        .IsRequired();
 
                     b.HasOne("DiplomaRealEstate.Models.User", "User")
                         .WithMany("CartItems")

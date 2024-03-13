@@ -10,67 +10,67 @@
 
 @rendermode InteractiveServer
 
-<EditForm Model="@realEstateInputModel" OnValidSubmit="CreateRealEstateValidSubmit" FormName="create">
+<EditForm Model="@_realEstateInputModel" OnValidSubmit="CreateRealEstateValidSubmit" FormName="create">
     <DataAnnotationsValidator />
     <ValidationSummary />
     <div class="form-floating mb-4">
-        <InputText id="Areas" class="form-control" @bind-Value="realEstateInputModel.Area" placeholder="212314" />
+        <InputText id="Areas" class="form-control" @bind-Value="_realEstateInputModel.Area" placeholder="212314" />
         <label for="Areas">Площадь м²</label>
     </div>
     <div class="form-floating mb-4">
-        <InputNumber id="Prices" class="form-control" @bind-Value="realEstateInputModel.Price" placeholder="212314" />
+        <InputNumber id="Prices" class="form-control" @bind-Value="_realEstateInputModel.Price" placeholder="212314" />
         <label for="Prices">Цена ₽</label>
     </div>
     <div class="form-floating mb-4">
-        <InputNumber id="Room" class="form-control" @bind-Value="realEstateInputModel.Rooms" placeholder="212314" />
+        <InputNumber id="Room" class="form-control" @bind-Value="_realEstateInputModel.Rooms" placeholder="212314" />
         <label for="Room">Число комнат</label>
     </div>
     <div class="form-floating mb-4">
-        <InputText id="Country" class="form-control" @bind-Value="realEstateInputModel.Country" placeholder="212314" />
+        <InputText id="Country" class="form-control" @bind-Value="_realEstateInputModel.Country" placeholder="212314" />
         <label for="Room">Страна</label>
     </div>
     <div class="form-floating mb-4">
-        <InputText id="Region" class="form-control" @bind-Value="realEstateInputModel.Region" placeholder="212314" />
+        <InputText id="Region" class="form-control" @bind-Value="_realEstateInputModel.Region" placeholder="212314" />
         <label for="Room">Регион</label>
     </div>
     <div class="form-floating mb-4">
-        <InputText id="City" class="form-control" @bind-Value="realEstateInputModel.City" placeholder="212314" />
+        <InputText id="City" class="form-control" @bind-Value="_realEstateInputModel.City" placeholder="212314" />
         <label for="Room">Город</label>
     </div>
     <div class="form-floating mb-4">
-        <InputText id="Street" class="form-control" @bind-Value="realEstateInputModel.Street" placeholder="212314" />
+        <InputText id="Street" class="form-control" @bind-Value="_realEstateInputModel.Street" placeholder="212314" />
         <label for="Room">Улица</label>
     </div>
     <div class="form-floating mb-4">
-        <InputText id="House" class="form-control" @bind-Value="realEstateInputModel.House" placeholder="212314" />
+        <InputText id="House" class="form-control" @bind-Value="_realEstateInputModel.House" placeholder="212314" />
         <label for="Room">Номер дома</label>
     </div>
 
-    <InputText id="Latitude" @bind-Value="realEstateInputModel.Latitude" />
-    <InputText id="Longitude" @bind-Value="realEstateInputModel.Longitude" />
+    <InputText id="Latitude" @bind-Value="_realEstateInputModel.Latitude" />
+    <InputText id="Longitude" @bind-Value="_realEstateInputModel.Longitude" />
     <div class="form-floating input-group mb-4">
         <InputFile id="photos" class="form-floating" OnChange="HandleFileSelected" />
     </div>
-    @if (categories != null)
+    @if (_categories != null)
     {
         <div class="form-floating mb-4">
             <label for="categories">Категория</label>
-            <InputSelect id="categories" class="form-control" @bind-Value="realEstateInputModel.CategoryId" placeholder="Категория">
+            <InputSelect id="categories" class="form-control" @bind-Value="_realEstateInputModel.CategoryId" placeholder="Категория">
                 <option selected>Уэээээээ...</option>
-                @foreach (var category in categories)
+                @foreach (var category in _categories)
                 {
                     <option value="@category.Id">@category.Name</option>
                 }
             </InputSelect>
         </div>
     }
-    @if (types != null)
+    @if (_types != null)
     {
         <div class="form-floating mb-4">
             <label for="types">Тип недвижимости</label>
-            <InputSelect id="types" class="form-control h-100" @bind-Value="realEstateInputModel.TypeRealEstateId" placeholder="Тип недвижимости">
+            <InputSelect id="types" class="form-control h-100" @bind-Value="_realEstateInputModel.TypeRealEstateId" placeholder="Тип недвижимости">
                 <option selected>Уэээээээ...</option>
-                @foreach (var category in types)
+                @foreach (var category in _types)
                 {
                     <option value="@category.Id">@category.Name</option>
                 }
@@ -83,13 +83,13 @@
 
 
     [SupplyParameterFromForm]
-    private RealEstateInputModel realEstateInputModel { get; set; } = new RealEstateInputModel();
-    private List<Category> categories = new List<Category>();
-    private List<TypeRealEstate> types = new List<TypeRealEstate>();
+    private RealEstateInputModel _realEstateInputModel { get; set; } = new RealEstateInputModel();
+    private List<Category> _categories = new List<Category>();
+    private List<TypeRealEstate> _types = new List<TypeRealEstate>();
     protected override async Task OnInitializedAsync()
     {
-        categories = await RealEstateServices.GetAllCategoryAsync();
-        types = await RealEstateServices.GetAllTypeAsync();
+        _categories = await RealEstateServices.GetAllCategoryAsync();
+        _types = await RealEstateServices.GetAllTypeAsync();
     }
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
@@ -100,7 +100,7 @@
             var path = Path.Combine("wwwroot/images/", newFileName);
             using (var stream = new FileStream(path, FileMode.Create))
             {
-                realEstateInputModel.Photos = newFileName;
+                _realEstateInputModel.Photos = newFileName;
                 await file.OpenReadStream(1024 * 1024 * 15).CopyToAsync(stream);
             }
         }
@@ -112,8 +112,8 @@
         var user = authUser.User;
         if (user.Identity.IsAuthenticated)
         {
-            realEstateInputModel.UserId = user.FindFirst(u => u.Type == ClaimTypes.NameIdentifier).Value;
-            await RealEstateServices.AddRealEstateAsync(realEstateInputModel);
+            _realEstateInputModel.UserId = user.FindFirst(u => u.Type == ClaimTypes.NameIdentifier).Value;
+            await RealEstateServices.AddRealEstateAsync(_realEstateInputModel);
         }
     }
 }

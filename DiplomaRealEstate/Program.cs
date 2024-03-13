@@ -6,8 +6,6 @@ using DiplomaRealEstate.Services.RealEstateServices;
 using DiplomaRealEstate.Services.UserServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.JSInterop;
 
 var builder = WebApplication.CreateBuilder(args);
 

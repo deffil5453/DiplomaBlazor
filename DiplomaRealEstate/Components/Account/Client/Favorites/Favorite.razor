@@ -1,0 +1,32 @@
+﻿@page "/favorite"
+@using DiplomaRealEstate.Models
+@using DiplomaRealEstate.Services.FavoriteServices
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Identity
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IFavoriteService FavoriteService
+@inject UserManager<User> userManager
+<h3>выаш индект @_userId</h3>
+
+@foreach (var item in _cartItems)
+{
+	<div class="card mb-3" style="max-width: 500px">
+		<img src="/images/@item.RealEstate.Photos" />
+		<div class="col-md-6">
+		</div>
+		<button>оформить сделку</button>
+	</div>
+}
+
+@code {
+	private List<CartItem> _cartItems = new List<CartItem>();
+	private string _userId;
+	protected override async Task OnInitializedAsync()
+	{
+		var authUser = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		var user = authUser.User;
+		_userId = user.FindFirst(u => u.Type == ClaimTypes.NameIdentifier).Value;
+		_cartItems = await FavoriteService.GetAllCartItemForUserAsync(_userId);
+	}
+}

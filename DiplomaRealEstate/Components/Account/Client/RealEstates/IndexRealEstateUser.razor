@@ -7,9 +7,9 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IRealEstateService RealEstateService
 @inject UserManager<User> userManager
-<h3>выаш индект @userId</h3>
+<h3>выаш индект @_userId</h3>
 
-@foreach (var item in listRealEstates)
+@foreach (var item in _listRealEstates)
 {
 	<div class="card mb-3" style="max-width: 500px">
 		<img src="/images/@item.Photos" />
@@ -37,13 +37,13 @@
 }
 
 @code {
-    private List<RealEstate> listRealEstates = new List<RealEstate>();
-    private string userId;
+    private List<RealEstate> _listRealEstates = new List<RealEstate>();
+    private string _userId;
     protected override async Task OnInitializedAsync()
     {
         var authUser = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authUser.User;
-        userId = user.FindFirst(u=>u.Type==ClaimTypes.NameIdentifier).Value;
-        listRealEstates = await RealEstateService.GetAllRealEstateIUserAsync(userId);
+        _userId = user.FindFirst(u=>u.Type==ClaimTypes.NameIdentifier).Value;
+        _listRealEstates = await RealEstateService.GetAllRealEstateIUserAsync(_userId);
 	}
 }

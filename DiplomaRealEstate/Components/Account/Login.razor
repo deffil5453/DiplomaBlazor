@@ -9,30 +9,33 @@
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @attribute [ValidateAntiForgeryToken]
-<EditForm Model="@loginModel" OnValidSubmit="HandleLogin" FormName="login" t>
-    <h1>Авторизация</h1>
+<EditForm Model="@_loginModel" OnValidSubmit="HandleLogin" FormName="register">
+    <h1 class="mb-5">Авторизация</h1>
     <DataAnnotationsValidator />
     <ValidationSummary />
     <div class="w-25 align-content-center">
         <div class="form-floating mb-3">
-            <InputText @bind-Value="@loginModel.Username" class="form-control" id="floatingInput" placeholder="Логин" />
+            <InputText @bind-Value="_loginModel.Username" class="form-control" id="floatingInput" placeholder="Логин" />
             <label for="floatingInput">Логин</label>
         </div>
         <div class="form-floating mb-3">
-            <InputText type="password" @bind-Value="@loginModel.Password" class="form-control" id="floatingPassword" autocomplete="new-password" aria-required="true" placeholder="Пароль" />
+            <InputText type="password" @bind-Value="@_loginModel.Password" class="form-control" id="floatingPassword" autocomplete="new-password" aria-required="true" placeholder="Пароль" />
             <label for="floatingPassword">Пароль</label>
         </div>
-        <button type="submit" class="btn btn-outline-success w-25">войти</button>
+        <button type="submit" class="btn w-100 btn-outline-success">Войти</button>
     </div>
 </EditForm>
+@* qwewdfh9321q1391229o0 
+aboab2012-dhq2131451345
+*@
 @code {
     [SupplyParameterFromForm]
-    private LoginModel loginModel { get; set; } = new();
+    private LoginModel _loginModel { get; set; } = new();
     private async Task HandleLogin()
     {
         var result = await SignInMnager.PasswordSignInAsync(
-            loginModel.Username,
-            loginModel.Password,
+            _loginModel.Username,
+            _loginModel.Password,
             isPersistent: false, lockoutOnFailure: false);
         if (result.Succeeded)
         {

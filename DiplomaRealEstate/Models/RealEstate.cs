@@ -27,6 +27,6 @@ namespace DiplomaRealEstate.Models
         public Category Category { get; set; }
         public Review Review { get; set; }
         public List<Transaction> TransactionProperties { get; set; }
-        public List<CartItem>? CartItems { get; set; }
+        public List<CartItem> CartItems { get; set; }
     }
 }

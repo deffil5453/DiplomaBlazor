@@ -11,6 +11,6 @@ namespace DiplomaRealEstate.Models
         public List<RealEstate> RealEstates { get; set; }
         public List<Review>? Reviews { get; set; }
         public List<Transaction>? UserTransaction { get; set; }
-        public List<CartItem>? CartItems { get; set; }
+        public List<CartItem> CartItems { get; set; }
     }
 }

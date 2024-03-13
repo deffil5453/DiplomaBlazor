@@ -1,56 +1,92 @@
 ﻿@page "/indexRealEstate"
+
 @using DiplomaRealEstate.Models
 @using DiplomaRealEstate.Services.FavoriteServices
 @using DiplomaRealEstate.Services.RealEstateServices
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
+
 @inject IRealEstateService RealEstateService
 @inject IFavoriteService FavoriteService
 @inject AuthenticationStateProvider AutenticationStateProvider
 @inject NavigationManager NavigationManager
-@rendermode InteractiveServer
-<p>список недвижимости уэээээ</p>
 
-@foreach (var item in realEstates)
+@rendermode InteractiveServer
+
+<p>список недвижимости уэээээ</p>
+@if (!string.IsNullOrEmpty(_favoriteAddedMessage))
 {
-	<div class="card mb-3" style="max-width: 500px">
-		<img src="/images/@item.Photos" />
-		<div class="col-md-6">
-			<p1>@item.Region,</p1>
-			<p1>город @item.City,</p1>
-			<p1>Улица @item.Street,</p1>
-			<p1>Дом @item.House,</p1>
-			<p>Цена: @item.Price ₽</p>
-			@if (IsAdmin)
-			{
-				<a href="editRealEstate/{@item.Id}" class="btn btn-outline-info">Редактировать</a>
-			}
-			<button type="submit" class="btn btn-outline-primary" style="" @onclick="()=>AddToCart(item.Id)">
-				 в избранное
-			</button>
-			<button type="button" class="btn btn-outline-primary">
-				<img width="46px" height="46px" src="/images/world-map-with-a-placeholder.svg" />
-				<a href="https://yandex.ru/maps/?ll=@item.Latitude,@item.Longitude&mode=poi&poi%5Bpoint%5D=@item.Latitude,@item.Longitude&poi%5Buri%5D=ymapsbm1%3A%2F%2Forg%3Foid%3D1236305364&z=19">на карте</a>
-			</button>
-		</div>
-	</div>			
+    <div class="alert alert-success">
+        <p>
+            @_favoriteAddedMessage
+        </p>
+        <a href="/favorite">посмотреть</a>
+    </div>
+
+}
+@foreach (var item in _realEstates)
+{
+    <div class="card mb-3" style="max-width: 500px">
+        <img src="/images/@item.Photos" />
+        <div class="col-md-6">
+            <p1>@item.Region,</p1>
+            <p1>город @item.City,</p1>
+            <p1>Улица @item.Street,</p1>
+            <p1>Дом @item.House,</p1>
+            <p>Цена: @item.Price ₽</p>
+            @if (_IsAdmin)
+            {
+                <a href="editRealEstate/{@item.Id}" class="btn btn-outline-info">Редактировать</a>
+            }
+            <button type="submit" class="@GetButtonClass(item.Id)" @onclick="()=>AddToCart(item.Id)">
+                в избранное
+            </button>
+            <button type="button" class="btn btn-outline-primary">
+                <img width="46px" height="46px" src="/images/world-map-with-a-placeholder.svg" />
+                <a href="https://yandex.ru/maps/?ll=@item.Latitude,@item.Longitude&mode=poi&poi%5Bpoint%5D=@item.Latitude,@item.Longitude&poi%5Buri%5D=ymapsbm1%3A%2F%2Forg%3Foid%3D1236305364&z=19">на карте</a>
+            </button>
+        </div>
+    </div>
 }
 @code {
-	private List<RealEstate> realEstates = new List<RealEstate>();
-	private bool IsAuthenticated;
-	private bool IsAdmin;
-	protected override async Task OnInitializedAsync()
-	{
-		var authState = await AutenticationStateProvider.GetAuthenticationStateAsync();
-		IsAuthenticated = authState.User.Identity.IsAuthenticated;
-		IsAdmin = IsAuthenticated && authState.User.IsInRole("Admin");
-		realEstates = await RealEstateService.GetAllRealEstateAsync();
-	}
-	private async Task AddToCart(Guid id)
-	{
-		var authUser = await AutenticationStateProvider.GetAuthenticationStateAsync();
-		var user = authUser.User;
-		string userId = user.FindFirst(u => u.Type == ClaimTypes.NameIdentifier).Value;		
-		await FavoriteService.AddFavoriteAsync(userId, id);
-	}
+    private List<RealEstate> _realEstates = new List<RealEstate>();
+    private bool _IsAuthenticated;
+    private bool _IsAdmin;
+    private string? _favoriteAddedMessage;
+    private Dictionary<Guid, bool> _favoritesState = new Dictionary<Guid, bool>();
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AutenticationStateProvider.GetAuthenticationStateAsync();
+        _IsAuthenticated = authState.User.Identity.IsAuthenticated;
+        _IsAdmin = _IsAuthenticated && authState.User.IsInRole("Admin");
+        _realEstates = await RealEstateService.GetAllRealEstateAsync();
+        _favoriteAddedMessage = String.Empty;
+    }
+    private async Task AddToCart(Guid id)
+    {
+        var authUser = await AutenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authUser.User;
+        if (user.Identity.IsAuthenticated)
+        {
+            string userId = user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            bool isFavorite = _favoritesState.GetValueOrDefault(id, false);
+            if (!isFavorite)
+            {
+                await FavoriteService.AddFavoriteAsync(userId, id);
+                _favoritesState[id] = true;
+                _favoriteAddedMessage = "Объект добавлен в избранное";
+            }
+            else
+            {
+                await FavoriteService.RemoveFavoriteAsync(userId, id);
+                _favoritesState[id] = false;
+                _favoriteAddedMessage = "Объект удалён из избранного";
+            }
+            StateHasChanged();
+        }
+    }
+    private string GetButtonClass(Guid id)
+    {
+        return _favoritesState.GetValueOrDefault(id, false) ? "btn btn-outline-success" : "btn btn-outline-primary";
+    }
 }
