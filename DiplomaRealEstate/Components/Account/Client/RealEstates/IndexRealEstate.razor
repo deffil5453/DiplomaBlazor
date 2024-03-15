@@ -37,7 +37,7 @@
             {
                 <a href="editRealEstate/{@item.Id}" class="btn btn-outline-info">Редактировать</a>
             }
-            <button type="submit" class="@GetButtonClass(item.Id)" @onclick="()=>AddToCart(item.Id)">
+            <button type="submit" class="@GetButtonClass(item.Id)" @onclick="()=>AddToFavorite(item.Id)">
                 в избранное
             </button>
             <button type="button" class="btn btn-outline-primary">
@@ -61,7 +61,7 @@
         _realEstates = await RealEstateService.GetAllRealEstateAsync();
         _favoriteAddedMessage = String.Empty;
     }
-    private async Task AddToCart(Guid id)
+    private async Task AddToFavorite(Guid id)
     {
         var authUser = await AutenticationStateProvider.GetAuthenticationStateAsync();
         var user = authUser.User;
