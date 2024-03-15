@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DiplomaRealEstate.Migrations
 {
     /// <inheritdoc />
-    public partial class _11 : Migration
+    public partial class _1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -348,8 +348,8 @@ namespace DiplomaRealEstate.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("0d81ce4a-ba55-4a53-aa58-7b0b2fb87084"), "Земельные участок" },
-                    { new Guid("9352a6d0-43bd-432d-a5be-9cd1ee4b7856"), "Жилая собственность" }
+                    { new Guid("57ac59c8-c8a3-40d5-8618-7440631df57b"), "Земельные участок" },
+                    { new Guid("faca54cd-e72a-43cf-a9a8-2f509fb5bd56"), "Жилая собственность" }
                 });
 
             migrationBuilder.InsertData(
@@ -357,9 +357,9 @@ namespace DiplomaRealEstate.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("4d5cbcdc-4750-4f37-b636-e8d58af3623e"), "Активная" },
-                    { new Guid("d4b44ca8-e49a-4319-ad10-77da405a1e69"), "Арендована" },
-                    { new Guid("e69644ab-8ae6-41de-b143-c8c39b136a44"), "Продано" }
+                    { new Guid("0dd262b2-2ac1-4841-aee6-424a0c33bf09"), "Продано" },
+                    { new Guid("341c7ca1-be5b-450a-94e7-3a4aa9f06dba"), "Активная" },
+                    { new Guid("de4c0ff3-b366-4ca2-ba73-ffe32aa065f9"), "Арендована" }
                 });
 
             migrationBuilder.InsertData(
@@ -367,8 +367,8 @@ namespace DiplomaRealEstate.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("03d6f4a6-be4a-4f5e-bc25-1f43bf40541b"), "Земельный участок" },
-                    { new Guid("5c5ca246-eeb4-4222-8533-194efa2dd60c"), "Дом " }
+                    { new Guid("4e2cca84-9f11-4895-820d-e5c92cbff134"), "Дом " },
+                    { new Guid("c35bd2b1-fdc0-4575-b008-dbe582fee686"), "Земельный участок" }
                 });
 
             migrationBuilder.CreateIndex(
