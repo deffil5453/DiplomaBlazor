@@ -33,7 +33,7 @@
             <p1>Улица @item.Street,</p1>
             <p1>Дом @item.House,</p1>
             <p>Цена: @item.Price ₽</p>
-            @if (_IsAdmin)
+            @if (_isAdmin)
             {
                 <a href="editRealEstate/{@item.Id}" class="btn btn-outline-info">Редактировать</a>
             }
@@ -49,15 +49,15 @@
 }
 @code {
     private List<RealEstate> _realEstates = new List<RealEstate>();
-    private bool _IsAuthenticated;
-    private bool _IsAdmin;
+    private bool _isAuthenticated;
+    private bool _isAdmin;
     private string? _favoriteAddedMessage;
     private Dictionary<Guid, bool> _favoritesState = new Dictionary<Guid, bool>();
     protected override async Task OnInitializedAsync()
     {
         var authState = await AutenticationStateProvider.GetAuthenticationStateAsync();
-        _IsAuthenticated = authState.User.Identity.IsAuthenticated;
-        _IsAdmin = _IsAuthenticated && authState.User.IsInRole("Admin");
+        _isAuthenticated = authState.User.Identity.IsAuthenticated;
+        _isAdmin = _isAuthenticated && authState.User.IsInRole("Admin");
         _realEstates = await RealEstateService.GetAllRealEstateAsync();
         _favoriteAddedMessage = String.Empty;
     }
