@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DiplomaRealEstate.Migrations
 {
     [DbContext(typeof(RealEstateDbContext))]
-    [Migration("20240315084507_1")]
+    [Migration("20240316071549_1")]
     partial class _1
     {
         /// <inheritdoc />
@@ -64,12 +64,12 @@ namespace DiplomaRealEstate.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("faca54cd-e72a-43cf-a9a8-2f509fb5bd56"),
+                            Id = new Guid("dc472ec8-88ae-4611-804c-26176e36a728"),
                             Name = "Жилая собственность"
                         },
                         new
                         {
-                            Id = new Guid("57ac59c8-c8a3-40d5-8618-7440631df57b"),
+                            Id = new Guid("febd4cd5-54d8-4f63-b6f2-8dc61d07f9fd"),
                             Name = "Земельные участок"
                         });
                 });
@@ -198,17 +198,17 @@ namespace DiplomaRealEstate.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("0dd262b2-2ac1-4841-aee6-424a0c33bf09"),
+                            Id = new Guid("e207e9bd-1335-4204-a655-1007d8dc15f8"),
                             Name = "Продано"
                         },
                         new
                         {
-                            Id = new Guid("de4c0ff3-b366-4ca2-ba73-ffe32aa065f9"),
+                            Id = new Guid("ded78be6-7382-4301-b5ec-00d2a0388756"),
                             Name = "Арендована"
                         },
                         new
                         {
-                            Id = new Guid("341c7ca1-be5b-450a-94e7-3a4aa9f06dba"),
+                            Id = new Guid("2b64753e-073a-49cf-8448-0ab744c07a6b"),
                             Name = "Активная"
                         });
                 });
@@ -264,12 +264,12 @@ namespace DiplomaRealEstate.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("4e2cca84-9f11-4895-820d-e5c92cbff134"),
+                            Id = new Guid("40233fdd-55a5-4795-8b2b-5c5edc886005"),
                             Name = "Дом "
                         },
                         new
                         {
-                            Id = new Guid("c35bd2b1-fdc0-4575-b008-dbe582fee686"),
+                            Id = new Guid("cd32279f-1dd3-4c4d-8a35-a98741a3011d"),
                             Name = "Земельный участок"
                         });
                 });
@@ -287,6 +287,23 @@ namespace DiplomaRealEstate.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TypeTransactions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("3496edcf-7e1b-4fb8-95a2-497bf3656293"),
+                            Name = "Аренда"
+                        },
+                        new
+                        {
+                            Id = new Guid("e7ca6648-c03f-42e9-bde2-2f5b0d7abd78"),
+                            Name = "Продажа"
+                        },
+                        new
+                        {
+                            Id = new Guid("9612ab6c-8d36-47c1-9d9e-e1a9f08aab81"),
+                            Name = "Покупка"
+                        });
                 });
 
             modelBuilder.Entity("DiplomaRealEstate.Models.User", b =>

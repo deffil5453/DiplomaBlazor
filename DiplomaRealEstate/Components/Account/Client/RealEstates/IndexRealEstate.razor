@@ -85,6 +85,6 @@
     }
     private string GetButtonClass(Guid id)
     {
-        return _favoritesState.GetValueOrDefault(id, false) ? "btn btn-outline-success" : "btn btn-outline-primary";
+        return _favoritesState.GetValueOrDefault(id, true) ? "btn btn-outline-success" : "btn btn-outline-primary";
     }
 }

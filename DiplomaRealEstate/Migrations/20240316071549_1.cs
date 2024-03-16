@@ -348,8 +348,8 @@ namespace DiplomaRealEstate.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("57ac59c8-c8a3-40d5-8618-7440631df57b"), "Земельные участок" },
-                    { new Guid("faca54cd-e72a-43cf-a9a8-2f509fb5bd56"), "Жилая собственность" }
+                    { new Guid("dc472ec8-88ae-4611-804c-26176e36a728"), "Жилая собственность" },
+                    { new Guid("febd4cd5-54d8-4f63-b6f2-8dc61d07f9fd"), "Земельные участок" }
                 });
 
             migrationBuilder.InsertData(
@@ -357,9 +357,9 @@ namespace DiplomaRealEstate.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("0dd262b2-2ac1-4841-aee6-424a0c33bf09"), "Продано" },
-                    { new Guid("341c7ca1-be5b-450a-94e7-3a4aa9f06dba"), "Активная" },
-                    { new Guid("de4c0ff3-b366-4ca2-ba73-ffe32aa065f9"), "Арендована" }
+                    { new Guid("2b64753e-073a-49cf-8448-0ab744c07a6b"), "Активная" },
+                    { new Guid("ded78be6-7382-4301-b5ec-00d2a0388756"), "Арендована" },
+                    { new Guid("e207e9bd-1335-4204-a655-1007d8dc15f8"), "Продано" }
                 });
 
             migrationBuilder.InsertData(
@@ -367,8 +367,18 @@ namespace DiplomaRealEstate.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("4e2cca84-9f11-4895-820d-e5c92cbff134"), "Дом " },
-                    { new Guid("c35bd2b1-fdc0-4575-b008-dbe582fee686"), "Земельный участок" }
+                    { new Guid("40233fdd-55a5-4795-8b2b-5c5edc886005"), "Дом " },
+                    { new Guid("cd32279f-1dd3-4c4d-8a35-a98741a3011d"), "Земельный участок" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "TypeTransactions",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { new Guid("3496edcf-7e1b-4fb8-95a2-497bf3656293"), "Аренда" },
+                    { new Guid("9612ab6c-8d36-47c1-9d9e-e1a9f08aab81"), "Покупка" },
+                    { new Guid("e7ca6648-c03f-42e9-bde2-2f5b0d7abd78"), "Продажа" }
                 });
 
             migrationBuilder.CreateIndex(
