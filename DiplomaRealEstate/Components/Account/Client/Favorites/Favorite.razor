@@ -7,18 +7,18 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IFavoriteService FavoriteService
 @inject UserManager<User> userManager
-<h3>выаш индект @_userId</h3>
 
 @foreach (var item in _cartItems)
 {
 	<div class="card mb-3" style="max-width: 500px">
 		<img src="/images/@item.RealEstate.Photos" />
 		<div class="col-md-6">
+			<a>@item.RealEstate.Price</a>
 		</div>
 		<button>оформить сделку</button>
 	</div>
 }
-
+		
 @code {
 	private List<CartItem> _cartItems = new List<CartItem>();
 	private string _userId;

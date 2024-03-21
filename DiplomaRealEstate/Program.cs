@@ -1,4 +1,5 @@
 using BlazorApp10.Data;
+using Blazored.Modal;
 using DiplomaRealEstate.Components;
 using DiplomaRealEstate.Models;
 using DiplomaRealEstate.Services.FavoriteServices;
@@ -9,7 +10,6 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services
     .AddDbContext<RealEstateDbContext>(options => options
     .UseSqlServer(builder.Configuration.GetConnectionString("Connection")));
@@ -18,6 +18,7 @@ builder.Services
     .AddInteractiveServerComponents();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddBlazoredModal();
 builder.Services.AddScoped<IRealEstateService, RealEstateService>();
 builder.Services.AddScoped<IUserInterface, UserServices>();
 builder.Services.AddScoped<IFavoriteService, FavoriteService>();
@@ -38,11 +39,9 @@ builder.Services.AddDefaultIdentity<User>(options =>
 builder.Services.AddBootstrapBlazor();
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 

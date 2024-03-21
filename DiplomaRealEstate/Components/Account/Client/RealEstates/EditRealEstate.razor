@@ -7,7 +7,6 @@
 <EditForm Model="@_realEstateModel" OnValidSubmit="UpdateRealEstateValidSubmit" FormName="update">
 	<DataAnnotationsValidator />
 	<ValidationSummary />
-	<h1>@a</h1>
 	<div class="form-floating mb-3">
 		<InputText id="Areas" class="form-control" @bind-Value="_realEstateModel.Area" placeholder="212314" />
 		<label for="Areas">Площадь</label>
@@ -86,6 +85,7 @@
 	public Guid RealEstateId { get; set; }
 	private List<Category> _categories { get; set; }
 	private List<TypeRealEstate> _types { get; set; }
+	private int a = 1;
 
 	protected override async Task OnInitializedAsync()
 	{
