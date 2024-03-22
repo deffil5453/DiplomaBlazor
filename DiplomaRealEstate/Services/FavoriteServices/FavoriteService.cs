@@ -32,16 +32,30 @@ namespace DiplomaRealEstate.Services.FavoriteServices
             }
         }
 
-		public async Task RemoveFavoriteAsync(string userId, Guid realEstateId)
+        public async Task<bool> GetFavoriteByUserAsync(string userId, Guid realEstateId)
+        {
+            using (RealEstateDbContext? dbContext = new RealEstateDbContext())
+            {
+                var favorite = await dbContext.CartItems.Include(ci => ci.RealEstate)
+                    .FirstOrDefaultAsync(ci => ci.UserId == userId && ci.RealEstate.Id == realEstateId);
+                if (favorite == null)
+				{
+					return false;
+				}
+				return true;
+            }
+        }
+
+        public async Task<bool> RemoveFavoriteAsync(string userId, Guid realEstateId)
 		{
 			using (RealEstateDbContext? dbContext = new RealEstateDbContext())
 			{
 				var favorite = await dbContext.CartItems
 					.Include(ci => ci.RealEstate)
-					.FirstOrDefaultAsync(ci => ci.UserId == userId && ci.RealEstateId == realEstateId);
+					.FirstOrDefaultAsync(ci => ci.UserId == userId && ci.RealEstate.Id == realEstateId);
 				dbContext.CartItems.Remove(favorite);
 				await dbContext.SaveChangesAsync();
-
+				return true;
 			}
 		}
 	}

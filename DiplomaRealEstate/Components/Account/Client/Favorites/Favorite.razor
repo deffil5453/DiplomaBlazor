@@ -7,7 +7,7 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IFavoriteService FavoriteService
 @inject UserManager<User> userManager
-
+@rendermode InteractiveServer
 @foreach (var item in _cartItems)
 {
 	<div class="card mb-3" style="max-width: 500px">
@@ -16,6 +16,7 @@
 			<a>@item.RealEstate.Price</a>
 		</div>
 		<button>оформить сделку</button>
+		<button class="btn btn-outline-danger" @onclick="()=>RemoveFavorite(item.RealEstateId)">удалить</button>
 	</div>
 }
 		
@@ -28,5 +29,13 @@
 		var user = authUser.User;
 		_userId = user.FindFirst(u => u.Type == ClaimTypes.NameIdentifier).Value;
 		_cartItems = await FavoriteService.GetAllCartItemForUserAsync(_userId);
+	}
+	private async Task RemoveFavorite(Guid productId)
+	{
+		bool success = await FavoriteService.RemoveFavoriteAsync(_userId, productId);
+		if (success)
+		{
+			_cartItems = await FavoriteService.GetAllCartItemForUserAsync(_userId);
+		}
 	}
 }

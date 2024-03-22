@@ -6,6 +6,7 @@ namespace DiplomaRealEstate.Services.FavoriteServices
 	{
 		Task AddFavoriteAsync(string userid, Guid realEstateId);
         Task<List<CartItem>> GetAllCartItemForUserAsync(string userid);
-		Task RemoveFavoriteAsync(string userId, Guid realEstateId);
+		Task<bool> RemoveFavoriteAsync(string userId, Guid realEstateId);
+		Task<bool> GetFavoriteByUserAsync(string userId,Guid realEstateId);
 	}
 }
