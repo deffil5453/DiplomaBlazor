@@ -7,6 +7,7 @@
 <EditForm Model="@_realEstateModel" OnValidSubmit="UpdateRealEstateValidSubmit" FormName="update">
 	<DataAnnotationsValidator />
 	<ValidationSummary />
+	<h1>@a</h1>
 	<div class="form-floating mb-3">
 		<InputText id="Areas" class="form-control" @bind-Value="_realEstateModel.Area" placeholder="212314" />
 		<label for="Areas">Площадь</label>

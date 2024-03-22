@@ -38,13 +38,11 @@ namespace BlazorApp10.Data
         }
         private void SeedData(ModelBuilder modelBuilder)
         {
-            // Пример добавления данных в таблицу Statuses
             modelBuilder.Entity<Category>().HasData(
                 new Status { Id = Guid.NewGuid(), Name = "Жилая собственность" },
                 new Status { Id = Guid.NewGuid(), Name = "Земельные участок" }
             );
 
-            // Пример добавления данных в таблицу TypeRealEstates
             modelBuilder.Entity<TypeRealEstate>().HasData(
                 new TypeRealEstate { Id = Guid.NewGuid(), Name = "Дом " },
                 new TypeRealEstate { Id = Guid.NewGuid(), Name = "Земельный участок" }
@@ -55,7 +53,12 @@ namespace BlazorApp10.Data
                 new Category { Id = Guid.NewGuid(), Name = "Арендована" },
                 new Category { Id = Guid.NewGuid(), Name = "Активная" }
             );
-
+            modelBuilder.Entity<TypeTransaction>().HasData
+                (
+                    new TypeTransaction { Id = Guid.NewGuid(), Name = "Аренда" },
+                    new TypeTransaction { Id = Guid.NewGuid(), Name = "Продажа" },
+                    new TypeTransaction { Id = Guid.NewGuid(), Name = "Покупка" }
+                );
         }
     }
 }

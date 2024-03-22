@@ -36,16 +36,16 @@
 
 	private async Task HandleRegistration()
 	{
-		var userAdd = new User { UserName = _registerModel.Username };
-		var roleName = "User";
+		User userAdd = new User { UserName = _registerModel.Username };
+		string roleName = "User";
 		if (_registerModel.Username == "nozdrin")
 		{
 			roleName = "Admin";
 		}
-		var roleExsist = await RoleManager.RoleExistsAsync(roleName);
+		bool roleExsist = await RoleManager.RoleExistsAsync(roleName);
 		if (!roleExsist)
 		{
-			var role = new IdentityRole(roleName);
+			IdentityRole role = new IdentityRole(roleName);
 			await RoleManager.CreateAsync(role);
 		}
 		var result = await UserManager.CreateAsync(userAdd, _registerModel.Password);
