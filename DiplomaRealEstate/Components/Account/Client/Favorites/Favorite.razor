@@ -6,9 +6,8 @@
 @using Microsoft.AspNetCore.Identity
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IFavoriteService FavoriteService
-@inject UserManager<User> userManager
 @rendermode InteractiveServer
-@foreach (var item in _cartItems)
+@foreach (var item in _favorites)
 {
 	<div class="card mb-3" style="max-width: 500px">
 		<img src="/images/@item.RealEstate.Photos" />
@@ -21,21 +20,20 @@
 }
 		
 @code {
-	private List<CartItem> _cartItems = new List<CartItem>();
+	private List<FavoriteRealEstate> _favorites = new List<FavoriteRealEstate>();
 	private string _userId;
 	protected override async Task OnInitializedAsync()
 	{
 		var authUser = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-		var user = authUser.User;
-		_userId = user.FindFirst(u => u.Type == ClaimTypes.NameIdentifier).Value;
-		_cartItems = await FavoriteService.GetAllCartItemForUserAsync(_userId);
+		_userId = authUser.User.FindFirst(u => u.Type == ClaimTypes.NameIdentifier).Value;
+		_favorites = await FavoriteService.GetAllCartItemForUserAsync(_userId);
 	}
 	private async Task RemoveFavorite(Guid productId)
 	{
 		bool success = await FavoriteService.RemoveFavoriteAsync(_userId, productId);
 		if (success)
 		{
-			_cartItems = await FavoriteService.GetAllCartItemForUserAsync(_userId);
+			_favorites = await FavoriteService.GetAllCartItemForUserAsync(_userId);
 		}
 	}
 }

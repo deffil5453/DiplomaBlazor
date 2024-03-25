@@ -10,7 +10,7 @@ namespace DiplomaRealEstate.Models
         public string? MiddleName { get; set; }
         public List<RealEstate> RealEstates { get; set; }
         public List<Review>? Reviews { get; set; }
-        public List<Transaction>? UserTransaction { get; set; }
-        public List<CartItem> CartItems { get; set; }
+        public List<TransactionOrder>? UserTransaction { get; set; }
+        public List<FavoriteRealEstate> CartItems { get; set; }
     }
 }

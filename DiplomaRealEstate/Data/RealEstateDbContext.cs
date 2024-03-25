@@ -1,4 +1,5 @@
-﻿using DiplomaRealEstate.Models;
+﻿using DiplomaRealEstate.Components.Account.Client.Favorites;
+using DiplomaRealEstate.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -20,11 +21,11 @@ namespace BlazorApp10.Data
         public DbSet<RealEstate> RealEstates { get; set; }
         public DbSet<Status> Statuses { get; set; }
         public DbSet<Review> Reviews { get; set; }
-        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<TransactionOrder> TransactionOrders { get; set; }
         public DbSet<TypeRealEstate> TypeRealEstates { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<TypeTransaction> TypeTransactions { get; set; }
-        public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<FavoriteRealEstate> FavoriteRealEstates { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB; database=Diploma;Trusted_Connection=true;Integrated Security=true;TrustServerCertificate=true");

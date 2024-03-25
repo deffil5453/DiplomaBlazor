@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DiplomaRealEstate.Configutation
 {
-	public class CartItemConfiguration : IEntityTypeConfiguration<CartItem>
+	public class CartItemConfiguration : IEntityTypeConfiguration<FavoriteRealEstate>
 	{
-		public void Configure(EntityTypeBuilder<CartItem> builder)
+		public void Configure(EntityTypeBuilder<FavoriteRealEstate> builder)
 		{
 			builder
 				.HasOne(cart => cart.RealEstate)

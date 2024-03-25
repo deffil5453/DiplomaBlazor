@@ -1,6 +1,6 @@
 ﻿namespace DiplomaRealEstate.Models
 {
-    public class Transaction
+    public class TransactionOrder
     {
         public Guid Id { get; set; }
         public Guid TypeTransactionId { get; set; }

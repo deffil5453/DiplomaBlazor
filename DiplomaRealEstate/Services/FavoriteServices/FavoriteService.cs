@@ -10,22 +10,22 @@ namespace DiplomaRealEstate.Services.FavoriteServices
 		{
 			using (RealEstateDbContext? dbContex = new RealEstateDbContext())
 			{
-				var cartItem = new CartItem
+				var cartItem = new FavoriteRealEstate
 				{
 					Id=Guid.NewGuid(),
 					UserId = userid,
 					RealEstateId  = realEstateId
 				};
-				dbContex.CartItems
+				dbContex.FavoriteRealEstates
 					.Add(cartItem);
 				await dbContex.SaveChangesAsync();
 			}
 		}
-        public async Task<List<CartItem>> GetAllCartItemForUserAsync(string userid)
+        public async Task<List<FavoriteRealEstate>> GetAllCartItemForUserAsync(string userid)
         {
             using (RealEstateDbContext? dbContex = new RealEstateDbContext())
             {
-                return await dbContex.CartItems
+                return await dbContex.FavoriteRealEstates
 					.Include(x => x.RealEstate)
 					.Where(re => re.UserId == userid)
 					.ToListAsync();
@@ -36,7 +36,7 @@ namespace DiplomaRealEstate.Services.FavoriteServices
         {
             using (RealEstateDbContext? dbContext = new RealEstateDbContext())
             {
-                var favorite = await dbContext.CartItems.Include(ci => ci.RealEstate)
+                var favorite = await dbContext.FavoriteRealEstates.Include(ci => ci.RealEstate)
                     .FirstOrDefaultAsync(ci => ci.UserId == userId && ci.RealEstate.Id == realEstateId);
                 if (favorite == null)
 				{
@@ -50,10 +50,10 @@ namespace DiplomaRealEstate.Services.FavoriteServices
 		{
 			using (RealEstateDbContext? dbContext = new RealEstateDbContext())
 			{
-				var favorite = await dbContext.CartItems
+				var favorite = await dbContext.FavoriteRealEstates
 					.Include(ci => ci.RealEstate)
 					.FirstOrDefaultAsync(ci => ci.UserId == userId && ci.RealEstate.Id == realEstateId);
-				dbContext.CartItems.Remove(favorite);
+				dbContext.FavoriteRealEstates.Remove(favorite);
 				await dbContext.SaveChangesAsync();
 				return true;
 			}

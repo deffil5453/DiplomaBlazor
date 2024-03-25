@@ -6,7 +6,6 @@
 @using Microsoft.AspNetCore.Identity
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IRealEstateService RealEstateService
-@inject UserManager<User> userManager
 
 
 @foreach (var item in _listRealEstates)
@@ -37,8 +36,7 @@
     protected override async Task OnInitializedAsync()
     {
         var authUser = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authUser.User;
-        _userId = user.FindFirst(u=>u.Type==ClaimTypes.NameIdentifier).Value;
+		_userId = authUser.User.FindFirst(u => u.Type == ClaimTypes.NameIdentifier).Value;
         _listRealEstates = await RealEstateService.GetAllRealEstateIUserAsync(_userId);
 	}
 }

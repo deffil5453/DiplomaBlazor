@@ -6,6 +6,6 @@ namespace DiplomaRealEstate.Models
     {
         public Guid Id { get; set; }
         [Required] public string Name { get; set; }
-        public List<Transaction> Transactions { get; set;}
+        public List<TransactionOrder> Transactions { get; set;}
     }
 }

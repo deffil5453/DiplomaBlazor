@@ -28,7 +28,7 @@
             {
                 <a href="editRealEstate/{@item.Id}" class="btn btn-outline-info">Редактировать</a>
             }
-            <button type="submit" class="@GetButtonClass(item.Id)" @onclick="()=>AddToCart(item.Id)">
+            <button type="submit" class="@GetButtonClass(item.Id)" @onclick="()=>AddToFavorite(item.Id)">
                 в избранное
             </button>
             <button type="button" class="btn btn-outline-primary">
@@ -40,20 +40,22 @@
 }
 @code {
     private List<RealEstate> _realEstates = new List<RealEstate>();
-    private bool _IsAuthenticated;
-    private bool _IsAdmin;
+    private bool _isAuthenticated;
+    private bool _isAdmin;
+    public string _userId;
     private string? _favoriteAddedMessage;
     private Dictionary<Guid, bool> _favoritesState = new Dictionary<Guid, bool>();
     protected override async Task OnInitializedAsync()
     {
         var authState = await AutenticationStateProvider.GetAuthenticationStateAsync();
-        _IsAuthenticated = authState.User.Identity.IsAuthenticated;
-        _IsAdmin = _IsAuthenticated && authState.User.IsInRole("Admin");
+        _isAuthenticated = authState.User.Identity.IsAuthenticated;
+        _userId = authState.User.FindFirst(u=>u.Type==ClaimTypes.NameIdentifier).Value;
+        _isAdmin = _isAuthenticated && authState.User.IsInRole("Admin");
         _realEstates = await RealEstateService.GetAllRealEstateAsync();
     }
     private async Task AddToFavorite(Guid id)
     {
-        if (_IsAuthenticated)
+        if (_isAuthenticated)
         {
             bool isFavorite = await FavoriteService.GetFavoriteByUserAsync(_userId, id);
             if (!isFavorite)
