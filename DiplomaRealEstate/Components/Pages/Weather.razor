@@ -1,21 +1,44 @@
 ﻿@page "/weather"
-
+@rendermode InteractiveServer
 <button class="btn btn-primary" @onclick="()=>OpenModal()">Нажми сюда</button>
 
 @if (ModalUeeeeee)
 {
-    <Counter></Counter>
+    <div class="modal fade show d-block" tabindex="-1" role="dialog" style="display:block; background-color:rgba(10,10,10,.8);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        Количество
+                    </h4>
+                    <button type="button" class="btn btn-secondary" @onclick="()=>CloseModal()">Закрыть</button>
+                </div>
+                <div class="modal-body">
+                    <p role="status">Текущее количество: @currentCount</p>
+                    <button type="button" class="btn btn-primary" @onclick="IncrementCount">Увеличить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop show"></div>
 }
+
 @code {
     private bool ModalUeeeeee { get; set; }
+    private int currentCount = 0;
 
     private void OpenModal()
     {
         ModalUeeeeee = true;
     }
 
-    protected override async Task OnInitializedAsync()
+    private void CloseModal()
     {
-        await LoadD
+        ModalUeeeeee = false;
+    }
+
+    private void IncrementCount()
+    {
+        currentCount++;
     }
 }
