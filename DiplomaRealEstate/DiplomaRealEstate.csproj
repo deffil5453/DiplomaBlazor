@@ -56,6 +56,8 @@
   <ItemGroup>
     <PackageReference Include="Blazored.Modal" Version="7.3.1" />
     <PackageReference Include="bootstrap" Version="5.3.3" />
+    <PackageReference Include="Bootstrap.Less" Version="3.4.1" />
+    <PackageReference Include="bootstrap.sass" Version="5.3.3" />
     <PackageReference Include="BootstrapBlazor" Version="8.3.1" />
     <PackageReference Include="IdentityServer4.Storage" Version="4.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.2" />

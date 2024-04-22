@@ -2,67 +2,110 @@
 @using System.ComponentModel.DataAnnotations
 @using DiplomaRealEstate.Models
 @using Microsoft.AspNetCore.Identity
+@rendermode InteractiveServer
 @inject UserManager<User> UserManager
 @inject SignInManager<User> SignInManager
 @inject NavigationManager NavigationManager
 @inject RoleManager<IdentityRole> RoleManager
-<EditForm Model="@_registerModel" OnValidSubmit="HandleRegistration" FormName="register">
-	<h1 class="mb-5">Регистрация</h1>
-	<DataAnnotationsValidator />
-	<ValidationSummary />
-	<div class="w-25 align-content-center">
-		<div class="form-floating mb-3">
-			<InputText @bind-Value="_registerModel.Username" class="form-control" id="floatingInput" placeholder="Логин" />
-			<label for="floatingInput">Логин</label>
-		</div>
-		<div class="form-floating mb-3">
-			<InputText type="password" @bind-Value="@_registerModel.Password" class="form-control" id="floatingPassword" autocomplete="new-password" aria-required="true" placeholder="Пароль" />
-			<label for="floatingPassword">Пароль</label>
-		</div>
-		<button type="submit" class="btn w-100 btn-outline-success">зарегистрироваться</button>
-	</div>
-</EditForm>
-
-@if (_registrationSuccess)
+@if (ModalUeeeeee)
 {
-	<p>Регистрация прошла успешно!</p>
-	<a href="logintrue"> кликните чтобы перейти в профиль</a>
+    <div class="modal fade show @(ModalUeeeeee ? "d-block" : "d-none")" tabindex="-1" role="dialog" style="display:block;">
+        <div class="modal-dialog modal-dialog-centered @(isClosing ? "closing" : "")">
+            <div class="modal-content">   
+                <div class="modal-header">
+                    <h5 class="modal-title">Регистрация</h5>
+                    <button type="button" @onclick="()=>CloseRegistrationModal()" class="btn-close">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <EditForm Model="@_registerModel" OnValidSubmit="HandleRegistration" FormName="register">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+                        <div class="mb-3">
+                            <InputText @bind-Value="_registerModel.Username" class="form-control" id="username" placeholder=" " autocomplete="off" />
+                            <label for="username">Логин</label>
+                        </div>
+                        <div class="mb-3">
+                            <InputText type="password" @bind-Value="@_registerModel.Password" class="form-control" id="password" placeholder=" " autocomplete="new-password" />
+                            <label for="password">Пароль</label>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Зарегистрироваться</button>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop show" @onclick="()=>CloseRegistrationModal()"></div>
 }
 
 @code {
-	[SupplyParameterFromForm]
-	private RegisterModel _registerModel { get; set; } = new();
-	private bool _registrationSuccess = false;
+    [SupplyParameterFromForm]
+    private RegisterModel _registerModel { get; set; } = new();
+    private bool _registrationSuccess = false;
+    private string _redirectTo;
+    private bool ModalUeeeeee { get; set; }
+    private bool isClosing { get; set; }
 
-	private async Task HandleRegistration()
-	{
-		User userAdd = new User { UserName = _registerModel.Username };
-		string roleName = "User";
-		if (_registerModel.Username == "nozdrin")
-		{
-			roleName = "Admin";
-		}
-		bool roleExsist = await RoleManager.RoleExistsAsync(roleName);
-		if (!roleExsist)
-		{
-			IdentityRole role = new IdentityRole(roleName);
-			await RoleManager.CreateAsync(role);
-		}
-		var result = await UserManager.CreateAsync(userAdd, _registerModel.Password);
+    private async Task HandleRegistration()
+    {
+        User userAdd = new User { UserName = _registerModel.Username };
+        string roleName = "User";
+        if (_registerModel.Username == "nozdrin")
+        {
+            roleName = "Admin";
+        }
+        bool roleExsist = await RoleManager.RoleExistsAsync(roleName);
+        if (!roleExsist)
+        {
+            IdentityRole role = new IdentityRole(roleName);
+            await RoleManager.CreateAsync(role);
+        }
+        var result = await UserManager.CreateAsync(userAdd, _registerModel.Password);
 
-		if (result.Succeeded)
-		{
-			_registrationSuccess = true;
-			await UserManager.AddToRoleAsync(userAdd, roleName);
-			await SignInManager.SignInAsync(userAdd, true);
-		}
-	}
-	public class RegisterModel
-	{
-		[Required(ErrorMessage = "Введите логин!")]
-		public string Username { get; set; }
-		[Required(ErrorMessage = "Введите пароль!")]
-		[DataType(DataType.Password)]
-		public string Password { get; set; }
-	}
+        if (result.Succeeded)
+        {
+            _registrationSuccess = true;
+            await UserManager.AddToRoleAsync(userAdd, roleName);
+            await CloseRegistrationModal();
+            _redirectTo = "/logintrue";
+            StateHasChanged();
+        }
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!string.IsNullOrEmpty(_redirectTo))
+        {
+            NavigationManager.NavigateTo(_redirectTo, true);
+            _redirectTo = null;
+        }
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        OpenRegistrationModal();
+    }
+    private async Task CloseRegistrationModal()
+    {
+        isClosing = true;
+
+        // Длительность анимации
+        await Task.Delay(400);
+        ModalUeeeeee = false;
+        isClosing = false;
+    }
+    private void OpenRegistrationModal()
+    {
+        if (!ModalUeeeeee)
+        {
+            ModalUeeeeee = true;
+        }
+        isClosing = false;
+    }
+    public class RegisterModel
+    {
+        [Required(ErrorMessage = "Введите логин!")]
+        public string Username { get; set; }
+        [Required(ErrorMessage = "Введите пароль!")]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+    }
 }

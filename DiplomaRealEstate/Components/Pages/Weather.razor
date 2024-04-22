@@ -1,11 +1,10 @@
 ﻿@page "/weather"
 @rendermode InteractiveServer
-<button class="btn btn-primary" @onclick="()=>OpenModal()">Нажми сюда</button>
 
 @if (ModalUeeeeee)
 {
-    <div class="modal fade show d-block" tabindex="-1" role="dialog" style="display:block; background-color:rgba(10,10,10,.8);">
-        <div class="modal-dialog">
+    <div class="modal fade show @(ModalUeeeeee ? "d-block" : "d-none")" tabindex="-1" role="dialog" style="display:block; background-color:rgba(10,10,10,.8);" @onclick="()=>CloseModal()">
+        <div class="modal-dialog @(isClosing ? "closing" : "")">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">
@@ -26,15 +25,24 @@
 @code {
     private bool ModalUeeeeee { get; set; }
     private int currentCount = 0;
-
+    private bool isClosing { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        OpenModal();
+    }
     private void OpenModal()
     {
         ModalUeeeeee = true;
+        isClosing = false;
     }
-
-    private void CloseModal()
+    private async Task CloseModal()
     {
+        isClosing = true;
+
+        // Длительность анимации
+        await Task.Delay(400); 
         ModalUeeeeee = false;
+        isClosing = false;
     }
 
     private void IncrementCount()
