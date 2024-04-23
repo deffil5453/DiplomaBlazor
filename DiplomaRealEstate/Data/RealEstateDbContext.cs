@@ -28,7 +28,7 @@ namespace BlazorApp10.Data
         public DbSet<FavoriteRealEstate> FavoriteRealEstates { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB; database=Diploma;Trusted_Connection=true;Integrated Security=true;TrustServerCertificate=true");
+            optionsBuilder.UseSqlServer("Server=DESKTOP-QHR1LI1\\MSSQLSERVERR; database=Diploma;Trusted_Connection=true;Integrated Security=true;TrustServerCertificate=true");
             base.OnConfiguring(optionsBuilder);
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)

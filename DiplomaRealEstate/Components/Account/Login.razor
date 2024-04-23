@@ -4,31 +4,45 @@
 @using Microsoft.AspNetCore.Identity
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Mvc
-@rendermode InteractiveServer
 @inject SignInManager<User> SignInMnager
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @attribute [ValidateAntiForgeryToken]
-<EditForm Model="@_loginModel" OnValidSubmit="HandleLogin" FormName="register">
-    <h1 class="mb-5">Авторизация</h1>
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <div class="w-25 align-content-center">
-        <div class="form-floating mb-3">
-            <InputText @bind-Value="_loginModel.Username" class="form-control" id="floatingInput" placeholder="Логин" />
-            <label for="floatingInput">Логин</label>
-        </div>
-        <div class="form-floating mb-3">
-            <InputText type="password" @bind-Value="@_loginModel.Password" class="form-control" id="floatingPassword" autocomplete="new-password" aria-required="true" placeholder="Пароль" />
-            <label for="floatingPassword">Пароль</label>
-        </div>
-        <button type="submit" class="btn w-100 btn-outline-success">Войти</button>
-    </div>
-</EditForm>
 
+@if (_modalUeeeeee)
+{
+    <div class="modal fade show @(_modalUeeeeee ? "d-block" : "d-none")" tabindex="-1" role="dialog" style="display:block;">
+        <div class="modal-dialog modal-dialog-centered @(_isClosing ? "closing" : "")">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Авторизация</h5>
+                    <button type="submit" @onclick="()=>CloseAuthoriztionModal()" class="btn-close btn-danger">
+                    </button>
+                </div>
+                <EditForm Model="@_loginModel" OnValidSubmit="HandleLogin" FormName="register">
+                    <div class="modal-body">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+                        <div class="mb-3">
+                            <InputText @bind-Value="_loginModel.Username" class="form-control" id="username" placeholder=" " autocomplete="off" />
+                            <label for="username">Логин</label>
+                        </div>
+                        <div class="mb-3">
+                            <InputText type="password" @bind-Value="@_loginModel.Password" class="form-control" id="password" placeholder=" " autocomplete="new-password" />
+                            <label for="password">Пароль</label>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Зарегистрироваться</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+}
 @code {
     [SupplyParameterFromForm]
     private LoginModel _loginModel { get; set; } = new();
+    private bool _modalUeeeeee { get; set; }
+    private bool _isClosing { get; set; }
     private async Task HandleLogin()
     {
         var result = await SignInMnager.PasswordSignInAsync(
@@ -39,6 +53,27 @@
         {
             NavigationManager.NavigateTo("/loginTrue");
         }
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        OpenRegistrationModal();
+    }
+    private async Task CloseAuthoriztionModal()
+    {
+        _modalUeeeeee = false;
+        if (_isClosing)
+        {
+            await Task.Delay(400); // Предполагаемая длительность анимации
+        }
+        StateHasChanged();
+    }
+    private void OpenRegistrationModal()
+    {
+        if (!_modalUeeeeee)
+        {
+            _modalUeeeeee = true;
+        }
+        _isClosing = false;
     }
     private class LoginModel
     {

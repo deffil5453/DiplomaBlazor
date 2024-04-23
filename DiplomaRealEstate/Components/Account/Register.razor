@@ -7,45 +7,58 @@
 @inject SignInManager<User> SignInManager
 @inject NavigationManager NavigationManager
 @inject RoleManager<IdentityRole> RoleManager
-@if (ModalUeeeeee)
+@if (_modalUeeeeee)
 {
-    <div class="modal fade show @(ModalUeeeeee ? "d-block" : "d-none")" tabindex="-1" role="dialog" style="display:block;">
-        <div class="modal-dialog modal-dialog-centered @(isClosing ? "closing" : "")">
-            <div class="modal-content">   
+    <div class="modal fade show @(_modalUeeeeee ? "d-block" : "d-none")" tabindex="-1" role="dialog" style="display:block;">
+        <div class="modal-dialog modal-dialog-centered @(_isClosing ? "closing" : "")">
+            <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Регистрация</h5>
-                    <button type="button" @onclick="()=>CloseRegistrationModal()" class="btn-close">
+                    <button type="button" @onclick="()=>CloseRegistrationModal()" class="btn-close btn-danger">
                     </button>
                 </div>
-                <div class="modal-body">
-                    <EditForm Model="@_registerModel" OnValidSubmit="HandleRegistration" FormName="register">
-                        <DataAnnotationsValidator />
-                        <ValidationSummary />
-                        <div class="mb-3">
-                            <InputText @bind-Value="_registerModel.Username" class="form-control" id="username" placeholder=" " autocomplete="off" />
-                            <label for="username">Логин</label>
-                        </div>
-                        <div class="mb-3">
-                            <InputText type="password" @bind-Value="@_registerModel.Password" class="form-control" id="password" placeholder=" " autocomplete="new-password" />
-                            <label for="password">Пароль</label>
-                        </div>
-                        <button type="submit" class="btn btn-success w-100">Зарегистрироваться</button>
-                    </EditForm>
-                </div>
+                @if (_registrationSuccess)
+                {
+                    <div class="modal-body">
+                        <h2>Регистрация успешно завершена!</h2>
+                        <a>Нажмите чтобы начать авторизацию для входа</a>
+                        <a href="login" type="submit" class="btn btn-success w-100">авторизоваться</a>
+                    </div>
+                }
+                else
+                {
+                    <div class="modal-body">
+                        <EditForm Model="@_registerModel" OnValidSubmit="HandleRegistration" FormName="register">
+                            <DataAnnotationsValidator />
+                            <ValidationSummary />
+                            <div class="mb-3">
+                                <InputText @bind-Value="_registerModel.Username" class="form-control" id="username" placeholder=" " autocomplete="off" />
+                                <label for="username">Логин</label>
+                            </div>
+                            <div class="mb-3">
+                                <InputText type="password" @bind-Value="@_registerModel.Password" class="form-control" id="password" placeholder=" " autocomplete="new-password" />
+                                <label for="password">Пароль</label>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">Зарегистрироваться</button>
+                        </EditForm>
+                    </div>
+                }
             </div>
         </div>
     </div>
     <div class="modal-backdrop show" @onclick="()=>CloseRegistrationModal()"></div>
 }
-
+else
+{
+    <button @onclick="()=>OpenRegistrationModal()">начать регистрацию</button>
+}
 @code {
     [SupplyParameterFromForm]
     private RegisterModel _registerModel { get; set; } = new();
     private bool _registrationSuccess = false;
     private string _redirectTo;
-    private bool ModalUeeeeee { get; set; }
-    private bool isClosing { get; set; }
-
+    private bool _modalUeeeeee { get; set; }
+    private bool _isClosing { get; set; }
     private async Task HandleRegistration()
     {
         User userAdd = new User { UserName = _registerModel.Username };
@@ -66,17 +79,8 @@
         {
             _registrationSuccess = true;
             await UserManager.AddToRoleAsync(userAdd, roleName);
-            await CloseRegistrationModal();
-            _redirectTo = "/logintrue";
+            // await CloseRegistrationModal();
             StateHasChanged();
-        }
-    }
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (!string.IsNullOrEmpty(_redirectTo))
-        {
-            NavigationManager.NavigateTo(_redirectTo, true);
-            _redirectTo = null;
         }
     }
     protected override async Task OnInitializedAsync()
@@ -85,20 +89,20 @@
     }
     private async Task CloseRegistrationModal()
     {
-        isClosing = true;
+        _isClosing = true;
 
         // Длительность анимации
         await Task.Delay(400);
-        ModalUeeeeee = false;
-        isClosing = false;
+        _modalUeeeeee = false;
+        _isClosing = false;
     }
     private void OpenRegistrationModal()
     {
-        if (!ModalUeeeeee)
+        if (!_modalUeeeeee)
         {
-            ModalUeeeeee = true;
+            _modalUeeeeee = true;
         }
-        isClosing = false;
+        _isClosing = false;
     }
     public class RegisterModel
     {
