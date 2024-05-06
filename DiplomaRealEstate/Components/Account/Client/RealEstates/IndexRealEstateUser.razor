@@ -6,37 +6,94 @@
 @using Microsoft.AspNetCore.Identity
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IRealEstateService RealEstateService
+@rendermode InteractiveServer
+<div class="container mt-4">
+    <div class="row">
+        @if (_listRealEstates.Count == 0)
+        {
+            <div class="col-12">
+                <div class="alert alert-info text-center" role="alert">
+                    <strong>У вас пока нет созданной недвижимости.</strong>
+                </div>
+            </div>
+        }
+        else
+        {
+            @foreach (var item in _listRealEstates)
+            {
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <img src="@($"/images/{item.Photos}")" class="card-img-top" alt="Фото недвижимости" style="object-fit: cover; height: 200px;">
+                        <div class="card-body d-flex flex-column">
+                            <p class="card-text mb-2">@item.Region, @item.City</p>
+                            <p class="card-text mb-2">Улица @item.Street, дом @item.House</p>
+                            <h6 class="card-text font-weight-bold mt-auto">Цена: @item.Price ₽</h6>
+                            <div class="mt-auto">
+                                <a href="editRealEstate/@item.Id" class="btn btn-custom edit-btn btn-sm">Редактировать</a>
+                                <a href="detailsRealEstate/@item.Id" class="btn btn-custom details-btn btn-sm">Подробнее</a>
+                                <button @onclick="() => RemoveRealEstate(item.Id)" class="btn btn-custom delete-btn btn-sm">Удалить</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+<style>
+    .real-estate-card {
+        transition: transform .2s; /* Animation */
+        margin-bottom: 30px;
+    }
 
+        .real-estate-card:hover {
+            transform: scale(1.02); /* (110% zoom - Note: if the zoom is too large, it will cause the page to scroll) */
+        }
 
-@foreach (var item in _listRealEstates)
-{
-	<div class="card mb-3" style="max-width: 500px">
-		<img src="/images/@item.Photos" />
-		<div class="col-md-6">
-			<p1>@item.Region, город @item.City</p1>
-			<p1>Улица @item.Street, дом @item.House</p1>
+    .card-img-top {
+        height: 200px;
+        object-fit: cover; /* ensures that images are sized properly */
+    }
 
-			<a href="https://yandex.ru/maps" target="_blank">
-				<img width="46px" height="46px" src="/images/world-map-with-a-placeholder.svg" />
-			</a>
-			<p>Описание: @item.Desctiption</p>
-			<p>Цена: @item.Price ₽</p>
-			<a href="editRealEstate/@item.Id" class="btn btn-outline-info">Редактировать</a>			
-			<button type="button" class="btn btn-outline-primary">
-				<img width="46px" height="46px" src="/images/world-map-with-a-placeholder.svg" />
-				<a href="https://yandex.ru/maps/?ll=@item.Latitude,@item.Longitude&z=12"> посмотреть на карте</a>
-			</button>
-		</div>
-	</div>
-}
+    .card-body {
+        background-color: #f8f9fa; /* Slightly different background to stand out */
+    }
 
+    .btn-custom {
+        margin-right: 5px;
+        color: white; /* Text color */
+    }
+
+        .btn-custom:hover {
+            opacity: 0.8; /* Slightly see-through */
+        }
+
+    .edit-btn {
+        background-color: #6c757d; /* Bootstrap secondary color */
+    }
+
+    .details-btn {
+        background-color: #007bff; /* Bootstrap primary color */
+    }
+
+    .delete-btn {
+        background-color: #dc3545; /* Bootstrap danger color */
+    }
+</style>
 @code {
     private List<RealEstate> _listRealEstates = new List<RealEstate>();
     private string _userId;
+
     protected override async Task OnInitializedAsync()
     {
         var authUser = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-		_userId = authUser.User.FindFirst(u => u.Type == ClaimTypes.NameIdentifier).Value;
+        _userId = authUser.User.FindFirst(u => u.Type is ClaimTypes.NameIdentifier)?.Value;
         _listRealEstates = await RealEstateService.GetAllRealEstateIUserAsync(_userId);
-	}
+    }
+    private async Task RemoveRealEstate(Guid realEstateId)
+    {
+        await RealEstateService.RemoveRealEstateAsync(realEstateId);
+
+        _listRealEstates = await RealEstateService.GetAllRealEstateIUserAsync(_userId);
+    }
 }

@@ -1,9 +1,108 @@
-﻿@page "/createTransaction/{FavoriteId:guid}"
+﻿@page "/createTransaction/{RealEstateId:guid}"
+@using DiplomaRealEstate.InputModel
+@using DiplomaRealEstate.Models
+@using DiplomaRealEstate.Services.FavoriteServices
+@using DiplomaRealEstate.Services.RealEstateServices
+@using DiplomaRealEstate.Services.TransactionServices
+@using DiplomaRealEstate.Services.UserServices
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ITransactionService TransactionService
+@inject IRealEstateService RealEstateService
+@inject IUserInterface UserServices
+@inject IFavoriteService FavoriteService
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+<div class="transaction-page container my-5">
+    <h2 class="text-center mb-4">Создание сделки</h2>
 
-<h3>CreateTransaction</h3>
-<h1>@FavoriteId</h1>
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <img src="/images/@_realEstateModel.Photos" alt="Фото недвижимости" class="img-fluid real-estate-photo" style="width:800px;" />
+        </div>
+        <div class="col-md-6">
+            <div class="seller-info mb-3">
+                <h4>Информация о недвижимости</h4>
+                
+                <p><b>Страна:</b> @_realEstateModel.Country</p>
+                <p><b>Регион:</b> @_realEstateModel.Region</p>
+                <p><b>Город:</b> @_realEstateModel.City</p>
+                <p><b>Улица:</b> @_realEstateModel.Street @_realEstateModel.House </p>
+                <p><b>Цена:</b> @_realEstateModel.Price </p>
+            </div>
+            <div class="seller-info mb-3">
+                <h4>Данные продавца</h4>
+                <p>@_seller.Id</p>
+                <p><b>ФИО:</b> @_seller.LastName @_seller.FirstName @_seller.MiddleName</p>
+            </div>
+            <div class="buyer-info">
+                <h4>Данные покупателя</h4>
+                <p>@_userId</p>
+                <p><b>ФИО:</b> @_customer.LastName @_customer.FirstName @_customer.MiddleName</p>
+            </div>
+        </div>
+        <div class="w-100 text-center mt-4">
+            <button class="btn btn-lg btn-success" @onclick="()=>CompleteTransaction(_realEstateModel.Id)">
+                Оплатить
+            </button>
+            @if (!string.IsNullOrWhiteSpace(_realEstateModel.Latitude) && !string.IsNullOrWhiteSpace(_realEstateModel.Longitude))
+            {
+                <a href="@CreateMapLink()" class="btn btn-lg btn-info" target="_blank">Смотреть на карте</a>
+            }
+        </div>
+    </div>
+</div>
 
+<style>
+    .real-estate-photo {
+        max-height: 400px;
+        border-radius: 0.25rem;
+    }
+
+    .seller-info, .buyer-info {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-radius: 0.25rem;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    }
+
+    h2, h4 {
+        color: #343a40;
+    }
+
+    p {
+        color: #6c757d;
+        margin-bottom: 0.5rem;
+    }
+</style>
 @code {
     [Parameter]
-    public Guid FavoriteId{ get; set; }
+    public Guid RealEstateId { get; set; }
+    private User _seller { get; set; } = new User();
+    private User _customer { get; set; } = new User();
+    private string _userId;
+    private RealEstateEditModel _realEstateModel { get; set; } = new RealEstateEditModel();
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        _userId = user.FindFirst(u => u.Type == ClaimTypes.NameIdentifier).Value;
+        _realEstateModel = await RealEstateService.GetRealEstateAsync(RealEstateId);
+        _seller = await UserServices.GetUserAsync(_realEstateModel.UserId);
+        _customer = await UserServices.GetUserAsync(_userId);
+    }
+    private async Task CompleteTransaction(Guid id)
+    {
+        await FavoriteService.RemoveFavoriteAsync(_userId, id);
+        await RealEstateService.RemoveRealEstateAsync(id);
+        NavigationManager.NavigateTo("/payTransaction");
+    }
+    private string CreateMapLink()
+    {
+        var addressText = $"{_realEstateModel.Country}, {_realEstateModel.Region}, {_realEstateModel.City}, " +
+                          $"{_realEstateModel.Street}";
+        var encodedAddress = Uri.EscapeDataString(addressText);
+        return $"https://yandex.ru/maps/?text={encodedAddress}&z=16&l=map";
+    }
 }

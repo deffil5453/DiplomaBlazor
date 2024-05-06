@@ -1,26 +1,16 @@
 ﻿@page "/weather"
-@rendermode InteractiveServer
 
-@if (ModalUeeeeee)
-{
-    <div class="modal fade show @(ModalUeeeeee ? "d-block" : "d-none")" tabindex="-1" role="dialog" style="display:block; background-color:rgba(10,10,10,.8);" @onclick="()=>CloseModal()">
-        <div class="modal-dialog @(isClosing ? "closing" : "")">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">
-                        Количество
-                    </h4>
-                    <button type="button" class="btn btn-secondary" @onclick="()=>CloseModal()">Закрыть</button>
-                </div>
-                <div class="modal-body">
-                    <p role="status">Текущее количество: @currentCount</p>
-                    <button type="button" class="btn btn-primary" @onclick="IncrementCount">Увеличить</button>
-                </div>
-            </div>
-        </div>
+<button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Включить прокрутку тела</button>
+
+<div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Offcanvas с прокруткой тела</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Закрыть"></button>
     </div>
-    <div class="modal-backdrop show"></div>
-}
+    <div class="offcanvas-body">
+        <p>Попробуйте прокрутить оставшуюся часть страницы, чтобы увидеть эту опцию в действии.</p>
+    </div>
+</div>
 
 @code {
     private bool ModalUeeeeee { get; set; }

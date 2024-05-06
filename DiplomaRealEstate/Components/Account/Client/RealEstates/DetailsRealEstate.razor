@@ -1,0 +1,111 @@
+﻿@page "/detailsRealEstate/{RealEstateId:guid}"
+@using DiplomaRealEstate.InputModel
+@using DiplomaRealEstate.Models
+@using DiplomaRealEstate.Services.RealEstateServices
+@inject IJSRuntime JSRuntime
+@inject IRealEstateService RealEstateService
+@rendermode InteractiveServer
+<PageTitle>Данные о недвижимости</PageTitle>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <h2 class="mb-3">Информация о недвижимости</h2>
+            <div class="card mt-3">
+                <div class="real-estate-image">
+                    <img src="/images/@_realEstateModel.Photos" style="width:400px;height: 400px;" />
+                </div>
+                <div class="card-body">
+                    <p class="card-text"><strong>Регион:</strong> @_realEstateModel.Region</p>
+                    <p class="card-text"><strong>Город:</strong> @_realEstateModel.City</p>
+                    <p class="card-text"><strong>Улица и номер дома:</strong> @_realEstateModel.Street, @_realEstateModel.House</p>
+                    <p class="card-text"><strong>Описание:</strong> @_realEstateModel.Desctiption</p>
+                    <p class="card-text">
+                        <strong>Категория:</strong>
+                        @{
+                            var category = _categories?.FirstOrDefault(c => c.Id == _realEstateModel.CategoryId);
+                        }
+                        @if (category != null)
+                        {
+                            @category.Name
+                        }
+                        else
+                        {
+                            <em>Категория не назначена</em>
+                        }
+                    </p>
+                    <p class="card-text">
+                        <strong>Тип недвижимости:</strong>
+                        @{
+                            var type = _types?.FirstOrDefault(t => t.Id == _realEstateModel.TypeRealEstateId);
+                        }
+                        @if (type != null)
+                        {
+                            @type.Name
+                        }
+                        else
+                        {
+                            <em>Тип не назначен</em>
+                        }
+                    </p>
+                    <!-- Другие детали объекта недвижимости -->
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <h4 class="mb-3">Местоположение на карте</h4>
+            <div id="map" class="border rounded" style="width: 100%; height: 600px;"></div>
+            <ul class="list-group list-group-flush mt-3">
+                <li class="list-group-item">
+                    <h6 class="my-0">Широта:</h6>
+                    <small class="text-muted">@_realEstateModel.Latitude</small>
+                </li>
+                <li class="list-group-item">
+                    <h6 class="my-0">Долгота:</h6>
+                    <small class="text-muted">@_realEstateModel.Longitude</small>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+@code {
+	private RealEstateEditModel _realEstateModel { get; set; } = new RealEstateEditModel();
+	[Parameter]
+	public Guid RealEstateId { get; set; }
+	private List<Category> _categories { get; set; }
+	private List<TypeRealEstate> _types { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		_categories = await RealEstateService.GetAllCategoryAsync();
+		_types = await RealEstateService.GetAllTypeAsync();
+		_realEstateModel = await RealEstateService.GetRealEstateAsync(RealEstateId);
+	}
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+            await JSRuntime.InvokeVoidAsync("initMap", _realEstateModel.Latitude, _realEstateModel.Longitude);
+		}
+	}
+}
+<script>
+    window.initMap = function (lat, lon) { // Добавьте параметры lon и lat
+        ymaps.ready(function () {
+            var center = [parseFloat(lat), parseFloat(lon)]; // Убедитесь, что координаты представлены в виде чисел
+            var myMap = new ymaps.Map('map', {
+                center: center, // Используйте координаты center
+                zoom: 16 // Подходящий масштаб
+            });
+
+            var myPlacemark = new ymaps.Placemark(center, { // И здесь тоже используйте координаты center
+                hintContent: 'местоположение метки'
+            }, {
+                preset: 'islands#redDotIcon', // Используйте необходимый стиль для метки
+                draggable: false
+            });
+
+            myMap.geoObjects.add(myPlacemark);
+        });
+    }
+</script>

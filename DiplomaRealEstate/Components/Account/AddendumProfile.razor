@@ -1,0 +1,105 @@
+﻿@page "/addendumProfile"
+@using DiplomaRealEstate.Models
+@using DiplomaRealEstate.Services.UserServices
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity
+@using System.ComponentModel.DataAnnotations
+@using System.Security.Claims
+@inject UserManager<User> UserManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+@inject IUserInterface UserServices
+<PageTitle>Обновление профиля</PageTitle>
+@if (_modalUeeeeee)
+{
+    <div class="modal fade show @(_modalUeeeeee ? "d-block" : "d-none")" tabindex="-1" role="dialog" style="display:block;">
+        <div class="modal-dialog modal-dialog-centered @(_isClosing ? "closing" : "")">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Обновление профиля</h5>
+                    <a href="" type="" class="btn-close btn-danger">
+                    </a>
+                </div>
+                @if (_registrationSuccess)
+                {
+                    <div class="modal-body">
+                        <h2>Обновление завершено!</h2>
+
+                    </div>
+                }
+                else
+                {
+                    <div class="modal-body">
+                        <EditForm Model="@_userDetailModel" OnValidSubmit="HandleUpdateProfile" FormName="UserDetailModel">
+                            <DataAnnotationsValidator />
+                            <ValidationSummary />
+
+                            <div class="form-group mb-3">
+                                <label for="LastName">Фамилия:</label>
+                                <InputText id="LastName" class="form-control" @bind-Value="@_userDetailModel.LastName" />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="FirstName">Имя:</label>
+                                <InputText id="FirstName" class="form-control" @bind-Value="@_userDetailModel.FirstName" />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="MiddleName">Отчество:</label>
+                                <InputText id="MiddleName" class="form-control" @bind-Value="@_userDetailModel.MiddleName" />
+                            </div>
+
+
+                            <div class="form-group mb-3">
+                                <label for="PhoneNumber">Номер телефона:</label>
+                                <InputText id="PhoneNumber" class="form-control" @bind-Value="@_userDetailModel.PhoneNumber" />
+                            </div>
+
+                            <button class="btn btn-primary">Обновить</button>
+                        </EditForm>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop show"></div>
+}
+
+@code {
+    [SupplyParameterFromForm]
+    private UserDetailModel _userDetailModel { get; set; } = new UserDetailModel();
+    private bool _modalUeeeeee { get; set; }
+    private bool _isClosing { get; set; }
+    private string _userId;
+    private bool _registrationSuccess = false;
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        _userId = user.FindFirst(u => u.Type == ClaimTypes.NameIdentifier).Value;
+
+        OpenRegistrationModal();
+    }
+    private void OpenRegistrationModal()
+    {
+        if (!_modalUeeeeee)
+        {
+            _modalUeeeeee = true;
+        }
+        _isClosing = false;
+    }
+
+    private async Task HandleUpdateProfile()
+    {
+        await UserServices.UptateUser(_userId, _userDetailModel);
+        _registrationSuccess = true;
+        StateHasChanged();
+    }
+
+    public class UserDetailModel
+    {
+        public string LastName { get; set; }
+        public string FirstName { get; set; }
+        public string MiddleName { get; set; }
+        public string PhoneNumber { get; set; }
+    }
+}

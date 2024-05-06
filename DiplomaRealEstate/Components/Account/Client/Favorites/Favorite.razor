@@ -6,34 +6,95 @@
 @using Microsoft.AspNetCore.Identity
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IFavoriteService FavoriteService
+@inject NavigationManager NavigationManager
 @rendermode InteractiveServer
-@foreach (var item in _favorites)
-{
-	<div class="card mb-3" style="max-width: 500px">
-		<img src="/images/@item.RealEstate.Photos" />
-		<div class="col-md-6">
-			<a>@item.RealEstate.Price</a>
-		</div>
-		<button>оформить сделку</button>
-		<button class="btn btn-outline-danger" @onclick="()=>RemoveFavorite(item.RealEstateId)">удалить</button>
-	</div>
-}
-		
+<div class="container my-5">
+    <h2 class="text-center mb-4">Избранное</h2>
+    @if (_favorites.Count == 0)
+    {
+        <div class="alert alert-info text-center" role="alert">
+            <strong>У вас пока нет избранного.</strong>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var item in _favorites)
+            {
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="card h-100 shadow">
+                        <img src="@($"/images/{item.RealEstate.Photos}")" class="card-img-top img-fluid" alt="Фото недвижимости" />
+                        <div class="card-body">
+                            <p class="card-text">@item.RealEstate.Region, @item.RealEstate.City</p>
+                            <p class="card-text"><b>Цена:</b> @item.RealEstate.Price ₽</p>
+                            <div class="d-flex justify-content-between align-items-center">
+
+                                <button class="btn btn-outline-success" @onclick="() => CreateTransaction(item.RealEstate.Id)">
+                                    оформить покупку
+                                </button>
+                                <button class="btn btn-outline-danger" @onclick="() => RemoveFavorite(item.RealEstateId)">
+                                    Удалить
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+<style>
+    .card {
+        transition: box-shadow .3s ease;
+    }
+
+        .card:hover {
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+        }
+
+    .card-img-top {
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .btn-primary {
+        margin-top: 10px;
+    }
+
+    .btn-outline-danger {
+        margin-top: 10px;
+    }
+
+    /* Регулируйте нижние отступы, чтобы все карточки были выровнены по нижнему краю, если имеют разное количество содержимого */
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+</style>
 @code {
-	private List<FavoriteRealEstate> _favorites = new List<FavoriteRealEstate>();
-	private string _userId;
-	protected override async Task OnInitializedAsync()
-	{
-		var authUser = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-		_userId = authUser.User.FindFirst(u => u.Type == ClaimTypes.NameIdentifier).Value;
-		_favorites = await FavoriteService.GetAllCartItemForUserAsync(_userId);
-	}
-	private async Task RemoveFavorite(Guid productId)
-	{
-		bool success = await FavoriteService.RemoveFavoriteAsync(_userId, productId);
-		if (success)
-		{
-			_favorites = await FavoriteService.GetAllCartItemForUserAsync(_userId);
-		}
-	}
+    private List<FavoriteRealEstate> _favorites = new List<FavoriteRealEstate>();
+    private string _userId;
+    protected override async Task OnInitializedAsync()
+    {
+        var authUser = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        _userId = authUser.User.FindFirst(u => u.Type == ClaimTypes.NameIdentifier).Value;
+        _favorites = await FavoriteService.GetAllCartItemForUserAsync(_userId);
+    }
+    private async Task RemoveFavorite(Guid productId)
+    {
+        bool success = await FavoriteService.RemoveFavoriteAsync(_userId, productId);
+        if (success)
+        {
+            _favorites = await FavoriteService.GetAllCartItemForUserAsync(_userId);
+        }
+    }
+    private async Task CreateTransaction(Guid productId)
+    {
+        bool success = await FavoriteService.RemoveFavoriteAsync(_userId, productId);
+        if (success)
+        {
+            NavigationManager.NavigateTo($"createTransaction/{productId}");
+        }
+    }
 }

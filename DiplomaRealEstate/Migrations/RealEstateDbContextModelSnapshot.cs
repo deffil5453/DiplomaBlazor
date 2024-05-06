@@ -39,12 +39,12 @@ namespace DiplomaRealEstate.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("dc906c50-704c-4704-be29-d0942e37e56f"),
+                            Id = new Guid("44be54f6-577e-4a29-b1d3-d53a7dffef47"),
                             Name = "Жилая собственность"
                         },
                         new
                         {
-                            Id = new Guid("fb35ec6d-d3a1-4600-b0b0-fcb219213147"),
+                            Id = new Guid("96c1f867-33e8-48dd-aef3-686090f9112f"),
                             Name = "Земельные участок"
                         });
                 });
@@ -195,17 +195,17 @@ namespace DiplomaRealEstate.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("b229fa40-d065-4834-ab5b-79ab200d02d1"),
+                            Id = new Guid("588fde12-8230-4917-af83-888e4734e087"),
                             Name = "Продано"
                         },
                         new
                         {
-                            Id = new Guid("601bc638-761a-4f0e-94db-fb98e0b32114"),
+                            Id = new Guid("3ffc1c8d-5ae4-4637-87b9-b7ec23a82ca3"),
                             Name = "Арендована"
                         },
                         new
                         {
-                            Id = new Guid("3f3aace5-d98a-4080-9249-14dc813667d1"),
+                            Id = new Guid("59be52e6-fcf5-45a4-a3c3-b4d7a37a1396"),
                             Name = "Активная"
                         });
                 });
@@ -261,12 +261,12 @@ namespace DiplomaRealEstate.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("3ee6d4c6-9943-4495-b89f-79f0e10b7e24"),
+                            Id = new Guid("40c6d2de-bb12-456a-90a3-b7bc44486d30"),
                             Name = "Дом "
                         },
                         new
                         {
-                            Id = new Guid("485a0587-2133-4009-a8fd-e12aa4f384a2"),
+                            Id = new Guid("8fc56fac-2e82-48ff-8969-1ae99849fb14"),
                             Name = "Земельный участок"
                         });
                 });
@@ -288,17 +288,17 @@ namespace DiplomaRealEstate.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("c6c5649e-2791-4a6b-9f28-6f27dab41bf8"),
+                            Id = new Guid("78fb9c72-6937-477f-9f07-f54b0f265650"),
                             Name = "Аренда"
                         },
                         new
                         {
-                            Id = new Guid("8e211217-bd82-443a-a463-67eebb6bcdcb"),
+                            Id = new Guid("f3c0429f-b9a1-4859-b1ac-4e6e54153c95"),
                             Name = "Продажа"
                         },
                         new
                         {
-                            Id = new Guid("a43c294e-c477-48ee-9abc-4e0018912493"),
+                            Id = new Guid("7e0746fb-9d22-4fce-8721-93a44e173a9f"),
                             Name = "Покупка"
                         });
                 });

@@ -7,8 +7,8 @@
 @inject SignInManager<User> SignInMnager
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
+<PageTitle>Авторизация</PageTitle>
 @attribute [ValidateAntiForgeryToken]
-
 @if (_modalUeeeeee)
 {
     <div class="modal fade show @(_modalUeeeeee ? "d-block" : "d-none")" tabindex="-1" role="dialog" style="display:block;">
@@ -16,8 +16,8 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Авторизация</h5>
-                    <button type="submit" @onclick="()=>CloseAuthoriztionModal()" class="btn-close btn-danger">
-                    </button>
+                    <a href="" type="submit" class="btn-close btn-danger">
+                    </a>
                 </div>
                 <EditForm Model="@_loginModel" OnValidSubmit="HandleLogin" FormName="register">
                     <div class="modal-body">
@@ -31,12 +31,14 @@
                             <InputText type="password" @bind-Value="@_loginModel.Password" class="form-control" id="password" placeholder=" " autocomplete="new-password" />
                             <label for="password">Пароль</label>
                         </div>
-                        <button type="submit" class="btn btn-success w-100">Зарегистрироваться</button>
+                        <button type="submit" class="btn btn-success w-100">Войти</button>
+                        <a href="register" class="text-center">Зарегистрироваться</a>
                     </div>
                 </EditForm>
             </div>
         </div>
     </div>
+        <div class="modal-backdrop show"> </div>
 }
 @code {
     [SupplyParameterFromForm]
@@ -49,6 +51,10 @@
             _loginModel.Username,
             _loginModel.Password,
             isPersistent: false, lockoutOnFailure: false);
+            if (true)
+        {
+            
+        }
         if (result.Succeeded)
         {
             NavigationManager.NavigateTo("/loginTrue");
@@ -57,15 +63,6 @@
     protected override async Task OnInitializedAsync()
     {
         OpenRegistrationModal();
-    }
-    private async Task CloseAuthoriztionModal()
-    {
-        _modalUeeeeee = false;
-        if (_isClosing)
-        {
-            await Task.Delay(400); // Предполагаемая длительность анимации
-        }
-        StateHasChanged();
     }
     private void OpenRegistrationModal()
     {

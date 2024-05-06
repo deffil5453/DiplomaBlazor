@@ -7,6 +7,7 @@
 @inject SignInManager<User> SignInManager
 @inject NavigationManager NavigationManager
 @inject RoleManager<IdentityRole> RoleManager
+<PageTitle>Регистрация</PageTitle>
 @if (_modalUeeeeee)
 {
     <div class="modal fade show @(_modalUeeeeee ? "d-block" : "d-none")" tabindex="-1" role="dialog" style="display:block;">
@@ -14,8 +15,8 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Регистрация</h5>
-                    <button type="button" @onclick="()=>CloseRegistrationModal()" class="btn-close btn-danger">
-                    </button>
+                    <a href="" type="" class="btn-close btn-danger">
+                    </a>
                 </div>
                 @if (_registrationSuccess)
                 {
@@ -46,17 +47,12 @@
             </div>
         </div>
     </div>
-    <div class="modal-backdrop show" @onclick="()=>CloseRegistrationModal()"></div>
-}
-else
-{
-    <button @onclick="()=>OpenRegistrationModal()">начать регистрацию</button>
+    <div class="modal-backdrop show"></div>
 }
 @code {
     [SupplyParameterFromForm]
     private RegisterModel _registerModel { get; set; } = new();
     private bool _registrationSuccess = false;
-    private string _redirectTo;
     private bool _modalUeeeeee { get; set; }
     private bool _isClosing { get; set; }
     private async Task HandleRegistration()
@@ -79,22 +75,12 @@ else
         {
             _registrationSuccess = true;
             await UserManager.AddToRoleAsync(userAdd, roleName);
-            // await CloseRegistrationModal();
             StateHasChanged();
         }
     }
     protected override async Task OnInitializedAsync()
     {
         OpenRegistrationModal();
-    }
-    private async Task CloseRegistrationModal()
-    {
-        _isClosing = true;
-
-        // Длительность анимации
-        await Task.Delay(400);
-        _modalUeeeeee = false;
-        _isClosing = false;
     }
     private void OpenRegistrationModal()
     {

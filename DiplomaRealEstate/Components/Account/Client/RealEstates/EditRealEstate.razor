@@ -2,11 +2,14 @@
 @using DiplomaRealEstate.InputModel
 @using DiplomaRealEstate.Models
 @using DiplomaRealEstate.Services.RealEstateServices
+@inject IJSRuntime JSRuntime
 @inject IRealEstateService RealEstateService
 @rendermode InteractiveServer
+<PageTitle>Редактирование недвижимости</PageTitle>
 <EditForm Model="@_realEstateModel" OnValidSubmit="UpdateRealEstateValidSubmit" FormName="update">
 	<DataAnnotationsValidator />
 	<ValidationSummary />
+	<h1>Редактирование</h1>
 	<div class="form-floating mb-3">
 		<InputText id="Areas" class="form-control" @bind-Value="_realEstateModel.Area" placeholder="212314" />
 		<label for="Areas">Площадь</label>
@@ -43,7 +46,7 @@
 		<InputText id="Houses" class="form-control" @bind-Value="_realEstateModel.House" placeholder="212314" />
 		<label for="Houses">Дом</label>
 	</div>
-
+	<div id="map" style="width: 100%; height: 400px;" class="mb-3"></div>
 	<div class="input-group mb-3">
 		<span class="input-group-text">Широта и Долгота</span>
 		<InputText id="Latitudes" class="form-control" @bind-Value="_realEstateModel.Latitude" placeholder="212314" />
@@ -55,8 +58,8 @@
 	@if (_categories != null)
 	{
 		<div class="form-floating mb-3">
-			<label for="categories">Категория</label>
-			<InputSelect id="categories" class="form-control" @bind-Value="_realEstateModel.CategoryId" placeholder="Категория">
+			<InputSelect id="categories" class="form-control" @bind-Value="_realEstateModel.CategoryId" >
+				<option selected>Категория</option>
 				@foreach (var category in _categories)
 				{
 					<option value="@category.Id">@category.Name</option>
@@ -67,8 +70,8 @@
 	@if (_types != null)
 	{
 		<div class="form-floating mb-3">
-			<label for="types">Тип недвижимости</label>
-			<InputSelect id="types" class="form-control" @bind-Value="_realEstateModel.TypeRealEstateId" placeholder="Тип недвижимости">
+			<InputSelect id="types" class="form-control" @bind-Value="_realEstateModel.TypeRealEstateId" >
+				<option selected>Тип недвижимости</option>
 				@foreach (var category in _types)
 				{
 					<option value="@category.Id">@category.Name</option>
@@ -100,8 +103,57 @@
 			_realEstateModel.Photos = file.Name;
 		}
 	}
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			await JSRuntime.InvokeVoidAsync("initMap", DotNetObjectReference.Create(this), _realEstateModel.Latitude, _realEstateModel.Longitude);
+		}
+	}
+
+	[JSInvokable]
+	public async Task SetCoordinates(string latitude, string longitude)
+	{
+		_realEstateModel.Latitude = latitude;
+		_realEstateModel.Longitude = longitude;
+		await InvokeAsync(StateHasChanged);
+	}
 	private async Task UpdateRealEstateValidSubmit()
 	{
 		await RealEstateService.UpdateRealEstate(_realEstateModel.Id, _realEstateModel);
 	}
 }
+<script>
+	window.initMap = function (dotNetObjRef, lat, lon) {
+		ymaps.ready(function () {
+			var center = [parseFloat(lat), parseFloat(lon)]; 
+			var myMap = new ymaps.Map('map', {
+				center: center, 
+				zoom: 16 
+			});
+
+			var myPlacemark = new ymaps.Placemark(center, {
+				hintContent: 'местоположение метки, т.е. недвижимости'
+			}, {
+				draggable: false
+			});
+
+			myMap.geoObjects.add(myPlacemark);
+
+			function setPlacemarkCoords(coords) {
+				myPlacemark.geometry.setCoordinates(coords);
+				dotNetObjRef.invokeMethodAsync('SetCoordinates', coords[0].toString(), coords[1].toString());
+			}
+
+			myPlacemark.events.add('dragend', function (e) {
+				var coords = myPlacemark.geometry.getCoordinates();
+				setPlacemarkCoords(coords);
+			});
+
+			myMap.events.add('click', function (e) {
+				var coords = e.get('coords');
+				setPlacemarkCoords(coords);
+			});
+		});
+	}
+</script>

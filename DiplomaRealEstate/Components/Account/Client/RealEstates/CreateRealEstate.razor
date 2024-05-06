@@ -4,81 +4,110 @@
 @using DiplomaRealEstate.Models
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
-
+@inject IJSRuntime JSRuntime
 @inject IRealEstateService RealEstateServices
 @inject AuthenticationStateProvider AuthenticationStateProvider
-
+<PageTitle>Создание недвижимости</PageTitle>
 @rendermode InteractiveServer
-
-<EditForm Model="@_realEstateInputModel" OnValidSubmit="CreateRealEstateValidSubmit" FormName="create">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <div class="form-floating mb-4">
-        <InputText id="Areas" class="form-control" @bind-Value="_realEstateInputModel.Area" placeholder="212314" />
-        <label for="Areas">Площадь м²</label>
-    </div>
-    <div class="form-floating mb-4">
-        <InputNumber id="Prices" class="form-control" @bind-Value="_realEstateInputModel.Price" placeholder="212314" />
-        <label for="Prices">Цена ₽</label>
-    </div>
-    <div class="form-floating mb-4">
-        <InputNumber id="Room" class="form-control" @bind-Value="_realEstateInputModel.Rooms" placeholder="212314" />
-        <label for="Room">Число комнат</label>
-    </div>
-    <div class="form-floating mb-4">
-        <InputText id="Country" class="form-control" @bind-Value="_realEstateInputModel.Country" placeholder="212314" />
-        <label for="Room">Страна</label>
-    </div>
-    <div class="form-floating mb-4">
-        <InputText id="Region" class="form-control" @bind-Value="_realEstateInputModel.Region" placeholder="212314" />
-        <label for="Room">Регион</label>
-    </div>
-    <div class="form-floating mb-4">
-        <InputText id="City" class="form-control" @bind-Value="_realEstateInputModel.City" placeholder="212314" />
-        <label for="Room">Город</label>
-    </div>
-    <div class="form-floating mb-4">
-        <InputText id="Street" class="form-control" @bind-Value="_realEstateInputModel.Street" placeholder="212314" />
-        <label for="Room">Улица</label>
-    </div>
-    <div class="form-floating mb-4">
-        <InputText id="House" class="form-control" @bind-Value="_realEstateInputModel.House" placeholder="212314" />
-        <label for="Room">Номер дома</label>
-    </div>
-
-    <InputText id="Latitude" @bind-Value="_realEstateInputModel.Latitude" />
-    <InputText id="Longitude" @bind-Value="_realEstateInputModel.Longitude" />
-    <div class="form-floating input-group mb-4">
-        <InputFile id="photos" class="form-floating" OnChange="HandleFileSelected" />
-    </div>
-    @if (_categories != null)
-    {
-        <div class="form-floating mb-4">
-            <label for="categories">Категория</label>
-            <InputSelect id="categories" class="form-control" @bind-Value="_realEstateInputModel.CategoryId" placeholder="Категория">
-                <option selected>Уэээээээ...</option>
-                @foreach (var category in _categories)
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-6">
+            <h4 class="mb-3">Детали недвижимости</h4>
+            <EditForm Model="@_realEstateInputModel" OnValidSubmit="CreateRealEstateValidSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div class="form-group mb-3">
+                    <label for="Areas">Площадь м²</label>
+                    <InputText id="Areas" class="form-control" @bind-Value="_realEstateInputModel.Area" />
+                </div>
+                <div class="form-floating mb-4">
+                    <InputNumber id="Prices" class="form-control" @bind-Value="_realEstateInputModel.Price" placeholder="212314" />
+                    <label for="Prices">Цена ₽</label>
+                </div>
+                <div class="form-floating mb-4">
+                    <InputNumber id="Room" class="form-control" @bind-Value="_realEstateInputModel.Rooms" placeholder="212314" />
+                    <label for="Room">Число комнат</label>
+                </div>
+                <div class="form-floating mb-4">
+                    <InputText id="Country" class="form-control" @bind-Value="_realEstateInputModel.Country" placeholder="212314" />
+                    <label for="Room">Страна</label>
+                </div>
+                <div class="form-floating mb-4">
+                    <InputText id="Region" class="form-control" @bind-Value="_realEstateInputModel.Region" placeholder="212314" />
+                    <label for="Room">Регион</label>
+                </div>
+                <div class="form-floating mb-4">
+                    <InputText id="City" class="form-control" @bind-Value="_realEstateInputModel.City" placeholder="212314" />
+                    <label for="Room">Город</label>
+                </div>
+                <div class="form-floating mb-4">
+                    <InputText id="Street" class="form-control" @bind-Value="_realEstateInputModel.Street" placeholder="212314" />
+                    <label for="Room">Улица</label>
+                </div>
+                <div class="form-floating mb-4">
+                    <InputText id="House" class="form-control" @bind-Value="_realEstateInputModel.House" placeholder="212314" />
+                    <label for="Room">Номер дома</label>
+                </div>
+                <div class="form-floating mb-4">
+                    <InputTextArea id="Description" class="form-control" @bind-Value="_realEstateInputModel.Desctiption" placeholder="Описание" />
+                    <label for="Description">Описание</label>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="Photos">Фотографии</label>
+                    <InputFile id="photos" class="form-control" OnChange="HandleFileSelected" />
+                </div>
+                @if (_categories != null)
                 {
-                    <option value="@category.Id">@category.Name</option>
+                    <div class="form-floating mb-4">
+                        <InputSelect id="categories" class="form-control" @bind-Value="_realEstateInputModel.CategoryId" placeholder="Категория">
+                            <option selected>Категория</option>
+                            @foreach (var category in _categories)
+                            {
+                                <option value="@category.Id">@category.Name</option>
+                            }
+                        </InputSelect>
+                    </div>
                 }
-            </InputSelect>
-        </div>
-    }
-    @if (_types != null)
-    {
-        <div class="form-floating mb-4">
-            <label for="types">Тип недвижимости</label>
-            <InputSelect id="types" class="form-control h-100" @bind-Value="_realEstateInputModel.TypeRealEstateId" placeholder="Тип недвижимости">
-                <option selected>Уэээээээ...</option>
-                @foreach (var category in _types)
+                @if (_types != null)
                 {
-                    <option value="@category.Id">@category.Name</option>
+                    <div class="form-floating mb-4">
+                        <InputSelect id="types" class="form-control h-100" @bind-Value="_realEstateInputModel.TypeRealEstateId" placeholder="Тип недвижимости">
+                            <option selected>Тип недвижимости</option>
+                            @foreach (var category in _types)
+                            {
+                                <option value="@category.Id">@category.Name</option>
+                            }
+                        </InputSelect>
+                    </div>
                 }
-            </InputSelect>
+
+                <div class="d-block my-3">
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">Создать</button>
+                </div>
+            </EditForm>
         </div>
-    }
-    <button type="submit" class="btn btn-outline-primary">Добавить</button>
-</EditForm>
+        <div class="col-md-6    ">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">Местоположение на карте</span>
+            </h4>
+            <div id="map" style="width: 100%; height: 450px;" class="border rounded mb-3"></div>
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                    <div>
+                        <h6 class="my-0">Широта:</h6>
+                        <small class="text-muted">@_realEstateInputModel.Latitude</small>
+                    </div>
+                </li>
+                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                    <div>
+                        <h6 class="my-0">Долгота:</h6>
+                        <small class="text-muted">@_realEstateInputModel.Longitude</small>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
 @code {
 
 
@@ -105,6 +134,21 @@
             }
         }
     }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("initMap", DotNetObjectReference.Create(this));
+        }
+    }
+
+    [JSInvokable]
+    public async Task SetCoordinates(string latitude, string longitude)
+    {
+        _realEstateInputModel.Latitude = latitude;
+        _realEstateInputModel.Longitude = longitude;
+        await InvokeAsync(StateHasChanged);
+    }
 
     private async Task CreateRealEstateValidSubmit()
     {
@@ -113,7 +157,41 @@
         if (user.Identity.IsAuthenticated)
         {
             _realEstateInputModel.UserId = user.FindFirst(u => u.Type == ClaimTypes.NameIdentifier).Value;
+
             await RealEstateServices.AddRealEstateAsync(_realEstateInputModel);
         }
     }
 }
+<script>
+    window.initMap = function (dotNetObjRef) {
+        ymaps.ready(function () {
+            var myMap = new ymaps.Map('map', {
+                center: [55.76, 37.64], // Координаты по умолчанию
+                zoom: 9
+            });
+
+            var myPlacemark = new ymaps.Placemark([55.76, 37.64], {
+                hintContent: 'местоположение метки'
+            }, {
+                draggable: false
+            });
+
+            myMap.geoObjects.add(myPlacemark);
+
+            function setPlacemarkCoords(coords) {
+                myPlacemark.geometry.setCoordinates(coords);
+                dotNetObjRef.invokeMethodAsync('SetCoordinates', coords[0].toString(), coords[1].toString());
+            }
+
+            myPlacemark.events.add('dragend', function (e) {
+                var coords = myPlacemark.geometry.getCoordinates();
+                setPlacemarkCoords(coords);
+            });
+
+            myMap.events.add('click', function (e) {
+                var coords = e.get('coords');
+                setPlacemarkCoords(coords);
+            });
+        });
+    }
+</script>

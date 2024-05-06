@@ -1,0 +1,44 @@
+﻿@page "/indexAllRealEstate"
+
+@using DiplomaRealEstate.Models
+@using DiplomaRealEstate.Services.FavoriteServices
+@using DiplomaRealEstate.Services.RealEstateServices
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+
+@inject IRealEstateService RealEstateService
+@inject IFavoriteService FavoriteService
+@inject NavigationManager NavigationManager
+
+@rendermode InteractiveServer
+<PageTitle>Каталог недвижимости</PageTitle>
+<p>список недвижимости</p>
+@foreach (var item in _realEstates)
+{
+    <div class="card mb-3" style="max-width: 500px">
+        <img src="/images/@item.Photos" />
+        <div class="col-md-6">
+            <p1>@item.Region,</p1>
+            <p1>город @item.City,</p1>
+            <p1>Улица @item.Street,</p1>
+            <p1>Дом @item.House,</p1>
+            <p>Цена: @item.Price ₽</p>
+            <button type="button" class="btn btn-outline-primary">
+                <img width="46px" height="46px" src="/images/world-map-with-a-placeholder.svg" />
+                <a href="https://yandex.ru/maps/?ll=@item.Latitude,@item.Longitude&mode=poi&poi%5Bpoint%5D=@item.Latitude,@item.Longitude&poi%5Buri%5D=ymapsbm1%3A%2F%2Forg%3Foid%3D1236305364&z=19">на карте</a>
+            </button>
+        </div>
+    </div>
+}
+@code {
+    private List<RealEstate> _realEstates = new List<RealEstate>();
+    private bool _isAuthenticated;
+    private bool _isAdmin;
+    public string _userId;
+    private string? _favoriteAddedMessage;
+    private Dictionary<Guid, bool> _favoritesState = new Dictionary<Guid, bool>();
+    protected override async Task OnInitializedAsync()
+    {
+        _realEstates = await RealEstateService.GetAllRealEstateAsync();
+    }
+}

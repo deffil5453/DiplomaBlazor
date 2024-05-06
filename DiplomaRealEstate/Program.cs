@@ -4,6 +4,7 @@ using DiplomaRealEstate.Components;
 using DiplomaRealEstate.Models;
 using DiplomaRealEstate.Services.FavoriteServices;
 using DiplomaRealEstate.Services.RealEstateServices;
+using DiplomaRealEstate.Services.TransactionServices;
 using DiplomaRealEstate.Services.UserServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,7 @@ builder.Services.AddBlazoredModal();
 builder.Services.AddScoped<IRealEstateService, RealEstateService>();
 builder.Services.AddScoped<IUserInterface, UserServices>();
 builder.Services.AddScoped<IFavoriteService, FavoriteService>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddDefaultIdentity<User>(options =>
 {
     options.Password.RequireDigit = false;
