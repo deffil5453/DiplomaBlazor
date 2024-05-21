@@ -19,7 +19,7 @@ namespace BlazorApp10.Data
 
         public DbSet<User> User { get; set; }
         public DbSet<RealEstate> RealEstates { get; set; }
-        public DbSet<Status> Statuses { get; set; }
+        public DbSet<TypeSale> TypeSales { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<TransactionOrder> TransactionOrders { get; set; }
         public DbSet<TypeRealEstate> TypeRealEstates { get; set; }
@@ -40,8 +40,8 @@ namespace BlazorApp10.Data
         private void SeedData(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Category>().HasData(
-                new Status { Id = Guid.NewGuid(), Name = "Жилая собственность" },
-                new Status { Id = Guid.NewGuid(), Name = "Земельные участок" }
+                new Category { Id = Guid.NewGuid(), Name = "Жилая собственность" },
+                new Category { Id = Guid.NewGuid(), Name = "Земельные участок" }
             );
 
             modelBuilder.Entity<TypeRealEstate>().HasData(
@@ -49,15 +49,13 @@ namespace BlazorApp10.Data
                 new TypeRealEstate { Id = Guid.NewGuid(), Name = "Земельный участок" }
             );
 
-            modelBuilder.Entity<Status>().HasData(
-                new Category { Id = Guid.NewGuid(), Name = "Продано" },
-                new Category { Id = Guid.NewGuid(), Name = "Арендована" },
-                new Category { Id = Guid.NewGuid(), Name = "Активная" }
+            modelBuilder.Entity<TypeSale>().HasData(
+                new TypeSale { Id = Guid.NewGuid(), Name = "Продажа" },
+                new TypeSale { Id = Guid.NewGuid(), Name = "Аренда" }
             );
             modelBuilder.Entity<TypeTransaction>().HasData
                 (
                     new TypeTransaction { Id = Guid.NewGuid(), Name = "Аренда" },
-                    new TypeTransaction { Id = Guid.NewGuid(), Name = "Продажа" },
                     new TypeTransaction { Id = Guid.NewGuid(), Name = "Покупка" }
                 );
         }

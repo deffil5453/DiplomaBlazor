@@ -94,6 +94,11 @@
     }
     private async Task CompleteTransaction(Guid id)
     {
+        bool isFavorite = await FavoriteService.GetFavoriteByUserAsync(_userId, id);
+        if (!isFavorite)
+        {
+            await FavoriteService.AddFavoriteAsync(_userId, id);
+        }
         await FavoriteService.RemoveFavoriteAsync(_userId, id);
         await RealEstateService.RemoveRealEstateAsync(id);
         NavigationManager.NavigateTo("/payTransaction");

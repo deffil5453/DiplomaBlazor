@@ -17,6 +17,7 @@ namespace DiplomaRealEstate.InputModel
         public string? Longitude { get; set; } = "0";
         public string Photos { get; set; }
         public string UserId { get; set; }
+        public Guid TypeSalesId { get; set; }
         public Guid TypeRealEstateId { get; set; }
         public Guid CategoryId { get; set; }
     }

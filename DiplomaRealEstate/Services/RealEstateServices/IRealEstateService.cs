@@ -12,6 +12,7 @@ namespace DiplomaRealEstate.Services.RealEstateServices
         Task RemoveRealEstateAsync(Guid realEstateId);
 		Task UpdateRealEstate(Guid Id, RealEstateEditModel model);
         Task<List<Category>> GetAllCategoryAsync();
+        Task<List<TypeSale>> GetAllTypeSaleAsync();
         Task<List<TypeRealEstate>> GetAllTypeAsync();
     }
 }

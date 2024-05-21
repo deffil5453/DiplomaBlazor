@@ -1,5 +1,5 @@
-﻿using DiplomaRealEstate.Models;
-using static DiplomaRealEstate.Components.Account.AddendumProfile;
+﻿using DiplomaRealEstate.InputModel;
+using DiplomaRealEstate.Models;
 
 namespace DiplomaRealEstate.Services.UserServices
 {
@@ -7,7 +7,7 @@ namespace DiplomaRealEstate.Services.UserServices
     {
         Task<List<User>> GetAllUserAsync();
         Task DeleteUser(string UserId);
-        Task UptateUser(string UserId, UserDetailModel userDetailModel);
+        Task UptateUser(string UserId, UserDetailInputModel userDetailModel);
         Task<User> GetUserAsync(string userId);
     }
 }

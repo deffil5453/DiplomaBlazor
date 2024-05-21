@@ -1,4 +1,5 @@
 ﻿using BlazorApp10.Data;
+using DiplomaRealEstate.InputModel;
 using DiplomaRealEstate.Models;
 using Microsoft.EntityFrameworkCore;
 using static DiplomaRealEstate.Components.Account.AddendumProfile;
@@ -36,7 +37,7 @@ namespace DiplomaRealEstate.Services.UserServices
             }
         }
 
-        public async Task UptateUser(string UserId, UserDetailModel userDetailModel)
+        public async Task UptateUser(string UserId, UserDetailInputModel userDetailModel)
         {
             using (var dbContext = new RealEstateDbContext())
             {

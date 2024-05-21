@@ -8,35 +8,108 @@
 
 @inject IRealEstateService RealEstateService
 @inject IFavoriteService FavoriteService
+@inject AuthenticationStateProvider AutenticationStateProvider
 @inject NavigationManager NavigationManager
 
 @rendermode InteractiveServer
+
 <PageTitle>Каталог недвижимости</PageTitle>
-<p>список недвижимости</p>
-@foreach (var item in _realEstates)
-{
-    <div class="card mb-3" style="max-width: 500px">
-        <img src="/images/@item.Photos" />
-        <div class="col-md-6">
-            <p1>@item.Region,</p1>
-            <p1>город @item.City,</p1>
-            <p1>Улица @item.Street,</p1>
-            <p1>Дом @item.House,</p1>
-            <p>Цена: @item.Price ₽</p>
-            <button type="button" class="btn btn-outline-primary">
-                <img width="46px" height="46px" src="/images/world-map-with-a-placeholder.svg" />
-                <a href="https://yandex.ru/maps/?ll=@item.Latitude,@item.Longitude&mode=poi&poi%5Bpoint%5D=@item.Latitude,@item.Longitude&poi%5Buri%5D=ymapsbm1%3A%2F%2Forg%3Foid%3D1236305364&z=19">на карте</a>
-            </button>
+
+<div class="container py-5">
+    <h1 class="text-center mb-1">Каталог недвижимости</h1>
+    @if (_realEstates.Count == 0)
+    {
+        <h1 class="text-center mb-4">
+            Упс, ничего нет(((
+        </h1>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var item in _realEstates)
+            {
+                <div class="col-md-4 mb-3">
+                    <div class="card real-estate-card h-100 shadow">
+                        <div class="real-estate-image">
+                            <img src="/images/@item.Photos" style="width:400px;height: 400px;" />
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">@item.Region, @item.City</h5>
+                            <p class="card-text flex-grow-1">@item.Street, д. @item.House</p>
+                            @if (item.TypeSale.Name == "Аренда")
+                            {
+                                <h3 class="mb-3 text-success">@item.Price ₽ в месяц</h3>
+                            }
+                            else
+                            {
+                                <h3 class="mb-3 text-success">@item.Price ₽</h3>
+                            }
+                            <a href="detailsRealEstate/@item.Id" class="mb-3 btn btn-outline-primary">Подробнее</a>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
-    </div>
-}
+    }
+</div>
+
+<style>
+    .btn-favorite {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        color: #dc3545;
+        font-size: 1.5rem;
+    }
+
+    .btn-outline-success {
+        color: #28a745 !important;
+    }
+
+    .btn-outline-primary {
+        color: #007bff !important;
+    }
+
+    .fa-heart {
+        transition: color 0.3s;
+    }
+
+        .fa-heart:hover {
+            color: #dc3545;
+        }
+
+    .real-estate-card {
+        transition: transform .3s ease-in-out;
+        border-radius: 1px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+        .real-estate-card:hover {
+            transform: translateY(-10px);
+        }
+
+    .real-estate-image {
+        height: 400px;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .card-title {
+        font-weight: bold;
+    }
+
+    .card-body {
+        background-color: #f8f9fa;
+    }
+
+    .text-success {
+        color: #28a745 !important;
+    }
+</style>
 @code {
     private List<RealEstate> _realEstates = new List<RealEstate>();
-    private bool _isAuthenticated;
-    private bool _isAdmin;
-    public string _userId;
-    private string? _favoriteAddedMessage;
-    private Dictionary<Guid, bool> _favoritesState = new Dictionary<Guid, bool>();
+
     protected override async Task OnInitializedAsync()
     {
         _realEstates = await RealEstateService.GetAllRealEstateAsync();

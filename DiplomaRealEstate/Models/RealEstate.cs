@@ -18,15 +18,15 @@ namespace DiplomaRealEstate.Models
         public string Photos { get; set; }
         public string UserId { get; set; }
         public Guid TypeRealEstateId { get; set; }
-        public Guid StatusId { get; set; }
+        public Guid TypeSaleId { get; set; }
         public Guid CategoryId { get; set; }
         public Guid? ReviewId { get; set; }
         public User User { get; set; }
         public TypeRealEstate TypeRealEstate { get; set; }
-        public Status Status { get; set; }
+        public TypeSale TypeSale { get; set; }
         public Category Category { get; set; }
         public Review Review { get; set; }
-        public List<TransactionOrder> TransactionProperties { get; set; }
+        public List<TransactionOrder>? TransactionProperties { get; set; }
         public List<FavoriteRealEstate>? CartItems { get; set; }
     }
 }

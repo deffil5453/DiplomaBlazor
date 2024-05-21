@@ -1,6 +1,7 @@
 ﻿@page "/addendumProfile"
 @using DiplomaRealEstate.Models
 @using DiplomaRealEstate.Services.UserServices
+@using DiplomaRealEstate.InputModel
 @using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Identity
@@ -31,27 +32,27 @@
                 else
                 {
                     <div class="modal-body">
-                        <EditForm Model="@_userDetailModel" OnValidSubmit="HandleUpdateProfile" FormName="UserDetailModel">
+                        <EditForm Model="@_userDetailInputModel" OnValidSubmit="HandleUpdateProfile" FormName="UserDetailModel">
                             <DataAnnotationsValidator />
                             <ValidationSummary />
 
                             <div class="form-group mb-3">
                                 <label for="LastName">Фамилия:</label>
-                                <InputText id="LastName" class="form-control" @bind-Value="@_userDetailModel.LastName" />
+                                <InputText id="LastName" class="form-control" @bind-Value="@_userDetailInputModel.LastName" />
                             </div>
                             <div class="form-group mb-3">
                                 <label for="FirstName">Имя:</label>
-                                <InputText id="FirstName" class="form-control" @bind-Value="@_userDetailModel.FirstName" />
+                                <InputText id="FirstName" class="form-control" @bind-Value="@_userDetailInputModel.FirstName" />
                             </div>
                             <div class="form-group mb-3">
                                 <label for="MiddleName">Отчество:</label>
-                                <InputText id="MiddleName" class="form-control" @bind-Value="@_userDetailModel.MiddleName" />
+                                <InputText id="MiddleName" class="form-control" @bind-Value="@_userDetailInputModel.MiddleName" />
                             </div>
 
 
                             <div class="form-group mb-3">
                                 <label for="PhoneNumber">Номер телефона:</label>
-                                <InputText id="PhoneNumber" class="form-control" @bind-Value="@_userDetailModel.PhoneNumber" />
+                                <InputText id="PhoneNumber" class="form-control" @bind-Value="@_userDetailInputModel.PhoneNumber" />
                             </div>
 
                             <button class="btn btn-primary">Обновить</button>
@@ -66,7 +67,7 @@
 
 @code {
     [SupplyParameterFromForm]
-    private UserDetailModel _userDetailModel { get; set; } = new UserDetailModel();
+    private UserDetailInputModel _userDetailInputModel { get; set; } = new UserDetailInputModel();
     private bool _modalUeeeeee { get; set; }
     private bool _isClosing { get; set; }
     private string _userId;
@@ -90,16 +91,8 @@
 
     private async Task HandleUpdateProfile()
     {
-        await UserServices.UptateUser(_userId, _userDetailModel);
+        await UserServices.UptateUser(_userId, _userDetailInputModel);
         _registrationSuccess = true;
         StateHasChanged();
-    }
-
-    public class UserDetailModel
-    {
-        public string LastName { get; set; }
-        public string FirstName { get; set; }
-        public string MiddleName { get; set; }
-        public string PhoneNumber { get; set; }
     }
 }

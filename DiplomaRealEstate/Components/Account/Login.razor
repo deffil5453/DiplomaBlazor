@@ -9,9 +9,9 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 <PageTitle>Авторизация</PageTitle>
 @attribute [ValidateAntiForgeryToken]
-@if (_modalUeeeeee)
+@if (_modalOpen)
 {
-    <div class="modal fade show @(_modalUeeeeee ? "d-block" : "d-none")" tabindex="-1" role="dialog" style="display:block;">
+    <div class="modal fade show @(_modalOpen ? "d-block" : "d-none")" tabindex="-1" role="dialog" style="display:block;">
         <div class="modal-dialog modal-dialog-centered @(_isClosing ? "closing" : "")">
             <div class="modal-content">
                 <div class="modal-header">
@@ -43,7 +43,7 @@
 @code {
     [SupplyParameterFromForm]
     private LoginModel _loginModel { get; set; } = new();
-    private bool _modalUeeeeee { get; set; }
+    private bool _modalOpen { get; set; }
     private bool _isClosing { get; set; }
     private async Task HandleLogin()
     {
@@ -66,9 +66,9 @@
     }
     private void OpenRegistrationModal()
     {
-        if (!_modalUeeeeee)
+        if (!_modalOpen)
         {
-            _modalUeeeeee = true;
+            _modalOpen = true;
         }
         _isClosing = false;
     }

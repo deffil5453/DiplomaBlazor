@@ -28,7 +28,7 @@ namespace DiplomaRealEstate.Services.RealEstateServices
 					Photos = realEstateinput.Photos,
 					UserId = realEstateinput.UserId,
 					TypeRealEstateId = realEstateinput.TypeRealEstateId,
-					StatusId = dbContext.Statuses.First().Id,
+					TypeSaleId = realEstateinput.TypeSalesId,
 					CategoryId = realEstateinput.CategoryId,
 				};
 				await dbContext.RealEstates.AddAsync(realEstate);
@@ -46,7 +46,7 @@ namespace DiplomaRealEstate.Services.RealEstateServices
 		{
 			using (var dbContext = new RealEstateDbContext())
 			{
-				return await dbContext.RealEstates.ToListAsync();
+				return await dbContext.RealEstates.Include(i=>i.TypeSale).ToListAsync();
 			}
 		}
 		public async Task<List<RealEstate>> GetAllRealEstateIUserAsync(string userId)
@@ -63,7 +63,16 @@ namespace DiplomaRealEstate.Services.RealEstateServices
 				return await dbContext.TypeRealEstates.ToListAsync();
 			}
 		}
-		public async Task<RealEstateEditModel> GetRealEstateAsync(Guid realEstateId)
+
+        public async Task<List<TypeSale>> GetAllTypeSaleAsync()
+        {
+            using (var dbContext = new RealEstateDbContext())
+            {
+                return await dbContext.TypeSales.ToListAsync();
+            }
+        }
+
+        public async Task<RealEstateEditModel> GetRealEstateAsync(Guid realEstateId)
 		{
 			using (var dbContext = new RealEstateDbContext())
 			{

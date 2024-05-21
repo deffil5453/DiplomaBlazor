@@ -36,8 +36,15 @@
                         <div class="card-body d-flex flex-column">
                             <h5 class="card-title">@item.Region, @item.City</h5>
                             <p class="card-text flex-grow-1">@item.Street, д. @item.House</p>
-                            <h3 class="mb-3 text-success">@item.Price ₽</h3>
-                            <a href="detailsRealEstate/@item.Id" class="mb-3 btn btn-outline-primary  ">Подробнее</a>
+                            @if (item.TypeSale?.Name == "Аренда")
+                            {
+                                <h3 class="mb-3 text-success">@item.Price ₽ в месяц</h3>
+                            }
+                            else
+                            {
+                                <h3 class="mb-3 text-success">@item.Price ₽</h3>
+                            }
+                            <a href="detailsRealEstate/@item.Id" class="mb-3 btn btn-outline-primary">Подробнее</a>
                             <button class="btn btn-light btn-favorite" @onclick="() => AddToFavorite(item.Id)">
                                 <i class="GetButtonClass(item.Id) fa-heart">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
@@ -65,11 +72,10 @@
         position: absolute;
         top: 1rem;
         right: 1rem;
-        color: #dc3545; /* Bootstrap danger color */
+        color: #dc3545;
         font-size: 1.5rem;
     }
 
-    /* Стили для сердечка при добавлении в избранное */
     .btn-outline-success {
         color: #28a745 !important;
     }
@@ -112,7 +118,7 @@
     }
 
     .text-success {
-        color: #28a745 !important; /* Более насыщенный цвет для цены */
+        color: #28a745 !important;
     }
 </style>
 @code {
@@ -127,6 +133,7 @@
         _userId = authState.User.FindFirst(u => u.Type == ClaimTypes.NameIdentifier).Value;
         _isAdmin = _isAuthenticated && authState.User.IsInRole("Admin");
         _realEstates = await RealEstateService.GetAllRealEstateAsync();
+        
     }
     private async Task AddToFavorite(Guid id)
     {
