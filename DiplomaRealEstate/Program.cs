@@ -7,6 +7,7 @@ using DiplomaRealEstate.Services.RealEstateServices;
 using DiplomaRealEstate.Services.TransactionServices;
 using DiplomaRealEstate.Services.UserServices;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,9 +39,16 @@ builder.Services.AddDefaultIdentity<User>(options =>
     .AddEntityFrameworkStores<RealEstateDbContext>()
     .AddDefaultTokenProviders()
     .AddSignInManager();
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+
 builder.Services.AddBootstrapBlazor();
 var app = builder.Build();
-
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("ru-RU"),
+FallBackToParentUICultures = true,
+});
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);

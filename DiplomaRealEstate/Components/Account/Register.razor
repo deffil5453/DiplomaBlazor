@@ -31,12 +31,14 @@
                     <div class="modal-body">
                         <EditForm Model="@_registerModel" OnValidSubmit="HandleRegistration" FormName="register">
                             <DataAnnotationsValidator />
-                            <ValidationSummary />
+                            
                             <div class="mb-3">
+                                <ValidationMessage For="@(()=>_registerModel.Username)" />
                                 <InputText @bind-Value="_registerModel.Username" class="form-control" id="username" placeholder=" " autocomplete="off" />
                                 <label for="username">Логин</label>
                             </div>
                             <div class="mb-3">
+                                <ValidationMessage For="@(()=>_registerModel.Password)" />
                                 <InputText type="password" @bind-Value="@_registerModel.Password" class="form-control" id="password" placeholder=" " autocomplete="new-password" />
                                 <label for="password">Пароль</label>
                             </div>

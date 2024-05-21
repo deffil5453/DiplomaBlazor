@@ -4,6 +4,7 @@
 @using DiplomaRealEstate.Models
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
+@using Microsoft.JSInterop
 @inject IJSRuntime JSRuntime
 @inject IRealEstateService RealEstateServices
 @inject AuthenticationStateProvider AuthenticationStateProvider
@@ -35,23 +36,28 @@ else
                 <h4 class="mb-3">Детали недвижимости</h4>
                 <EditForm Model="@_realEstateInputModel" OnValidSubmit="CreateRealEstateValidSubmit">
                     <DataAnnotationsValidator />
-                    <ValidationSummary />
+
+                    <ValidationMessage For="@(()=>_realEstateInputModel.Area)" />
                     <div class="form-group mb-3">
                         <label for="Areas">Площадь м²</label>
                         <InputText id="Areas" class="form-control" @bind-Value="_realEstateInputModel.Area" />
                     </div>
+                    <ValidationMessage For="@(()=>_realEstateInputModel.Price)" />
                     <div class="form-floating mb-4">
                         <InputNumber id="Prices" class="form-control" @bind-Value="_realEstateInputModel.Price" placeholder="212314" />
                         <label for="Prices">Цена ₽</label>
                     </div>
+                    <ValidationMessage For="@(()=>_realEstateInputModel.Rooms)" />
                     <div class="form-floating mb-4">
                         <InputNumber id="Room" class="form-control" @bind-Value="_realEstateInputModel.Rooms" placeholder="212314" />
                         <label for="Room">Число комнат</label>
                     </div>
+                    <ValidationMessage For="@(()=>_realEstateInputModel.Country)" />
                     <div class="form-floating mb-4">
                         <InputText id="Country" class="form-control" @bind-Value="_realEstateInputModel.Country" placeholder="212314" />
                         <label for="Room">Страна</label>
                     </div>
+                    <ValidationMessage For="@(()=>_realEstateInputModel.Region)" />
                     <div class="form-floating mb-4">
                         <InputText id="Region" class="form-control" @bind-Value="_realEstateInputModel.Region" placeholder="212314" />
                         <label for="Room">Регион</label>
@@ -72,15 +78,18 @@ else
                         <InputTextArea id="Description" class="form-control" @bind-Value="_realEstateInputModel.Desctiption" placeholder="Описание" />
                         <label for="Description">Описание</label>
                     </div>
+                    <ValidationMessage For="@(()=>_realEstateInputModel.Photos)" />
                     <div class="form-group mb-3">
                         <label for="Photos">Фотографии</label>
                         <InputFile id="photos" class="form-control" OnChange="HandleFileSelected" />
                     </div>
+
                     @if (_typeSales != null)
                     {
+                        <ValidationMessage For="@(()=>_realEstateInputModel.TypeSalesId)" />
+                        <label for="typeSales">Тип продажи</label>
                         <div class="form-floating mb-4">
-                            <InputSelect id="categories" class="form-control" @bind-Value="_realEstateInputModel.TypeSalesId" placeholder="Тип продажи">
-                                <option selected>Тип продажи</option>
+                            <InputSelect id="typeSales" class="form-control" @bind-Value="_realEstateInputModel.TypeSalesId" placeholder="Тип продажи">
                                 @foreach (var typeSale in _typeSales)
                                 {
                                     <option value="@typeSale.Id">@typeSale.Name</option>
@@ -90,9 +99,10 @@ else
                     }
                     @if (_categories != null)
                     {
+                        <ValidationMessage For="@(()=>_realEstateInputModel.CategoryId)" />
+                        <label for="categories">Категория недвижимости</label>
                         <div class="form-floating mb-4">
                             <InputSelect id="categories" class="form-control" @bind-Value="_realEstateInputModel.CategoryId" placeholder="Категория">
-                                <option selected>Категория</option>
                                 @foreach (var category in _categories)
                                 {
                                     <option value="@category.Id">@category.Name</option>
@@ -102,9 +112,10 @@ else
                     }
                     @if (_types != null)
                     {
-                        <div class="form-floating mb-4">
-                            <InputSelect id="types" class="form-control h-100" @bind-Value="_realEstateInputModel.TypeRealEstateId" placeholder="Тип недвижимости">
-                                <option selected>Тип недвижимости</option>
+                        <ValidationMessage For="@(()=>_realEstateInputModel.TypeRealEstateId)" />
+                        <label for="types">Тип недвижимости</label>
+                        <div class="form-floating mb-3">
+                            <InputSelect id="types" class="form-control h-100" @bind-Value="_realEstateInputModel.TypeRealEstateId">
                                 @foreach (var category in _types)
                                 {
                                     <option value="@category.Id">@category.Name</option>
@@ -122,7 +133,7 @@ else
                 <h4 class="d-flex justify-content-between align-items-center mb-3">
                     <span class="text-muted">Местоположение на карте</span>
                 </h4>
-                <div id="map" style="width: 100%; height: 450px;" class="border rounded mb-3"></div>
+                <div id="map"></div>
                 <ul class="list-group">
                     <li class="list-group-item d-flex justify-content-between lh-condensed">
                         <div>
@@ -141,6 +152,12 @@ else
         </div>
     </div>
 }
+<style>
+    #map {
+        width: 100%;
+        height: 450px;
+    }
+</style>
 @code {
     [SupplyParameterFromForm]
     private RealEstateInputModel _realEstateInputModel { get; set; } = new RealEstateInputModel();
@@ -213,9 +230,10 @@ else
     }
 }
 <script>
-    window.initMap = function (dotNetObjRef) {
+    var myMap;
+    initMap = function (dotNetObjRef) {
         ymaps.ready(function () {
-            var myMap = new ymaps.Map('map', {
+            myMap = new ymaps.Map('map', {
                 center: [55.76, 37.64], // Координаты по умолчанию
                 zoom: 9
             });
