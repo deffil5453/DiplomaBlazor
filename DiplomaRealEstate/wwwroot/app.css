@@ -53,6 +53,37 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+.welcome-section {
+    padding: 40px 15px;
+    background-color: #f7f7f7;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+}
+
+    .welcome-section h1 {
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .welcome-section p {
+        font-size: 18px;
+        color: #666;
+    }
+
+    .welcome-section button {
+        font-size: 16px;
+        padding: 10px 24px;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+    }
+
+        .welcome-section button:hover {
+            background-color: #0056b3;
+        }
 @keyframes slideDown {
     from {
         transform: translateY(-100%);

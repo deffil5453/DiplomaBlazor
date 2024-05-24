@@ -87,9 +87,10 @@ else
                     @if (_typeSales != null)
                     {
                         <ValidationMessage For="@(()=>_realEstateInputModel.TypeSalesId)" />
-                        <label for="typeSales">Тип продажи</label>
+        
                         <div class="form-floating mb-4">
                             <InputSelect id="typeSales" class="form-control" @bind-Value="_realEstateInputModel.TypeSalesId" placeholder="Тип продажи">
+                                <option value="">Тип продажи</option>
                                 @foreach (var typeSale in _typeSales)
                                 {
                                     <option value="@typeSale.Id">@typeSale.Name</option>
@@ -100,9 +101,9 @@ else
                     @if (_categories != null)
                     {
                         <ValidationMessage For="@(()=>_realEstateInputModel.CategoryId)" />
-                        <label for="categories">Категория недвижимости</label>
                         <div class="form-floating mb-4">
                             <InputSelect id="categories" class="form-control" @bind-Value="_realEstateInputModel.CategoryId" placeholder="Категория">
+                                <option value="">Категория недвижимости</option>
                                 @foreach (var category in _categories)
                                 {
                                     <option value="@category.Id">@category.Name</option>
@@ -113,9 +114,10 @@ else
                     @if (_types != null)
                     {
                         <ValidationMessage For="@(()=>_realEstateInputModel.TypeRealEstateId)" />
-                        <label for="types">Тип недвижимости</label>
+  
                         <div class="form-floating mb-3">
                             <InputSelect id="types" class="form-control h-100" @bind-Value="_realEstateInputModel.TypeRealEstateId">
+                                <option value="">Тип недвижимости</option>
                                 @foreach (var category in _types)
                                 {
                                     <option value="@category.Id">@category.Name</option>

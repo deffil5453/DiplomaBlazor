@@ -17,7 +17,7 @@ namespace DiplomaRealEstate.Services.RealEstateServices
 					Area = realEstateinput.Area,
 					Price = realEstateinput.Price,
 					Rooms = realEstateinput.Rooms,
-					Desctiption = "тута текст прост так",
+					Desctiption = realEstateinput.Desctiption,
 					Country = realEstateinput.Country,
 					Region = realEstateinput.Region,
 					City = realEstateinput.City,
