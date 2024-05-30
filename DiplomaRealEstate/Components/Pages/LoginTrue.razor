@@ -5,11 +5,6 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 <h3>Статус входа: Успешно</h3>
 
-else
-{
-    <p>Загрузка данных пользователя...</p>
-}
-
 @code {
     private ClaimsPrincipal curentUser;
     protected override async Task OnInitializedAsync()

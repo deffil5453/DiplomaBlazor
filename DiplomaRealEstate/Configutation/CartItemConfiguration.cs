@@ -10,13 +10,13 @@ namespace DiplomaRealEstate.Configutation
 		{
 			builder
 				.HasOne(cart => cart.RealEstate)
-				.WithMany(realEstate => realEstate.CartItems)
+				.WithMany(realEstate => realEstate.Favorites)
 				.HasForeignKey(ci => ci.RealEstateId)
 				.OnDelete(DeleteBehavior.ClientSetNull);
 
 			builder
 				.HasOne(cart => cart.User)
-				.WithMany(user => user.CartItems)
+				.WithMany(user => user.Favorites)
 				.HasForeignKey(ci => ci.UserId)
 				.OnDelete(DeleteBehavior.ClientSetNull);
 		}

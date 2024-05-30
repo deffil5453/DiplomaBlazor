@@ -11,16 +11,20 @@
 @attribute [ValidateAntiForgeryToken]
 @if (_modalOpen)
 {
-    <div class="modal fade show @(_modalOpen ? "d-block" : "d-none")" tabindex="-1" role="dialog" style="display:block;">
-        <div class="modal-dialog modal-dialog-centered @(_isClosing ? "closing" : "")">
+    <div class="modal fade show @fadeshow" tabindex="-1" role="dialog" style="display:block;">
+        <div class="modal-dialog modal-dialog-centered @modalDiaolg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Авторизация</h5>
-                    <a href="" type="submit" class="btn-close btn-danger">
-                    </a>
+                <div class="modal-header justify-content-between">
+                    <span class="modal-title h5" style="width: 35%;"/> <!-- Заглушка для центровки -->
+                    <h5 class="modal-title w-60 text-center">АВТОРИЗАЦИЯ</h5>
+                    <a href="/"class="btn-close" aria-label="Close"></a> <!-- Используйте JavaScript для закрытия или добавьте соответствующий обработчик -->
                 </div>
                 <EditForm Model="@_loginModel" OnValidSubmit="HandleLogin" FormName="login">
                     <div class="modal-body">
+                        @if (!string.IsNullOrEmpty(_errorMessage))
+                        {
+                            <div class="alert alert-danger">@_errorMessage</div>
+                        }
                         <DataAnnotationsValidator />
                         <div class="mb-3">
                             <ValidationMessage For="@(()=>_loginModel.Username)" />
@@ -32,7 +36,7 @@
                             <InputText type="password" @bind-Value="@_loginModel.Password" class="form-control" id="password" placeholder=" " autocomplete="new-password" />
                             <label for="password">Пароль</label>
                         </div>
-                        <button type="submit" class="btn btn-success w-100">Войти</button>
+                        <button type="submit" class="btn btn-gradient w-100">Войти</button>
                         <a href="register" class="text-center">Зарегистрироваться</a>
                     </div>
                 </EditForm>
@@ -41,34 +45,78 @@
     </div>
     <div class="modal-backdrop show"> </div>
 }
+<style>
+    .modal-header .modal-title {
+        font-family: 'Open Sans', sans-serif;
+        /* другие стили... */
+    }
+    .modal-content {
+        font-family: 'Open Sans', sans-serif;
+        /* Применяем сплошной цвет фона, который будет хорошо выглядеть с белым текстом */
+        background-color: #f8f9fa; /* светлый фон для модального окна */
+    }
+
+    .modal-header {
+        /* Тут можно указать желаемые стили для заголовка модального окна, например: */
+        background-image: linear-gradient(-135deg, #c850c0, #4158d0);
+        color: #ffffff; /* Белый цвет текста */
+        border-bottom: 1px solid #ddd; /* линия под заголовком для визуального разделения */
+    }
+
+    .btn-gradient {
+        font-family: 'Open Sans', sans-serif;
+        background-image: linear-gradient(-135deg, #c850c0, #4158d0);
+        color: #ffffff; /* Белый цвет текста */
+        border: none; /* Убрать рамку */
+        border-radius: .25rem; /* Скругленные углы */
+        padding: .5rem 1rem; /* Внутренние отступы */
+        font-size: 1rem; /* Размер шрифта */
+        line-height: 1.5; /* Высота строки */
+        transition: background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out; /* Плавная анимация при наведении */
+    }
+
+        .btn-gradient:hover {
+            opacity: 0.85; /* Слегка уменьшить яркость при наведении */
+            color: #ffffff; /* Удерживает белый цвет текста при наведении */
+        }
+
+    /* При желании можно добавить стандартные стили для текста сообщений об ошибке и других элементов */
+</style>
 @code {
     [SupplyParameterFromForm]
     private LoginModel _loginModel { get; set; } = new();
     private bool _modalOpen { get; set; }
-    private bool _isClosing { get; set; }
+    private string fadeshow = "d-none";
+    private string modalDiaolg = "closing";
+    private string? _errorMessage;
     private async Task HandleLogin()
     {
         var result = await SignInMnager.PasswordSignInAsync(
             _loginModel.Username,
             _loginModel.Password,
             isPersistent: false, lockoutOnFailure: false);
-        
+
         if (result.Succeeded)
         {
             NavigationManager.NavigateTo("/loginTrue");
         }
+        else
+        {
+            _errorMessage = "Неверный логин или пароль!";
+        }
     }
     protected override async Task OnInitializedAsync()
     {
-        OpenRegistrationModal();
+        OpenAutorizahtionModal();
     }
-    private void OpenRegistrationModal()
+    private void OpenAutorizahtionModal()
     {
         if (!_modalOpen)
         {
             _modalOpen = true;
         }
-        _isClosing = false;
+        fadeshow = "d-block";
+        modalDiaolg = "";
     }
     private class LoginModel
     {

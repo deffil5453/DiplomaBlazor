@@ -2,7 +2,6 @@
 @using System.ComponentModel.DataAnnotations
 @using DiplomaRealEstate.Models
 @using Microsoft.AspNetCore.Identity
-@rendermode InteractiveServer
 @inject UserManager<User> UserManager
 @inject SignInManager<User> SignInManager
 @inject NavigationManager NavigationManager
@@ -10,20 +9,20 @@
 <PageTitle>Регистрация</PageTitle>
 @if (_modalOpen)
 {
-    <div class="modal fade show @(_modalOpen ? "d-block" : "d-none")" tabindex="-1" role="dialog" style="display:block;">
-        <div class="modal-dialog modal-dialog-centered @(_isClosing ? "closing" : "")">
+    <div class="modal fade show @fadeshow" tabindex="-1" role="dialog" style="display:block;">
+        <div class="modal-dialog modal-dialog-centered @modalDiaolg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Регистрация</h5>
-                    <a href="" type="" class="btn-close btn-danger">
-                    </a>
+                <div class="modal-header justify-content-between">
+                    <span class="modal-title h5" style="width: 35%;" /> <!-- Заглушка для центровки -->
+                    <h5 class="modal-title w-60 text-center">РЕГИСТРАЦИЯ</h5>
+                    <a href="/" class="btn-close" aria-label="Close"></a> <!-- Используйте JavaScript для закрытия или добавьте соответствующий обработчик -->
                 </div>
                 @if (_registrationSuccess)
                 {
                     <div class="modal-body">
-                        <h2>Регистрация успешно завершена!</h2>
+                        <h2>Регистрация завершена</h2>
                         <a>Нажмите чтобы начать авторизацию для входа</a>
-                        <a href="login" type="submit" class="btn btn-success w-100">авторизоваться</a>
+                        <a href="login" type="submit" class="btn btn-gradient w-100">авторизоваться</a>
                     </div>
                 }
                 else
@@ -31,18 +30,19 @@
                     <div class="modal-body">
                         <EditForm Model="@_registerModel" OnValidSubmit="HandleRegistration" FormName="register">
                             <DataAnnotationsValidator />
-                            
-                            <div class="mb-3">
-                                <ValidationMessage For="@(()=>_registerModel.Username)" />
-                                <InputText @bind-Value="_registerModel.Username" class="form-control" id="username" placeholder=" " autocomplete="off" />
+
+                            <div class="form-group mb-3">
                                 <label for="username">Логин</label>
+                                <InputText @bind-Value="@_registerModel.Username" class="form-control" id="username" />
+                                <ValidationMessage For="@(() => _registerModel.Username)" />
                             </div>
-                            <div class="mb-3">
-                                <ValidationMessage For="@(()=>_registerModel.Password)" />
-                                <InputText type="password" @bind-Value="@_registerModel.Password" class="form-control" id="password" placeholder=" " autocomplete="new-password" />
+
+                            <div class="form-group mb-3">
                                 <label for="password">Пароль</label>
+                                <InputText @bind-Value="@_registerModel.Password" type="password" class="form-control" id="password" />
+                                <ValidationMessage For="@(() => _registerModel.Password)" />
                             </div>
-                            <button type="submit" class="btn btn-success w-100">Зарегистрироваться</button>
+                            <button type="submit" class="btn btn-gradient w-100">Зарегистрироваться</button>
                         </EditForm>
                     </div>
                 }
@@ -51,12 +51,51 @@
     </div>
     <div class="modal-backdrop show"></div>
 }
+<style>
+    .modal-header .modal-title {
+        font-family: 'Open Sans', sans-serif;
+        /* другие стили... */
+    }
+
+    .modal-content {
+        font-family: 'Open Sans', sans-serif;
+        /* Применяем сплошной цвет фона, который будет хорошо выглядеть с белым текстом */
+        background-color: #f8f9fa; /* светлый фон для модального окна */
+    }
+
+    .modal-header {
+        /* Тут можно указать желаемые стили для заголовка модального окна, например: */
+        background-image: linear-gradient(-135deg, #c850c0, #4158d0);
+        color: #ffffff; /* Белый цвет текста */
+        border-bottom: 1px solid #ddd; /* линия под заголовком для визуального разделения */
+    }
+
+    .btn-gradient {
+        font-family: 'Open Sans', sans-serif;
+        background-image: linear-gradient(-135deg, #c850c0, #4158d0);
+        color: #ffffff; /* Белый цвет текста */
+        border: none; /* Убрать рамку */
+        border-radius: .25rem; /* Скругленные углы */
+        padding: .5rem 1rem; /* Внутренние отступы */
+        font-size: 1rem; /* Размер шрифта */
+        line-height: 1.5; /* Высота строки */
+        transition: background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out; /* Плавная анимация при наведении */
+    }
+
+        .btn-gradient:hover {
+            opacity: 0.85; /* Слегка уменьшить яркость при наведении */
+            color: #ffffff; /* Удерживает белый цвет текста при наведении */
+        }
+
+    /* При желании можно добавить стандартные стили для текста сообщений об ошибке и других элементов */
+</style>
 @code {
     [SupplyParameterFromForm]
     private RegisterModel _registerModel { get; set; } = new();
     private bool _registrationSuccess = false;
     private bool _modalOpen { get; set; }
-    private bool _isClosing { get; set; }
+    private string fadeshow = "d-none";
+    private string modalDiaolg = "closing";
     private async Task HandleRegistration()
     {
         User userAdd = new User { UserName = _registerModel.Username };
@@ -77,7 +116,7 @@
         {
             _registrationSuccess = true;
             await UserManager.AddToRoleAsync(userAdd, roleName);
-            StateHasChanged();
+            // StateHasChanged();
         }
     }
     protected override async Task OnInitializedAsync()
@@ -90,14 +129,19 @@
         {
             _modalOpen = true;
         }
-        _isClosing = false;
+        fadeshow = "d-block";
+        modalDiaolg = "";
     }
     public class RegisterModel
     {
         [Required(ErrorMessage = "Введите логин!")]
+        [MinLength(4, ErrorMessage = "Логин должен содержать минимум 4 символа.")]
+        [MaxLength(20, ErrorMessage = "Логин не должен превышать 20 символов.")]
         public string Username { get; set; }
+
         [Required(ErrorMessage = "Введите пароль!")]
-        [DataType(DataType.Password)]
+        [MinLength(6, ErrorMessage = "Пароль должен содержать минимум 6 символов.")]
+        [MaxLength(100, ErrorMessage = "Пароль не должен превышать 100 символов.")]
         public string Password { get; set; }
     }
 }

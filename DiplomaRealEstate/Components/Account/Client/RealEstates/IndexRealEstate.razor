@@ -14,141 +14,244 @@
 @rendermode InteractiveServer
 
 <PageTitle>Каталог недвижимости</PageTitle>
+<AuthorizeView>
+    <Authorized>
 
-<div class="container py-5">
-    <h1 class="text-center mb-1">Каталог недвижимости</h1>
-    @if (_realEstates.Count == 0)
-    {
-        <h1 class="text-center mb-4">
-            Упс, ничего нет(((
-        </h1>
-    }
-    else
-    {
-        <div class="row">
-            @foreach (var item in _realEstates)
+        <div class="container py-5">
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <input type="text" value="@_searchItem" @oninput="SearchRealEstate" class="form-control" placeholder="поиск" />
+                </div>
+            </div>
+            @if (_realEstates.Count == 0)
             {
-                <div class="col-md-4 mb-3">
-                    <div class="card real-estate-card h-100 shadow">
-                        <div class="real-estate-image">
-                            <img src="/images/@item.Photos" style="width:400px;height: 400px;" />
+                <h1 class="text-center mb-4">
+                    Упс, ничего нет(((
+                </h1>
+            }
+            else
+            {
+                <div class="row">
+                    @foreach (var item in _realEstates)
+                    {
+                        <div class="col-md-4 mb-3">
+                            <div class="card real-estate-card h-100 shadow">
+                                <div class="real-estate-image">
+                                    <img src="/images/@item.Photos" style="width:400px;height: 400px;" />
+                                </div>
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">
+                                        регион: @item.Region,
+                                        город: @item.City
+                                    </h5>
+                                    <p class="card-text flex-grow-1">улица:     @item.Street, д. @item.House</p>
+                                    @if (item.TypeSale?.Name == "Аренда")
+                                    {
+                                        <h3 class="mb-3 text-success">@item.Price ₽ в месяц</h3>
+                                    }
+                                    else
+                                    {
+                                        <h3 class="mb-3 text-success">@item.Price ₽</h3>
+                                    }
+                                    <a href="detailsRealEstate/@item.Id" class="mb-3 btn btn-outline-primary">Подробнее</a>
+                                    <button class="btn btn-light btn-favorite" @onclick="() => FavoriteComand(item.Id)">
+                                        @if (_favoritesId.Contains(item.Id))
+                                        {
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag-check-fill" viewBox="0 0 16 16">
+                                                <path fill-rule="evenodd" d="M10.5 3.5a2.5 2.5 0 0 0-5 0V4h5v-.5zm1 0V4H15v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4h3.5v-.5a3.5 3.5 0 1 1 7 0zm-.646 5.354a.5.5 0 0 0-.708-.708L7.5 10.793 6.354 9.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z" />
+                                            </svg>
+                                        }
+                                        else
+                                        {
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag-dash-fill" viewBox="0 0 16 16">
+                                                <path fill-rule="evenodd" d="M10.5 3.5a2.5 2.5 0 0 0-5 0V4h5v-.5zm1 0V4H15v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4h3.5v-.5a3.5 3.5 0 1 1 7 0zM6 9.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1H6z" />
+                                            </svg>
+                                        }
+                                    </button>
+                                    <a href="createTransaction/@item.Id" class=" mb-3 btn btn-outline-success ">оформить покупку</a>
+                                    @if (_isAdmin)
+                                    {
+                                        <button class="mb-3 btn btn-outline-danger" @onclick="() => RemoveRealEstate(item.Id)">
+                                            удалить
+                                        </button>
+                                    }
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">@item.Region, @item.City</h5>
-                            <p class="card-text flex-grow-1">@item.Street, д. @item.House</p>
-                            @if (item.TypeSale?.Name == "Аренда")
-                            {
-                                <h3 class="mb-3 text-success">@item.Price ₽ в месяц</h3>
-                            }
-                            else
-                            {
-                                <h3 class="mb-3 text-success">@item.Price ₽</h3>
-                            }
-                            <a href="detailsRealEstate/@item.Id" class="mb-3 btn btn-outline-primary">Подробнее</a>
-                            <button class="btn btn-light btn-favorite" @onclick="() => AddToFavorite(item.Id)">
-                                <i class="GetButtonClass(item.Id) fa-heart">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
-                                        <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z" />
-                                    </svg>
-                                </i>
-                            </button>
-                            <a href="createTransaction/@item.Id" class=" mb-3 btn btn-outline-success ">оформить покупку</a>
-                            @if (_isAdmin)
-                            {
-                                <button class="mb-3 btn btn-outline-danger" @onclick="() => RemoveRealEstate(item.Id)">
-                                    удалить
-                                </button>
-                            }
-                        </div>
-                    </div>
+                    }
                 </div>
             }
         </div>
-    }
-</div>
 
+    </Authorized>
+    <NotAuthorized>
+        <h3>ПРОИЗОШЛА ОШИБКА!!!</h3>
+    </NotAuthorized>
+</AuthorizeView>
 <style>
+    .container {
+        max-width: 1200px; /* Ограничим ширину контейнера, чтобы он выглядел аккуратнее */
+    }
+
+    .real-estate-card {
+        border: none;
+        transition: transform .3s ease-in-out, box-shadow .3s ease;
+        border-radius: 0.5rem;
+        overflow: hidden; /* Обрезаем содержимое по углам */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+        .real-estate-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
+        }
+
+    .real-estate-image img {
+        width: 100%; /* Убедимся, что изображение всегда заполняет блок */
+        height: 250px; /* Фиксированная высота для согласованности */
+        object-fit: cover; /* Обрезка изображения без искажения */
+    }
+
+    .card-title {
+        color: #33415c; /* Темно-синий цвет текста */
+        font-size: 1.25rem; /* Увеличенный размер шрифта */
+        margin-bottom: 0.5rem; /* Расстояние до основного текста */
+    }
+
+    .card-body {
+        padding: 1rem; /* Внутренние отступы для текста */
+        background-color: #f8f9fa; /* Светлый фон для контента */
+    }
+
+    .card-text {
+        color: #6c757d; /* Светло-серый цвет для текста адреса */
+    }
+
+    .text-success { /* Стиль для цены */
+        font-weight: bold;
+        font-size: 1.2rem;
+        color: #155724; /* Светлее и менее резкий зеленый цвет */
+    }
+
+    .btn-outline-primary {
+        border: none;
+        color: #0056b3; /* Более насыщенный синий */
+    }
+
+        .btn-outline-primary:hover {
+            background-color: #0056b3;
+            color: white;
+        }
+
+    .btn-outline-success {
+        border: none;
+        color: #28a745;
+    }
+
+        .btn-outline-success:hover {
+            background-color: #28a745;
+            color: white;
+        }
+
+    .btn-outline-danger {
+        border: none;
+        color: #dc3545;
+    }
+
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+    <style >
     .btn-favorite {
+        background-color: #fff;
+        border-radius: 50%;
+        width: 48px; /* Увеличение размера кнопки */
+        height: 48px; /* Увеличение размера кнопки */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
         position: absolute;
         top: 1rem;
         right: 1rem;
         color: #dc3545;
-        font-size: 1.5rem;
     }
 
-    .btn-outline-success {
-        color: #28a745 !important;
+    /* Увеличение размера иконки SVG внутри кнопки избранного */
+    .btn-favorite svg {
+        width: 48px; /* Указываем новый размер для иконки */
+        height: 48px; /* Указываем новый размер для иконки */
+        fill: currentColor; /* Испол        ьзуем текущий цвет элемента для заливки иконки */
     }
 
-    .btn-outline-primary {
-        color: #007bff !important;
-    }
-
-    .fa-heart {
-        transition: color 0.3s;
-    }
-
-        .fa-heart:hover {
-            color: #dc3545;
-        }
-
-    .real-estate-card {
-        transition: transform .3s ease-in-out;
-        border-radius: 1px;
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-    }
-
-        .real-estate-card:hover {
-            transform: translateY(-10px);
-        }
-
-    .real-estate-image {
-        height: 400px;
-        background-size: cover;
-        background-position: center;
-    }
-
-    .card-title {
-        font-weight: bold;
-    }
-
-    .card-body {
-        background-color: #f8f9fa;
-    }
-
-    .text-success {
-        color: #28a745 !important;
-    }
+    /* Остальные стили... */
+</style>
 </style>
 @code {
     private List<RealEstate> _realEstates = new List<RealEstate>();
+    private List<FavoriteRealEstate> _favorites = new List<FavoriteRealEstate>();
+    private List<Guid> _favoritesId = new List<Guid>();
     private bool _isAuthenticated;
     private bool _isAdmin;
-    public string _userId;
+    private string _userId;
+    private string _searchItem = string.Empty;
+    private async Task SearchRealEstate(ChangeEventArgs e)
+    {
+        _searchItem = e.Value.ToString();
+        if (string.IsNullOrWhiteSpace(_searchItem))
+        {
+            _realEstates = await RealEstateService.GetAllRealEstateAsync();
+        }
+        else
+        {
+            var allRealEstate = await RealEstateService.GetAllRealEstateAsync();
+            _realEstates = allRealEstate.Where(re => re.Region.Contains(_searchItem, StringComparison.OrdinalIgnoreCase) ||
+                                                      re.City.Contains(_searchItem, StringComparison.OrdinalIgnoreCase) ||
+                                                      re.Street.Contains(_searchItem, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+    }
     protected override async Task OnInitializedAsync()
     {
         var authState = await AutenticationStateProvider.GetAuthenticationStateAsync();
-        _isAuthenticated = authState.User.Identity.IsAuthenticated;
-        _userId = authState.User.FindFirst(u => u.Type == ClaimTypes.NameIdentifier).Value;
-        _isAdmin = _isAuthenticated && authState.User.IsInRole("Admin");
-        _realEstates = await RealEstateService.GetAllRealEstateAsync();
-        
-    }
-    private async Task AddToFavorite(Guid id)
-    {
-        if (_isAuthenticated)
+        var user = authState.User;
+        _favorites = await FavoriteService.GetAllCartItemForUserAsync(_userId);
+        // Проверяем, что пользователь аутентифицирован
+        if (user.Identity.IsAuthenticated)
         {
-            bool isFavorite = await FavoriteService.GetFavoriteByUserAsync(_userId, id);
-            if (!isFavorite)
-            {
-                await FavoriteService.AddFavoriteAsync(_userId, id);
-            }
-            else
-            {
-                await FavoriteService.RemoveFavoriteAsync(_userId, id);
-            }
+            var userIdClaim = user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier);
+
+            _userId = userIdClaim?.Value;
+
+            _isAdmin = user.IsInRole("Admin");
+
+            _realEstates = await RealEstateService.GetAllRealEstateAsync();
+            _favorites = await FavoriteService.GetAllCartItemForUserAsync(_userId);
+            _favoritesId = new List<Guid>(_favorites.Select(f => f.RealEstateId));
         }
+        else
+        {
+            _userId = null;
+            _isAdmin = false;
+
+            _realEstates.Clear();
+        }
+    }
+    private async Task FavoriteComand(Guid realEstateId)
+    {
+        if (_favoritesId.Contains(realEstateId))
+        {
+            await FavoriteService.RemoveFavoriteAsync(_userId, realEstateId);
+            _favoritesId.Remove(realEstateId);
+        }
+        else
+        {
+            await FavoriteService.AddFavoriteAsync(_userId, realEstateId);
+            _favoritesId.Add(realEstateId);
+        }
+        // Обновляем UI
+        StateHasChanged();
     }
     private async Task RemoveRealEstate(Guid productId)
     {

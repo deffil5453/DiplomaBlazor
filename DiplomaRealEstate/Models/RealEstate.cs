@@ -23,13 +23,11 @@ namespace DiplomaRealEstate.Models
         public Guid TypeRealEstateId { get; set; }
         public Guid TypeSaleId { get; set; }
         public Guid CategoryId { get; set; }
-        public Guid? ReviewId { get; set; }
         public User User { get; set; }
         public TypeRealEstate TypeRealEstate { get; set; }
         public TypeSale TypeSale { get; set; }
         public Category Category { get; set; }
-        public Review Review { get; set; }
         public List<TransactionOrder>? TransactionProperties { get; set; }
-        public List<FavoriteRealEstate>? CartItems { get; set; }
+        public List<FavoriteRealEstate>? Favorites { get; set; }
     }
 }

@@ -53,6 +53,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Blazor.Bootstrap" Version="2.2.1" />
     <PackageReference Include="Blazored.Modal" Version="7.3.1" />
     <PackageReference Include="bootstrap" Version="5.3.3" />
     <PackageReference Include="Bootstrap.Less" Version="3.4.1" />

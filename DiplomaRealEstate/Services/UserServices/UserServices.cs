@@ -37,15 +37,16 @@ namespace DiplomaRealEstate.Services.UserServices
             }
         }
 
-        public async Task UptateUser(string UserId, UserDetailInputModel userDetailModel)
+        public async Task UptateUser(string UserId, User userDetail)
         {
             using (var dbContext = new RealEstateDbContext())
             {
                 var user = await dbContext.User.FirstOrDefaultAsync(u => u.Id == UserId);
-                user.LastName = userDetailModel.LastName;
-                user.FirstName = userDetailModel.FirstName;
-                user.MiddleName = userDetailModel.MiddleName;
-                user.PhoneNumber = userDetailModel.PhoneNumber;
+                user.LastName = userDetail.LastName;
+                user.FirstName = userDetail.FirstName;
+                user.MiddleName = userDetail.MiddleName;
+                user.PhoneNumber = userDetail.PhoneNumber;
+                user.ImageProfile = userDetail.ImageProfile;
                 user.PhoneNumberConfirmed = true;
                 
                 dbContext.User.Update(user);

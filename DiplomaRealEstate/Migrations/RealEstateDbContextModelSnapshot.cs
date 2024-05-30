@@ -39,12 +39,12 @@ namespace DiplomaRealEstate.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("395881e5-0129-467a-8c1c-19d4ddb36a57"),
+                            Id = new Guid("30f635e2-d19c-4dc9-8c42-bae1ee4bd025"),
                             Name = "Жилая собственность"
                         },
                         new
                         {
-                            Id = new Guid("5ae68c39-ad5b-4804-88b6-c9958b02643f"),
+                            Id = new Guid("e4b4ee97-ac00-4751-904b-7c43f6c38af2"),
                             Name = "Земельные участок"
                         });
                 });
@@ -116,9 +116,6 @@ namespace DiplomaRealEstate.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("ReviewId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("Rooms")
                         .HasColumnType("int");
 
@@ -139,8 +136,6 @@ namespace DiplomaRealEstate.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("ReviewId");
-
                     b.HasIndex("TypeRealEstateId");
 
                     b.HasIndex("TypeSaleId");
@@ -148,34 +143,6 @@ namespace DiplomaRealEstate.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("RealEstates");
-                });
-
-            modelBuilder.Entity("DiplomaRealEstate.Models.Review", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Rating")
-                        .HasColumnType("int");
-
-                    b.Property<string>("RealEstateId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("text")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("DiplomaRealEstate.Models.TransactionOrder", b =>
@@ -229,12 +196,12 @@ namespace DiplomaRealEstate.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("2e89ba6d-4d5f-4865-9a4a-1972bd44f835"),
+                            Id = new Guid("cbdc5a07-c4b5-4405-8dd5-68e78da4548b"),
                             Name = "Дом "
                         },
                         new
                         {
-                            Id = new Guid("91edf046-8de7-4595-a8c4-db5ccfc18f74"),
+                            Id = new Guid("7205b208-e095-450c-b176-04ddab0d286e"),
                             Name = "Земельный участок"
                         });
                 });
@@ -256,12 +223,12 @@ namespace DiplomaRealEstate.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("b7b655e5-83e7-4f50-a122-20d3824eb886"),
+                            Id = new Guid("f9090585-14e5-4d01-a9e3-9a555dd7ee6f"),
                             Name = "Продажа"
                         },
                         new
                         {
-                            Id = new Guid("100ca32c-c05a-4a62-96c0-07ac939490c9"),
+                            Id = new Guid("2bb3ffe8-df78-4581-be3c-ffec0d981ca9"),
                             Name = "Аренда"
                         });
                 });
@@ -283,12 +250,12 @@ namespace DiplomaRealEstate.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("323b1669-a0a4-4d30-b565-d730f7d65269"),
+                            Id = new Guid("11238eab-664a-477f-b69b-0373d6719771"),
                             Name = "Аренда"
                         },
                         new
                         {
-                            Id = new Guid("14cda16f-e932-410e-b49d-12f0dc5066bb"),
+                            Id = new Guid("f44aa2da-f12a-4136-a54c-6e300e6f3dd0"),
                             Name = "Покупка"
                         });
                 });
@@ -313,6 +280,9 @@ namespace DiplomaRealEstate.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageProfile")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
@@ -507,12 +477,12 @@ namespace DiplomaRealEstate.Migrations
             modelBuilder.Entity("DiplomaRealEstate.Models.FavoriteRealEstate", b =>
                 {
                     b.HasOne("DiplomaRealEstate.Models.RealEstate", "RealEstate")
-                        .WithMany("CartItems")
+                        .WithMany("Favorites")
                         .HasForeignKey("RealEstateId")
                         .IsRequired();
 
                     b.HasOne("DiplomaRealEstate.Models.User", "User")
-                        .WithMany("CartItems")
+                        .WithMany("Favorites")
                         .HasForeignKey("UserId")
                         .IsRequired();
 
@@ -528,10 +498,6 @@ namespace DiplomaRealEstate.Migrations
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("DiplomaRealEstate.Models.Review", "Review")
-                        .WithMany("RealEstates")
-                        .HasForeignKey("ReviewId");
 
                     b.HasOne("DiplomaRealEstate.Models.TypeRealEstate", "TypeRealEstate")
                         .WithMany("RealEstates")
@@ -553,22 +519,9 @@ namespace DiplomaRealEstate.Migrations
 
                     b.Navigation("Category");
 
-                    b.Navigation("Review");
-
                     b.Navigation("TypeRealEstate");
 
                     b.Navigation("TypeSale");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("DiplomaRealEstate.Models.Review", b =>
-                {
-                    b.HasOne("DiplomaRealEstate.Models.User", "User")
-                        .WithMany("Reviews")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -656,14 +609,9 @@ namespace DiplomaRealEstate.Migrations
 
             modelBuilder.Entity("DiplomaRealEstate.Models.RealEstate", b =>
                 {
-                    b.Navigation("CartItems");
+                    b.Navigation("Favorites");
 
                     b.Navigation("TransactionProperties");
-                });
-
-            modelBuilder.Entity("DiplomaRealEstate.Models.Review", b =>
-                {
-                    b.Navigation("RealEstates");
                 });
 
             modelBuilder.Entity("DiplomaRealEstate.Models.TypeRealEstate", b =>
@@ -683,11 +631,9 @@ namespace DiplomaRealEstate.Migrations
 
             modelBuilder.Entity("DiplomaRealEstate.Models.User", b =>
                 {
-                    b.Navigation("CartItems");
+                    b.Navigation("Favorites");
 
                     b.Navigation("RealEstates");
-
-                    b.Navigation("Reviews");
 
                     b.Navigation("UserTransaction");
                 });

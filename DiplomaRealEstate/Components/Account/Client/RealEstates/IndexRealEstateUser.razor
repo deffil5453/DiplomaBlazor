@@ -7,77 +7,127 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IRealEstateService RealEstateService
 @rendermode InteractiveServer
-<div class="container mt-4">
-    <div class="row">
-        @if (_listRealEstates.Count == 0)
-        {
-            <div class="col-12">
-                <div class="alert alert-info text-center" role="alert">
-                    <strong>У вас пока нет созданной недвижимости.</strong>
-                </div>
-            </div>
-        }
-        else
-        {
-            @foreach (var item in _listRealEstates)
-            {
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <img src="@($"/images/{item.Photos}")" class="card-img-top" alt="Фото недвижимости" style="object-fit: cover; height: 200px;">
-                        <div class="card-body d-flex flex-column">
-                            <p class="card-text mb-2">@item.Region, @item.City</p>
-                            <p class="card-text mb-2">Улица @item.Street, дом @item.House</p>
-                            <h6 class="card-text font-weight-bold mt-auto">Цена: @item.Price ₽</h6>
-                            <div class="mt-auto">
-                                <a href="editRealEstate/@item.Id" class="btn btn-custom edit-btn btn-sm">Редактировать</a>
-                                <a href="detailsRealEstate/@item.Id" class="btn btn-custom details-btn btn-sm">Подробнее</a>
-                                <button @onclick="() => RemoveRealEstate(item.Id)" class="btn btn-custom delete-btn btn-sm">Удалить</button>
-                            </div>
+<AuthorizeView>
+    <Authorized>
+
+        <div class="container mt-4">
+            <div class="row">
+                @if (_listRealEstates.Count == 0)
+                {
+                    <div class="col-12">
+                        <div class="alert alert-info text-center" role="alert">
+                            <strong>У вас пока нет созданной недвижимости.</strong>
                         </div>
                     </div>
-                </div>
-            }
-        }
-    </div>
-</div>
+                }
+                else
+                {
+                    @foreach (var item in _listRealEstates)
+                    {
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <img src="@($"/images/{item.Photos}")" class="card-img-top" alt="Фото недвижимости" style="object-fit: cover; height: 200px;width:400px;height: 400px;">
+                                <div class="card-body d-flex flex-column">
+                                    <p class="card-text mb-2">@item.Region, @item.City</p>
+                                    <p class="card-text mb-2">Улица @item.Street, дом @item.House</p>
+                                    <h6 class="card-text font-weight-bold mt-auto">Цена: @item.Price ₽</h6>
+                                    <div class="mt-auto">
+                                        <a href="editRealEstate/@item.Id" class="btn btn-custom edit-btn btn-sm">Редактировать</a>
+                                        <a href="detailsRealEstate/@item.Id" class="btn btn-custom details-btn btn-sm">Подробнее</a>
+                                        <button @onclick="() => RemoveRealEstate(item.Id)" class="btn btn-custom delete-btn btn-sm">Удалить</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <h3>ПРОИЗОШЛА ОШИБКА!!!</h3>
+    </NotAuthorized>
+</AuthorizeView>
 <style>
-    .real-estate-card {
-        transition: transform .2s; /* Animation */
-        margin-bottom: 30px;
+    .container {
+        max-width: 1200px; /* Ограничиваем ширину для лучшего восприятия на больших экранах */
     }
 
-        .real-estate-card:hover {
-            transform: scale(1.02); /* (110% zoom - Note: if the zoom is too large, it will cause the page to scroll) */
+    .card {
+        transition: transform .3s ease-in-out, box-shadow .3s ease;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
 
     .card-img-top {
-        height: 200px;
-        object-fit: cover; /* ensures that images are sized properly */
+        height: 180px;
+        object-fit: cover;
     }
 
     .card-body {
-        background-color: #f8f9fa; /* Slightly different background to stand out */
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        background-color: #ffffff; /* Чистый белый фон для контента */
     }
 
-    .btn-custom {
-        margin-right: 5px;
-        color: white; /* Text color */
+    .card-text {
+        color: #6c757d;
+        line-height: 1.5;
+        margin-bottom: .5rem;
     }
 
-        .btn-custom:hover {
-            opacity: 0.8; /* Slightly see-through */
+        .card-text:last-child {
+            margin-bottom: 0;
         }
 
+        .card-text h6 {
+            color: #212529; /* Цвет основного текста, черный с низкой насыщенностью */
+            font-weight: 600; /* Полужирное начертание */
+        }
+
+    .card-body a {
+        text-decoration: none;
+    }
+
+    .edit-btn, .details-btn, .delete-btn {
+        color: white;
+        text-align: center;
+        border-radius: 0.3rem;
+        font-weight: 500;
+        padding: 0.4rem 0.6rem;
+        margin-top: .5rem;
+        width: 100%;
+    }
+
     .edit-btn {
-        background-color: #6c757d; /* Bootstrap secondary color */
+        background-color: #f0ad4e; /* Bootstrap warning color */
     }
 
     .details-btn {
-        background-color: #007bff; /* Bootstrap primary color */
+        background-color: #5cb85c; /* Bootstrap success color */
     }
 
     .delete-btn {
-        background-color: #dc3545; /* Bootstrap danger color */
+        background-color: #d9534f; /* Bootstrap danger color */
+    }
+
+    .edit-btn:hover {
+        background-color: #ec971f;
+    }
+
+    .details-btn:hover {
+        background-color: #4cae4c;
+    }
+
+    .delete-btn:hover {
+        background-color: #c9302c;
     }
 </style>
 @code {
@@ -90,6 +140,7 @@
         _userId = authUser.User.FindFirst(u => u.Type is ClaimTypes.NameIdentifier)?.Value;
         _listRealEstates = await RealEstateService.GetAllRealEstateIUserAsync(_userId);
     }
+
     private async Task RemoveRealEstate(Guid realEstateId)
     {
         await RealEstateService.RemoveRealEstateAsync(realEstateId);

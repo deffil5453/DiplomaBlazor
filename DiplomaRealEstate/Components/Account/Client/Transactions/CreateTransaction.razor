@@ -14,65 +14,94 @@
 @inject IFavoriteService FavoriteService
 @inject NavigationManager NavigationManager
 @rendermode InteractiveServer
-<div class="transaction-page container my-5">
-    <h2 class="text-center mb-4">Создание сделки</h2>
+<PageTitle>Создание сделки</PageTitle>
 
-    <div class="row mb-3">
-        <div class="col-md-6">
-            <img src="/images/@_realEstateModel.Photos" alt="Фото недвижимости" class="img-fluid real-estate-photo" style="width:800px;" />
-        </div>
-        <div class="col-md-6">
-            <div class="seller-info mb-3">
-                <h4>Информация о недвижимости</h4>
-                
-                <p><b>Страна:</b> @_realEstateModel.Country</p>
-                <p><b>Регион:</b> @_realEstateModel.Region</p>
-                <p><b>Город:</b> @_realEstateModel.City</p>
-                <p><b>Улица:</b> @_realEstateModel.Street @_realEstateModel.House </p>
-                <p><b>Цена:</b> @_realEstateModel.Price </p>
-            </div>
-            <div class="seller-info mb-3">
-                <h4>Данные продавца</h4>
-                <p><b>ФИО:</b> @_seller.LastName @_seller.FirstName @_seller.MiddleName</p>
-            </div>
-            <div class="buyer-info">
-                <h4>Данные покупателя</h4>
-                <p><b>ФИО:</b> @_customer.LastName @_customer.FirstName @_customer.MiddleName</p>
+<div class="container my-5 transaction-container">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card mt-3 transaction-card">
+                <img src="/images/@_realEstateModel.Photos" class="card-img-top img-fluid" alt="Фото недвижимости" />
+                <div class="card-body">
+                    <p class="card-text"><strong>Регион:</strong> @_realEstateModel.Region</p>
+                    <p class="card-text"><strong>Город:</strong> @_realEstateModel.City</p>
+                    @if (!string.IsNullOrWhiteSpace(_realEstateModel.Street))
+                    {
+                        <p class="card-text"><strong>Улица и номер дома:</strong> @_realEstateModel.Street, @_realEstateModel.House</p>
+                    }
+                    @if (_realEstateModel.Price > 0)
+                    {
+                        <p class="card-text"><strong>Цена:</strong> @_realEstateModel.Price ₽</p>
+                    }
+                </div>
             </div>
         </div>
-        <div class="w-100 text-center mt-4">
-            <button class="btn btn-lg btn-success" @onclick="()=>CompleteTransaction(_realEstateModel.Id)">
+        <div class="col-lg-4">
+            <div class="card mt-3 transaction-card">
+                <div class="card-body">
+                    <h4>Данные продавца</h4>
+                    <p><strong>ФИО:</strong> @_seller.LastName @_seller.FirstName @_seller.MiddleName</p>
+                </div>
+            </div>
+            <div class="card mt-3 transaction-card">
+                <div class="card-body">
+                    <h4>Данные покупателя</h4>
+                    <p><strong>ФИО:</strong> @_customer.LastName @_customer.FirstName @_customer.MiddleName</p>
+                </div>
+            </div>
+            <button class="btn btn-lg btn-success mt-3 pay-btn" @onclick="() => CompleteTransaction(_realEstateModel.Id)">
                 Оплатить
             </button>
-            @if (!string.IsNullOrWhiteSpace(_realEstateModel.Latitude) && !string.IsNullOrWhiteSpace(_realEstateModel.Longitude))
-            {
-                <a href="@CreateMapLink()" class="btn btn-lg btn-info" target="_blank">Смотреть на карте</a>
-            }
+            <button class="btn btn-lg btn-primary mt-3" @onclick="() => CreateMapLink()">
+                Смотреть на карте
+            </button>
         </div>
     </div>
 </div>
 
 <style>
-    .real-estate-photo {
-        max-height: 400px;
-        border-radius: 0.25rem;
+    .transaction-container .transaction-card {
+        border: none;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden; /* Обрезаем содержимое по границам карточки */
     }
 
-    .seller-info, .buyer-info {
-        background-color: #f8f9fa;
-        padding: 1rem;
-        border-radius: 0.25rem;
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    .transaction-card img {
+        object-fit: cover;
+        width: 100%;
+        height: auto; /* Позволяет картинке быть респонсив без жесткого указания высоты */
+        border-top-left-radius: 0.5rem;
+        border-top-right-radius: 0.5rem; /* Скругляем только верхние углы изображения */
     }
 
-    h2, h4 {
-        color: #343a40;
+    .transaction-card .card-body {
+        padding: 1.5rem; /* Увеличенный внутренний отступ для контента карточки */
+        background-color: #fff; /* Чистый белый фон для контента */
     }
 
-    p {
-        color: #6c757d;
-        margin-bottom: 0.5rem;
+        .transaction-card .card-body h4 {
+            font-size: 1.25rem; /* Увеличиваем размер шрифта для подзаголовков */
+            color: #333; /* Темный цвет текста для улучшенной читаемости */
+            margin-bottom: 1rem; /* Добавляем отступ от заголовка до текста */
+        }
+
+        .transaction-card .card-body p {
+            font-size: 1rem; /* Размер шрифта для параграфов */
+            color: #6c757d; /* Светло-серый цвет текста */
+            margin-bottom: 0.5rem; /* Расстояние между параграфами */
+        }
+
+    .pay-btn {
+        font-weight: bold; /* Жирное начертание текста */
+        color: #fff; /* Белый текст */
+        background-color: #28a745; /* Зеленый цвет кнопки */
+        border-color: #28a745; /* Зеленый цвет границы */
     }
+
+        .pay-btn:hover {
+            background-color: #218838; /* Затемненный зеленый при наведении */
+            border-color: #1e7e34; /* Затемненный зеленый цвет границы при наведении */
+        }
 </style>
 @code {
     [Parameter]
@@ -104,7 +133,7 @@
     private string CreateMapLink()
     {
         var addressText = $"{_realEstateModel.Country}, {_realEstateModel.Region}, {_realEstateModel.City}, " +
-                          $"{_realEstateModel.Street}";
+                          $"{_realEstateModel.Street}, {_realEstateModel.House}";
         var encodedAddress = Uri.EscapeDataString(addressText);
         return $"https://yandex.ru/maps/?text={encodedAddress}&z=16&l=map";
     }

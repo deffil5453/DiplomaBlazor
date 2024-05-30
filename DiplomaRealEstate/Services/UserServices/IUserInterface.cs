@@ -7,7 +7,7 @@ namespace DiplomaRealEstate.Services.UserServices
     {
         Task<List<User>> GetAllUserAsync();
         Task DeleteUser(string UserId);
-        Task UptateUser(string UserId, UserDetailInputModel userDetailModel);
+        Task UptateUser(string UserId, User userDetail);
         Task<User> GetUserAsync(string userId);
     }
 }

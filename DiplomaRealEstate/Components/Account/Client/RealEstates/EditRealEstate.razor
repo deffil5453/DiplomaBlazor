@@ -4,6 +4,7 @@
 @using DiplomaRealEstate.Services.RealEstateServices
 @inject IJSRuntime JSRuntime
 @inject IRealEstateService RealEstateService
+@inject NavigationManager NavigationManager
 @rendermode InteractiveServer
 <PageTitle>Редактирование недвижимости</PageTitle>
 <EditForm Model="@_realEstateModel" OnValidSubmit="UpdateRealEstateValidSubmit" FormName="update">
@@ -107,7 +108,15 @@
 	{
 		if (firstRender)
 		{
-			await JSRuntime.InvokeVoidAsync("initMap", DotNetObjectReference.Create(this), _realEstateModel.Latitude, _realEstateModel.Longitude);
+			if (!NavigationManager.Uri.Contains("reloaded"))
+			{
+				var newUri = NavigationManager.GetUriWithQueryParameter("reloaded", "true");
+				NavigationManager.NavigateTo(newUri, true);
+			}
+			else
+			{
+				await JSRuntime.InvokeVoidAsync("initMap", DotNetObjectReference.Create(this));
+			}
 		}
 	}
 
@@ -118,22 +127,33 @@
 		_realEstateModel.Longitude = longitude;
 		await InvokeAsync(StateHasChanged);
 	}
+	[JSInvokable]
+	public async Task SetAddressDetails(string country, string province, string city, string street, string house)
+	{
+		_realEstateModel.Country = country;
+		_realEstateModel.Region = province;
+		_realEstateModel.City = city;
+		_realEstateModel.Street = street;
+		_realEstateModel.House = house;
+		await InvokeAsync(StateHasChanged);
+	}
 	private async Task UpdateRealEstateValidSubmit()
 	{
 		await RealEstateService.UpdateRealEstate(_realEstateModel.Id, _realEstateModel);
 	}
 }
 <script>
-	window.initMap = function (dotNetObjRef, lat, lon) {
+	var myPlacemark;
+	var myMap;
+	initMap = function (dotNetObjRef) {
 		ymaps.ready(function () {
-			var center = [parseFloat(lat), parseFloat(lon)]; 
-			var myMap = new ymaps.Map('map', {
-				center: center, 
-				zoom: 16 
+			myMap = new ymaps.Map('map', {
+				center: [55.76, 37.64], // Координаты по умолчанию
+				zoom: 9
 			});
 
-			var myPlacemark = new ymaps.Placemark(center, {
-				hintContent: 'местоположение метки, т.е. недвижимости'
+			myPlacemark = new ymaps.Placemark([55.76, 37.64], {
+				hintContent: 'местоположение метки'
 			}, {
 				draggable: false
 			});
@@ -143,6 +163,40 @@
 			function setPlacemarkCoords(coords) {
 				myPlacemark.geometry.setCoordinates(coords);
 				dotNetObjRef.invokeMethodAsync('SetCoordinates', coords[0].toString(), coords[1].toString());
+				getAddress(coords);
+			}
+			function getAddress(coords) {
+				ymaps.geocode(coords, { results: 1 }).then(function (res) {
+					var firstObject = res.geoObjects.get(0);
+					var components = firstObject.properties.get('metaDataProperty.GeocoderMetaData.Address.Components');
+					var country, province, region, city, street, house;
+
+					components.forEach(function (component) {
+						switch (component.kind) {
+							case 'country':
+								country = component.name;
+								break;
+							case 'province':
+								province = component.name; // Иногда регион может быть также значением province
+								break;
+							case 'area':
+								region = component.name;
+								break;
+							// В зависимости от страны и региона, город может быть значением locality или area
+							case 'locality':
+								city = component.name;
+								break;
+							case 'street':
+								street = component.name;
+								break;
+							case 'house':
+								house = component.name;
+								break;
+						}
+					});
+
+					dotNetObjRef.invokeMethodAsync('SetAddressDetails', country, province || region, city, street, house);
+				});
 			}
 
 			myPlacemark.events.add('dragend', function (e) {
@@ -154,6 +208,12 @@
 				var coords = e.get('coords');
 				setPlacemarkCoords(coords);
 			});
+			myMap.controls.remove("trafficControl");
+			myMap.controls.remove("searchControl");
+			myMap.controls.remove("geolocationControl");
+			myMap.controls.remove("rulerControl");
 		});
+
 	}
+
 </script>

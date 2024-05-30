@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddBlazorBootstrap();
 builder.Services
     .AddDbContext<RealEstateDbContext>(options => options
     .UseSqlServer(builder.Configuration.GetConnectionString("Connection")));
@@ -28,7 +28,7 @@ builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddDefaultIdentity<User>(options =>
 {
     options.Password.RequireDigit = false;
-    options.Password.RequiredLength = 8;
+    options.Password.RequiredLength = 6;
     options.Password.RequireLowercase = false;
     options.Password.RequireUppercase = false;
     options.Password.RequireNonAlphanumeric = false;

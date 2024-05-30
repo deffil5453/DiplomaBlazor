@@ -7,6 +7,7 @@
 @using Microsoft.JSInterop
 @inject IJSRuntime JSRuntime
 @inject IRealEstateService RealEstateServices
+@inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 <PageTitle>Создание недвижимости</PageTitle>
 @rendermode InteractiveServer
@@ -87,7 +88,7 @@ else
                     @if (_typeSales != null)
                     {
                         <ValidationMessage For="@(()=>_realEstateInputModel.TypeSalesId)" />
-        
+
                         <div class="form-floating mb-4">
                             <InputSelect id="typeSales" class="form-control" @bind-Value="_realEstateInputModel.TypeSalesId" placeholder="Тип продажи">
                                 <option value="">Тип продажи</option>
@@ -114,7 +115,7 @@ else
                     @if (_types != null)
                     {
                         <ValidationMessage For="@(()=>_realEstateInputModel.TypeRealEstateId)" />
-  
+
                         <div class="form-floating mb-3">
                             <InputSelect id="types" class="form-control h-100" @bind-Value="_realEstateInputModel.TypeRealEstateId">
                                 <option value="">Тип недвижимости</option>
@@ -168,6 +169,23 @@ else
     private List<TypeRealEstate> _types = new List<TypeRealEstate>();
     private bool _modalOpen { get; set; }
     private bool _isClosing { get; set; }
+    [JSInvokable]
+    public async Task SetCoordinates(string latitude, string longitude)
+    {
+        _realEstateInputModel.Latitude = latitude;
+        _realEstateInputModel.Longitude = longitude;
+        await InvokeAsync(StateHasChanged);
+    }
+    [JSInvokable]
+    public async Task SetAddressDetails(string country, string province, string city, string street, string house)
+    {
+        _realEstateInputModel.Country = country;
+        _realEstateInputModel.Region = province;
+        _realEstateInputModel.City = city;
+        _realEstateInputModel.Street = street;
+        _realEstateInputModel.House = house;
+        await InvokeAsync(StateHasChanged);
+    }
     protected override async Task OnInitializedAsync()
     {
         _modalOpen = false;
@@ -193,17 +211,18 @@ else
     {
         if (firstRender)
         {
-            await JSRuntime.InvokeVoidAsync("initMap", DotNetObjectReference.Create(this));
+            if (!NavigationManager.Uri.Contains("reloaded"))
+            {
+                var newUri = NavigationManager.GetUriWithQueryParameter("reloaded", "true");
+                NavigationManager.NavigateTo(newUri, true);
+            }
+            else
+            {
+                await JSRuntime.InvokeVoidAsync("initMap", DotNetObjectReference.Create(this));
+            }
         }
     }
 
-    [JSInvokable]
-    public async Task SetCoordinates(string latitude, string longitude)
-    {
-        _realEstateInputModel.Latitude = latitude;
-        _realEstateInputModel.Longitude = longitude;
-        await InvokeAsync(StateHasChanged);
-    }
 
     private async Task CreateRealEstateValidSubmit()
     {
@@ -232,6 +251,7 @@ else
     }
 }
 <script>
+    var myPlacemark;
     var myMap;
     initMap = function (dotNetObjRef) {
         ymaps.ready(function () {
@@ -240,7 +260,7 @@ else
                 zoom: 9
             });
 
-            var myPlacemark = new ymaps.Placemark([55.76, 37.64], {
+            myPlacemark = new ymaps.Placemark([55.76, 37.64], {
                 hintContent: 'местоположение метки'
             }, {
                 draggable: false
@@ -251,6 +271,40 @@ else
             function setPlacemarkCoords(coords) {
                 myPlacemark.geometry.setCoordinates(coords);
                 dotNetObjRef.invokeMethodAsync('SetCoordinates', coords[0].toString(), coords[1].toString());
+                getAddress(coords);
+            }
+            function getAddress(coords) {
+                ymaps.geocode(coords, { results: 1 }).then(function (res) {
+                    var firstObject = res.geoObjects.get(0);
+                    var components = firstObject.properties.get('metaDataProperty.GeocoderMetaData.Address.Components');
+                    var country, province, region, city, street, house;
+
+                    components.forEach(function (component) {
+                        switch (component.kind) {
+                            case 'country':
+                                country = component.name;
+                                break;
+                            case 'province':
+                                province = component.name; // Иногда регион может быть также значением province
+                                break;
+                            case 'area':
+                                region = component.name;
+                                break;
+                            // В зависимости от страны и региона, город может быть значением locality или area
+                            case 'locality':
+                                city = component.name;
+                                break;
+                            case 'street':
+                                street = component.name;
+                                break;
+                            case 'house':
+                                house = component.name;
+                                break;
+                        }
+                    });
+
+                    dotNetObjRef.invokeMethodAsync('SetAddressDetails', country, province || region, city, street, house);
+                });
             }
 
             myPlacemark.events.add('dragend', function (e) {
@@ -262,6 +316,12 @@ else
                 var coords = e.get('coords');
                 setPlacemarkCoords(coords);
             });
+            myMap.controls.remove("trafficControl");
+            myMap.controls.remove("searchControl");
+            myMap.controls.remove("geolocationControl");
+            myMap.controls.remove("rulerControl"); 
         });
+
     }
+
 </script>

@@ -35,6 +35,7 @@ namespace DiplomaRealEstate.Migrations
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MiddleName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ImageProfile = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -210,27 +211,6 @@ namespace DiplomaRealEstate.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Reviews",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    text = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Rating = table.Column<int>(type: "int", nullable: false),
-                    RealEstateId = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Reviews", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Reviews_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "RealEstates",
                 columns: table => new
                 {
@@ -250,8 +230,7 @@ namespace DiplomaRealEstate.Migrations
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     TypeRealEstateId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TypeSaleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ReviewId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -268,11 +247,6 @@ namespace DiplomaRealEstate.Migrations
                         principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_RealEstates_Reviews_ReviewId",
-                        column: x => x.ReviewId,
-                        principalTable: "Reviews",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_RealEstates_TypeRealEstates_TypeRealEstateId",
                         column: x => x.TypeRealEstateId,
@@ -348,8 +322,8 @@ namespace DiplomaRealEstate.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("395881e5-0129-467a-8c1c-19d4ddb36a57"), "Жилая собственность" },
-                    { new Guid("5ae68c39-ad5b-4804-88b6-c9958b02643f"), "Земельные участок" }
+                    { new Guid("30f635e2-d19c-4dc9-8c42-bae1ee4bd025"), "Жилая собственность" },
+                    { new Guid("e4b4ee97-ac00-4751-904b-7c43f6c38af2"), "Земельные участок" }
                 });
 
             migrationBuilder.InsertData(
@@ -357,8 +331,8 @@ namespace DiplomaRealEstate.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("2e89ba6d-4d5f-4865-9a4a-1972bd44f835"), "Дом " },
-                    { new Guid("91edf046-8de7-4595-a8c4-db5ccfc18f74"), "Земельный участок" }
+                    { new Guid("7205b208-e095-450c-b176-04ddab0d286e"), "Земельный участок" },
+                    { new Guid("cbdc5a07-c4b5-4405-8dd5-68e78da4548b"), "Дом " }
                 });
 
             migrationBuilder.InsertData(
@@ -366,8 +340,8 @@ namespace DiplomaRealEstate.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("100ca32c-c05a-4a62-96c0-07ac939490c9"), "Аренда" },
-                    { new Guid("b7b655e5-83e7-4f50-a122-20d3824eb886"), "Продажа" }
+                    { new Guid("2bb3ffe8-df78-4581-be3c-ffec0d981ca9"), "Аренда" },
+                    { new Guid("f9090585-14e5-4d01-a9e3-9a555dd7ee6f"), "Продажа" }
                 });
 
             migrationBuilder.InsertData(
@@ -375,8 +349,8 @@ namespace DiplomaRealEstate.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("14cda16f-e932-410e-b49d-12f0dc5066bb"), "Покупка" },
-                    { new Guid("323b1669-a0a4-4d30-b565-d730f7d65269"), "Аренда" }
+                    { new Guid("11238eab-664a-477f-b69b-0373d6719771"), "Аренда" },
+                    { new Guid("f44aa2da-f12a-4136-a54c-6e300e6f3dd0"), "Покупка" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -434,11 +408,6 @@ namespace DiplomaRealEstate.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RealEstates_ReviewId",
-                table: "RealEstates",
-                column: "ReviewId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_RealEstates_TypeRealEstateId",
                 table: "RealEstates",
                 column: "TypeRealEstateId");
@@ -451,11 +420,6 @@ namespace DiplomaRealEstate.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_RealEstates_UserId",
                 table: "RealEstates",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Reviews_UserId",
-                table: "Reviews",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -508,19 +472,16 @@ namespace DiplomaRealEstate.Migrations
                 name: "TypeTransactions");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Reviews");
+                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "TypeRealEstates");
 
             migrationBuilder.DropTable(
                 name: "TypeSales");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
         }
     }
 }

@@ -20,7 +20,6 @@ namespace BlazorApp10.Data
         public DbSet<User> User { get; set; }
         public DbSet<RealEstate> RealEstates { get; set; }
         public DbSet<TypeSale> TypeSales { get; set; }
-        public DbSet<Review> Reviews { get; set; }
         public DbSet<TransactionOrder> TransactionOrders { get; set; }
         public DbSet<TypeRealEstate> TypeRealEstates { get; set; }
         public DbSet<Category> Categories { get; set; }

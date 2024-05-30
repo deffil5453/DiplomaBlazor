@@ -11,15 +11,18 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
 @inject IUserInterface UserServices
+@rendermode InteractiveServer
 <PageTitle>Обновление профиля</PageTitle>
-@if (_modalUeeeeee)
+
+
+@if (_modalOpen)
 {
-    <div class="modal fade show @(_modalUeeeeee ? "d-block" : "d-none")" tabindex="-1" role="dialog" style="display:block;">
+    <div class="modal fade show @(_modalOpen ? "d-block" : "d-none")" tabindex="-1" role="dialog" style="display:block;">
         <div class="modal-dialog modal-dialog-centered @(_isClosing ? "closing" : "")">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Обновление профиля</h5>
-                    <a href="" type="" class="btn-close btn-danger">
+                    <a href="userProfile" type="" class="btn-close btn-danger">
                     </a>
                 </div>
                 @if (_registrationSuccess)
@@ -32,43 +35,47 @@
                 else
                 {
                     <div class="modal-body">
-                        <EditForm Model="@_userDetailInputModel" OnValidSubmit="HandleUpdateProfile" FormName="UserDetailModel">
+                        <EditForm Model="@_userDetail" OnValidSubmit="HandleUpdateProfile" FormName="UserDetailModel">
                             <DataAnnotationsValidator />
                             <ValidationSummary />
 
                             <div class="form-group mb-3">
                                 <label for="LastName">Фамилия:</label>
-                                <InputText id="LastName" class="form-control" @bind-Value="@_userDetailInputModel.LastName" />
+                                <InputText id="LastName" class="form-control" @bind-Value="@_userDetail.LastName" />
                             </div>
                             <div class="form-group mb-3">
                                 <label for="FirstName">Имя:</label>
-                                <InputText id="FirstName" class="form-control" @bind-Value="@_userDetailInputModel.FirstName" />
+                                <InputText id="FirstName" class="form-control" @bind-Value="@_userDetail.FirstName" />
                             </div>
                             <div class="form-group mb-3">
                                 <label for="MiddleName">Отчество:</label>
-                                <InputText id="MiddleName" class="form-control" @bind-Value="@_userDetailInputModel.MiddleName" />
+                                <InputText id="MiddleName" class="form-control" @bind-Value="@_userDetail.MiddleName" />
                             </div>
 
 
                             <div class="form-group mb-3">
                                 <label for="PhoneNumber">Номер телефона:</label>
-                                <InputText id="PhoneNumber" class="form-control" @bind-Value="@_userDetailInputModel.PhoneNumber" />
+                                <InputText id="PhoneNumber" class="form-control" @bind-Value="@_userDetail.PhoneNumber" />
                             </div>
-
-                            <button class="btn btn-primary">Обновить</button>
+                            <div class="form-group mb-3">
+                                <label for="Photos">Фотографии</label>
+                                <InputFile id="photos" class="form-control" OnChange="HandleFileSelected" />
+                            </div>
+                            <button type="submit" class="btn btn-primary">Обновить</button>
                         </EditForm>
                     </div>
                 }
             </div>
         </div>
     </div>
+
     <div class="modal-backdrop show"></div>
 }
 
 @code {
     [SupplyParameterFromForm]
-    private UserDetailInputModel _userDetailInputModel { get; set; } = new UserDetailInputModel();
-    private bool _modalUeeeeee { get; set; }
+    private User _userDetail { get; set; } = new User();
+    private bool _modalOpen { get; set; }
     private bool _isClosing { get; set; }
     private string _userId;
     private bool _registrationSuccess = false;
@@ -77,21 +84,35 @@
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
         _userId = user.FindFirst(u => u.Type == ClaimTypes.NameIdentifier).Value;
-
+        _userDetail = await UserServices.GetUserAsync(_userId);
         OpenRegistrationModal();
+    }
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file != null)
+        {
+            var newFileName = $"{Guid.NewGuid()}{Path.GetExtension(file.Name)}";
+            var path = Path.Combine("wwwroot/images/", newFileName);
+            using (var stream = new FileStream(path, FileMode.Create))
+            {
+                _userDetail.ImageProfile = newFileName;
+                await file.OpenReadStream(1024 * 1024 * 15).CopyToAsync(stream);
+            }
+        }
     }
     private void OpenRegistrationModal()
     {
-        if (!_modalUeeeeee)
+        if (!_modalOpen)
         {
-            _modalUeeeeee = true;
+            _modalOpen = true;
         }
         _isClosing = false;
     }
 
     private async Task HandleUpdateProfile()
     {
-        await UserServices.UptateUser(_userId, _userDetailInputModel);
+        await UserServices.UptateUser(_userId, _userDetail);
         _registrationSuccess = true;
         StateHasChanged();
     }
