@@ -15,50 +15,110 @@
 @inject NavigationManager NavigationManager
 @rendermode InteractiveServer
 <PageTitle>Создание сделки</PageTitle>
-
-<div class="container my-5 transaction-container">
-    <div class="row">
-        <div class="col-lg-8">
-            <div class="card mt-3 transaction-card">
-                <img src="/images/@_realEstateModel.Photos" class="card-img-top img-fluid" alt="Фото недвижимости" />
-                <div class="card-body">
-                    <p class="card-text"><strong>Регион:</strong> @_realEstateModel.Region</p>
-                    <p class="card-text"><strong>Город:</strong> @_realEstateModel.City</p>
-                    @if (!string.IsNullOrWhiteSpace(_realEstateModel.Street))
-                    {
-                        <p class="card-text"><strong>Улица и номер дома:</strong> @_realEstateModel.Street, @_realEstateModel.House</p>
-                    }
-                    @if (_realEstateModel.Price > 0)
-                    {
-                        <p class="card-text"><strong>Цена:</strong> @_realEstateModel.Price ₽</p>
-                    }
+@if (_modalOpen)
+{
+    <div class="@ModalClass" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Успех</h5>
+                    <a @onclick="CloseModal" type="button" class="btn-close btn-danger">
+                    </a>
+                </div>
+                <div class="modal-body">
+                    Оплата прошла успешно!
                 </div>
             </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="card mt-3 transaction-card">
-                <div class="card-body">
-                    <h4>Данные продавца</h4>
-                    <p><strong>ФИО:</strong> @_seller.LastName @_seller.FirstName @_seller.MiddleName</p>
-                </div>
-            </div>
-            <div class="card mt-3 transaction-card">
-                <div class="card-body">
-                    <h4>Данные покупателя</h4>
-                    <p><strong>ФИО:</strong> @_customer.LastName @_customer.FirstName @_customer.MiddleName</p>
-                </div>
-            </div>
-            <button class="btn btn-lg btn-success mt-3 pay-btn" @onclick="() => CompleteTransaction(_realEstateModel.Id)">
-                Оплатить
-            </button>
-            <button class="btn btn-lg btn-primary mt-3" @onclick="() => CreateMapLink()">
-                Смотреть на карте
-            </button>
         </div>
     </div>
-</div>
+    <div class="modal-backdrop show"></div>
+}
+else
+{
+    <div class="container my-5 transaction-container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card mt-3 transaction-card">
+                    <img src="/images/@_realEstateModel.Photos" class="card-img-top img-fluid" alt="Фото недвижимости" />
+                    <div class="card-body">
+                        <p class="card-text"><strong>Регион:</strong> @_realEstateModel.Region</p>
+                        <p class="card-text"><strong>Город:</strong> @_realEstateModel.City</p>
+                        @if (!string.IsNullOrWhiteSpace(_realEstateModel.Street))
+                        {
+                            <p class="card-text"><strong>Улица и номер дома:</strong> @_realEstateModel.Street, @_realEstateModel.House</p>
+                        }
+                        @if (_realEstateModel.Price > 0)
+                        {
+                            <p class="card-text"><strong>Цена:</strong> @_realEstateModel.Price ₽</p>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card mt-3 transaction-card">
+                    <div class="card-body">
+                        <h4>Данные продавца</h4>
+                        <p><strong>ФИО:</strong> @_seller.LastName @_seller.FirstName @_seller.MiddleName</p>
+                    </div>
+                </div>
+                <div class="card mt-3 transaction-card">
+                    <div class="card-body">
+                        <h4>Данные покупателя</h4>
+                        <p><strong>ФИО:</strong> @_customer.LastName @_customer.FirstName @_customer.MiddleName</p>
+                    </div>
+                </div>
+                <button class="btn btn-lg btn-success mt-3 pay-btn" @onclick="()=>CompleteTransaction(_realEstateModel.Id)">
+                    <span>Оплатить</span>
+                </button>
+                <button class="btn btn-lg btn-primary mt-3" @onclick="() => CreateMapLink()">
+                    Смотреть на карте
+                </button>
+            </div>
+        </div>
+    </div>
+}
 
 <style>
+    .modal-open {
+    animation: fadeIn 0.5s;
+}
+
+.modal-close {
+    animation: fadeOut 0.5s forwards; /* forwards позволяет анимации остановиться в конечном состоянии */
+}
+
+.backdrop-open {
+    animation: fadeInBackdrop 0.5s;
+}
+
+    .pay-btn {
+        position: relative;
+        overflow: hidden;
+        transition: color 0.4s ease-in-out;
+    }
+
+        .pay-btn::after {
+            content: "";
+            background: #218838;
+            display: block;
+            position: absolute;
+            width: 100%;
+            height: 0;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            transition: height 0.3s ease-in-out;
+        }
+
+        .pay-btn:hover::after {
+            height: 100%;
+        }
+
+        .pay-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
     .transaction-container .transaction-card {
         border: none;
         border-radius: 0.5rem;
@@ -106,12 +166,19 @@
 @code {
     [Parameter]
     public Guid RealEstateId { get; set; }
+    private bool IsProcessingPayment = false;
     private User _seller { get; set; } = new User();
     private User _customer { get; set; } = new User();
     private string _userId;
+    private bool _modalOpen { get; set; }
+    private bool _isClosing { get; set; }
+    private string ModalClass => _modalOpen ? "modal fade show d-block modal-open" : "modal fade modal-close";
+    private string BackdropClass => _modalOpen ? "modal-backdrop show backdrop-open" : "d-none";
+
     private RealEstateEditModel _realEstateModel { get; set; } = new RealEstateEditModel();
     protected override async Task OnInitializedAsync()
-    {
+    { 
+        _modalOpen = false;
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
         _userId = user.FindFirst(u => u.Type == ClaimTypes.NameIdentifier).Value;
@@ -128,7 +195,25 @@
         }
         await FavoriteService.RemoveFavoriteAsync(_userId, id);
         await RealEstateService.RemoveRealEstateAsync(id);
-        NavigationManager.NavigateTo("/payTransaction");
+        OpenPayModal();
+        await Task.Delay(500);
+    }
+    private void OpenPayModal()
+    {
+        _modalOpen = true;
+        _isClosing = false;
+    }
+    private void CloseModal()
+    {
+        _isClosing = true; // Инициирует анимацию закрытия.
+
+        // Задержка для анимации закрытия перед сменой состояния _modalOpen
+        var animationTime = 500;
+        Task.Delay(animationTime).ContinueWith(_ =>
+        {
+            _modalOpen = false;
+            InvokeAsync(StateHasChanged); // Перерисовывать компонент после асинхронной операции
+        });
     }
     private string CreateMapLink()
     {
